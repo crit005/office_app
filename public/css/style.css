@@ -1,0 +1,61 @@
+body {
+    background: url('../images/bg.jpg') no-repeat top right;
+}
+
+.blur-light {
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    /* border: 1px solid rgba(255, 255, 255, 0.3); */
+}
+
+.blur-sidebar {
+    background: rgb(18 18 18 / 28%);
+    box-shadow: 0 4px 30px rgb(0 0 0 / 10%);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    /* border-right: 1px solid rgb(135 135 135 / 30%);*/
+}
+
+.brand-link {
+    height: 4.05rem;
+    border-bottom: rgb(255 255 255 / 30%) solid 1px;
+}
+
+.main-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.content-wrapper {
+    background: none;
+    /* backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px); */
+}
+
+.main-footer {
+    background: none;
+    border: none;
+    /* backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(5px);   */
+}
+
+.card {
+    background: #ffffff47;
+    backdrop-filter: blur(20px);
+    border: #ffffff36 solid 1px;
+}
+
+.card-body {
+    background: white;
+    margin: 14px;
+    border-radius: 4px;
+}
+
+.modal-content {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.modal-body {
+    background: white;    
+}
