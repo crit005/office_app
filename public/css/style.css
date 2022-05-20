@@ -3,7 +3,7 @@ body {
 }
 
 .blur-light {
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
@@ -52,10 +52,26 @@ body {
     border-radius: 4px;
 }
 
-.modal-content {
+.modal-blur-light {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    /* border: 1px solid rgba(255, 255, 255, 0.3); */
 }
 
-.modal-body {
-    background: white;    
+.modal-blur-light .modal-body {
+    background: rgba(255, 255, 255, 0.7);
+    margin: 0 14px;
+    border-radius: 5px;
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+}
+
+.modal-blur-light .modal-header{
+    border:none;
+}
+.modal-blur-light .modal-footer{
+    border:none;
 }

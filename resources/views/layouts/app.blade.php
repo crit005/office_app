@@ -21,8 +21,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     {{-- <link rel="stylesheet" href="{{asset('css/them2.css')}}"> --}}
     {{-- <link rel="stylesheet" href="{{asset('css/them5.css')}}"> --}}
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
-    {{-- <link rel="stylesheet" href="{{asset('css/them3.css')}}"> --}} 
-    
+    {{-- <link rel="stylesheet" href="{{asset('css/them3.css')}}"> --}}
+
     @livewireStyles
 </head>
 
@@ -70,7 +70,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- AdminLTE App -->
     <script src="{{asset('backend/dist/js/adminlte.min.js')}}"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    {{-- <script src="//unpkg.com/alpinejs" defer></script> --}}
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     @stack('js')
     @livewireScripts

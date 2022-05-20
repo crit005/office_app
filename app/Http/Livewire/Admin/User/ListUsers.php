@@ -6,9 +6,12 @@ use App\Models\Group;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class ListUsers extends Component
 {
+    use WithFileUploads;
+
     public $form = [];
     public $photo;
     public $showEditModal = false;
@@ -40,19 +43,22 @@ class ListUsers extends Component
 
     public function updated($propertyName)
     {
-        if ($this->showEditModal) {
-            $rules = $this->editUserRules;
-            $rules['email'] = $rules['email'] . ',email,' . $this->form['id'];
-            $rules = array_filter($rules, function ($key) {
-                return in_array($key, array_keys($this->form));
-            }, ARRAY_FILTER_USE_KEY);
-        } else {
+        if($propertyName != 'photo'){
+            if ($this->showEditModal) {
+                $rules = $this->editUserRules;
+                $rules['email'] = $rules['email'] . ',email,' . $this->form['id'];
+                $rules = array_filter($rules, function ($key) {
+                    return in_array($key, array_keys($this->form));
+                }, ARRAY_FILTER_USE_KEY);
+            } else {
 
-            $rules = array_filter($this->createUserRules, function ($key) {
-                return in_array($key, array_keys($this->form));
-            }, ARRAY_FILTER_USE_KEY);
+                $rules = array_filter($this->createUserRules, function ($key) {
+                    return in_array($key, array_keys($this->form));
+                }, ARRAY_FILTER_USE_KEY);
+            }
+            Validator::make($this->form, $rules, [], $this->userValidationAttributes)->validate();
         }
-        Validator::make($this->form, $rules, [], $this->userValidationAttributes)->validate();
+
     }
 
     public function addNew()
@@ -64,27 +70,23 @@ class ListUsers extends Component
 
     public function createUser()
     {
-        // dd($this->form);
         $validatedData = Validator::make($this->form, $this->createUserRules, [], $this->userValidationAttributes)->validate();
-        $this->reset(['form', 'photo']);
-        $this->dispatchBrowserEvent('alert-success', ['message' => 'User created successfully.']);
-        // dd($this->form);
-        /*
+
         // encrypt password
         $validatedData['password'] = bcrypt($validatedData['password']);
 
         if ($this->photo) {
             $imageUrl = $this->photo->store('/', 'avatars');
-            // dd($imageUrl);
             $validatedData['avatar'] = $imageUrl;
         }
-
+        unset($validatedData['password_confirmation']);
+        dd($validatedData);
         User::create($validatedData);
 
-        $this->state = [];
 
-        session()->flash('message', 'User Created Succesfully!');*/
-
+        // $this->reset();
+        $this->reset(['form', 'photo']);
+        $this->dispatchBrowserEvent('alert-success', ['message' => 'User created successfully.']);
         $this->dispatchBrowserEvent('hide-user-form', ['message' => 'User Created Succesfully!']);
     }
 

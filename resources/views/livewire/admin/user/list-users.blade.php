@@ -98,18 +98,18 @@
             <div wire:ignore.self class="modal fade" id="userModal" tabindex="-1" role="dialog"
                 aria-labelledby="userModalTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content blur-light">
+                    <div class="modal-content modal-blur-light">
                         <div class="modal-header">
                             <div>
                                 <h5 class="modal-title text-white" id="exampleModalLongTitle">New User</h5>
-                                <span class="d-block small">Input By: <strong>Konteha</strong></span>
+                                <span class="d-block small text-white">Input By: <strong>Konteha</strong></span>
                             </div>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <form wire:submit.prevent='createUser()'>
-                            <div class="modal-body">                                
+                            <div class="modal-body">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -149,7 +149,7 @@
                                             <input wire:model.debounce='form.password_confirmation' type="password"
                                                 class="form-control @error('password_confirmation') is-invalid @else {{$this->getValidClass('password_confirmation')}} @enderror"
                                                 name="password_confirmation" id="password_confirmation"
-                                                placeholder="Confirm password">                                            
+                                                placeholder="Confirm password">
                                             @error('password_confirmation')
                                             <div class="invalid-feedback">{{$message}}</div>
                                             @enderror
@@ -194,26 +194,44 @@
                                             <div class="invalid-feedback">{{$message}}</div>
                                             @enderror
                                         </div>
+
                                         <div class="form-group" >
-                                            <label for="photo">Photo:</label>
+                                            <div x-data="{imagePreview: null}">
+                                                <label for="photo" >Photo:</label>
 
-                                            <input type="file"                                                                            
-                                                class="form-control d-none @error('photo') is-invalid @enderror"
-                                                name="photo" id="photo">
+                                                <input type="file"
+                                                    wire:model='photo'
+                                                    accept="image/png, image/jpeg"
+                                                    x-ref="image"
+                                                    class="form-control d-none @error('photo') is-invalid @enderror"
+                                                    name="photo" id="photo"
+                                                    x-on:change="
+                                                        reader = new FileReader();
+                                                        reader.onload = function(e){
+                                                            imagePreview = e.target.result;
+                                                        }
+                                                        reader.readAsDataURL($refs.image.files[0]);
+                                                    "
+                                                    >
 
-                                            <div
-                                                class="img-thumbnail text-center  @error('photo') is-invalid @enderror">
-                                                <img src ="{{asset("images/no_profile.jpg")}}" alt=""
-                                                    style="max-height: 200px;max-width: 200px;">
+                                                <div
+                                                    class="img-thumbnail text-center  @error('photo') is-invalid @enderror">
+                                                    <img x-on:click="$refs.image.click()"
+
+                                                    x-bind:src ="imagePreview ? imagePreview : '{{asset("images/no_profile.jpg")}}'" alt=""
+                                                        style="max-height: 200px;max-width: 200px;">
+                                                </div>
+
+                                                @error('photo')
+
+                                                <div class="invalid-feedback">{{$message}}</div>
+
+                                                @enderror
+
                                             </div>
 
-                                            @error('photo')
-
-                                            <div class="invalid-feedback">{{$message}}</div>
-
-                                            @enderror
-                                            
                                         </div>
+
                                     </div>
                                 </div>
                                 <div class="row">
@@ -240,10 +258,10 @@
                 </div>
             </div>
             <script src="//unpkg.com/alpinejs" defer></script>
- 
+
             <div x-data="{ open: false }">
                 <button @click="open = true">Expand</button>
-             
+
                 <span x-show="open">
                   Content...
                 </span>
@@ -270,5 +288,8 @@
             confirmButtonText: 'OK'
         });
     });
+
+
 </script>
 @endpush
+
