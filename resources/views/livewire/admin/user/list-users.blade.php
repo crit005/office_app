@@ -46,7 +46,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body p-0">
-                            <table class="table table-striped">
+                            <table class="table table-striped .table-responsive">
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
@@ -62,11 +62,11 @@
                                     @forelse ($users as $user)
                                     <tr>
                                         <th scope="row">{{$loop->iteration}}</th>
-                                        <td>{{$user.name}}</td>
-                                        <td>{{$user.username}}</td>
-                                        <td class="d-none d-md-block">{{$user.email}}</td>
-                                        <td>{$user.group.name}</td>
-                                        <td><span class="tag tag-success">{{$user.status}}</span></td>
+                                        <td>{{$user->name}}</td>
+                                        <td>{{$user->username}}</td>
+                                        <td class="d-none d-md-block">{{$user->email}}</td>
+                                        <td>{{$user->group->name}}</td>
+                                        <td><span class="tag tag-success">{{$user->status}}</span></td>
                                         <td>
                                             <a href="#"><i class="fa fa-edit mr-2"></i></a>
                                             <a href="#"><i class="fa fa-trash text-danger"></i></a>
@@ -168,8 +168,8 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="group">Group:</label>
-                                            <select wire:model.debounce='form.group'
-                                                class="form-control @error('group') is-invalid @else {{$this->getValidClass('group')}} @enderror" name="group"
+                                            <select wire:model.debounce='form.group_id'
+                                                class="form-control @error('group_id') is-invalid @else {{$this->getValidClass('group_id')}} @enderror" name="group"
                                                 id="group">
                                                 <option value="">Select group</option>
                                                 @foreach ($groups as $group)
@@ -177,7 +177,7 @@
                                                 @endforeach
 
                                             </select>
-                                            @error('group')
+                                            @error('group_id')
                                             <div class="invalid-feedback">{{$message}}</div>
                                             @enderror
                                         </div>
@@ -194,9 +194,15 @@
                                             <div class="invalid-feedback">{{$message}}</div>
                                             @enderror
                                         </div>
-
+                                        
                                         <div class="form-group" >
-                                            <div x-data="{imagePreview: null}">
+                                            <script>let imagePreview = null;</script>
+                                            <div x-data="{isUploading: false, progress: 0}"
+                                            x-on:livewire-upload-start="isUploading = true; progress = 0;"
+                                            x-on:livewire-upload-finish="isUploading = false"
+                                            x-on:livewire-upload-error="isUploading = false"
+                                            x-on:livewire-upload-progress="progress = $event.detail.progress"                                            
+                                            >
                                                 <label for="photo" >Photo:</label>
 
                                                 <input type="file"
@@ -206,20 +212,47 @@
                                                     class="form-control d-none @error('photo') is-invalid @enderror"
                                                     name="photo" id="photo"
                                                     x-on:change="
-                                                        reader = new FileReader();
-                                                        reader.onload = function(e){
-                                                            imagePreview = e.target.result;
+                                                        FileUploadPath = $refs.image.value;
+                                                        extention = FileUploadPath.substring(FileUploadPath.lastIndexOf('.') + 1).toLowerCase();
+                                                        if(extention == 'jpg' || extention == 'png' || extention == 'jpeg' || extention == 'gif' || extention == 'svg'){
+                                                            reader = new FileReader();
+                                                            reader.onload = function(e){
+                                                                imagePreview = e.target.result;
+                                                            };
+                                                            reader.readAsDataURL($refs.image.files[0]);
                                                         }
-                                                        reader.readAsDataURL($refs.image.files[0]);
+                                                        else{
+                                                            imagePreview=null;
+                                                            $refs.image.value=null;
+                                                        } 
                                                     "
-                                                    >
+                                                >
 
-                                                <div
-                                                    class="img-thumbnail text-center  @error('photo') is-invalid @enderror">
-                                                    <img x-on:click="$refs.image.click()"
-
-                                                    x-bind:src ="imagePreview ? imagePreview : '{{asset("images/no_profile.jpg")}}'" alt=""
-                                                        style="max-height: 200px;max-width: 200px;">
+                                                <div style="position: relative;" class="img-thumbnail text-center  @error('photo') is-invalid @enderror">
+                                                    <img x-on:click="$refs.image.click()" x-bind:src ="imagePreview ? imagePreview : '{{asset("images/no_profile.jpg")}}'" alt=""
+                                                        style="height: 100%; width: 100%;">
+                                                    @if ($photo)
+                                                        
+                                                    <button wire:click.prevent='clearPhoto()' class="btn btn-sm btn-danger m-2" style="position: absolute; bottom: 0; right:0;"
+                                                    wire:loading.attr="disabled" wire:target='clearPhoto'
+                                                    x-on:click="imagePreview = null;">                                                    
+                                                        <i wire:loading class="fa fa-spinner fa-spin"></i>
+                                                        <i wire:loading.remove class="fa fa-trash"></i>
+                                                    </button> 
+                                                    @endif
+                                                </div>
+                                                <div class="text-center" x-show="!isUploading">
+                                                    @if ($photo)
+                                                    {{$photo->getClientOriginalName()}}
+                                                    @else
+                                                    Choose Image
+                                                    @endif
+                                                </div>                                                
+                                                <div x-show="isUploading" style="margin-top: 5px">       
+                                                    <div class="progress rounded" style="height: 5px">
+                                                        <div class="progress-bar bg-primary progress-bar-striped rounded" x-bind:style="`width: ${progress}%`"></div>
+                                                    </div>
+                                                    <div class="text-sm text-center">Uploading: <span x-text='progress'></span>%</div>
                                                 </div>
 
                                                 @error('photo')
@@ -235,6 +268,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
+                                    {{-- @dump($photo) --}}
                                     <div class="col-12">
                                         <div class="form-group">
                                             <label for="description">Description:</label>
@@ -250,32 +284,27 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
                                         class="fa fa-times mr-2"></i>Cancel</button>
-                                <button type="submit" class="btn btn-primary"><i
+                                <button type="submit" class="btn btn-primary"
+                                wire:loading.attr="disabled"
+                                ><i
                                         class="fa fa-save mr-2"></i>Save</button>
                             </div>
                         </form>
                     </div>
                 </div>
-            </div>
-            <script src="//unpkg.com/alpinejs" defer></script>
-
-            <div x-data="{ open: false }">
-                <button @click="open = true">Expand</button>
-
-                <span x-show="open">
-                  Content...
-                </span>
-            </div>
-        </div><!-- /.container-fluid -->
+            </div>            
+        </div>
+        <!-- /.container-fluid -->
     </div>
     <!-- /.content -->
 </div>
 @push('js')
 <script>
-    window.addEventListener('show-user-form', e =>{
+    window.addEventListener('show-user-form', e =>{   
+        imagePreview = null;
         $('#userModal').modal({backdrop: 'static', keyboard: false});
     });
-    window.addEventListener('hide-user-form', e =>{
+    window.addEventListener('hide-user-form', e =>{        
         $('#userModal').modal('hide');
     });
 
@@ -287,8 +316,7 @@
             icon: 'success',
             confirmButtonText: 'OK'
         });
-    });
-
+    });    
 
 </script>
 @endpush

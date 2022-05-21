@@ -20,12 +20,11 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            // $table->integer('group_id')->nullable();
             $table->foreignId('group_id')->nullable()->references('id')->on('groups')->nullOnDelete();
             $table->string('status')->default('ACTIVE');
-            $table->string('phpto')->nullable();
+            $table->string('photo')->nullable();
             $table->mediumText('description')->nullable();
-            $table->json('personall')->default(null);
+            $table->json('personall')->nullable()->default(null);
             $table->integer('created_by')->nullable();
             $table->rememberToken();
             $table->timestamps();

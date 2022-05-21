@@ -75,3 +75,7 @@ body {
 .modal-blur-light .modal-footer{
     border:none;
 }
+
+.img-thumbnail.is-invalid{    
+    border-color: #dc3545;
+}

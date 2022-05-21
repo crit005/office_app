@@ -20,7 +20,7 @@ class ListUsers extends Component
         'name' => 'required',
         'username' => 'required|unique:users',
         'email' => 'required|email|unique:users',
-        'group' => 'required',
+        'group_id' => 'required|integer',
         'status' => 'required',
         'password' => 'required|confirmed',
         'password_confirmation' => 'required',
@@ -30,11 +30,13 @@ class ListUsers extends Component
         'name' => 'required',
         'username' => 'required|unique:users',
         'email' => 'required|email|unique:users',
-        'group' => 'required',
+        'group_id' => 'required|integer',
         'status' => 'required',
         'password' => 'sometimes|confirmed',
         'password_confirmation' => 'sometimes',
     ];
+
+    protected $photoRules = ['photo' => 'sometimes|image|mimes:jpg,png,jpeg,gif,svg',];
 
     protected $userValidationAttributes = [
         'group_id' => 'group',
@@ -43,22 +45,22 @@ class ListUsers extends Component
 
     public function updated($propertyName)
     {
-        if($propertyName != 'photo'){
-            if ($this->showEditModal) {
-                $rules = $this->editUserRules;
-                $rules['email'] = $rules['email'] . ',email,' . $this->form['id'];
-                $rules = array_filter($rules, function ($key) {
-                    return in_array($key, array_keys($this->form));
-                }, ARRAY_FILTER_USE_KEY);
-            } else {
-
-                $rules = array_filter($this->createUserRules, function ($key) {
-                    return in_array($key, array_keys($this->form));
-                }, ARRAY_FILTER_USE_KEY);
-            }
-            Validator::make($this->form, $rules, [], $this->userValidationAttributes)->validate();
+        if ($this->showEditModal) {
+            $rules = $this->editUserRules;
+            $rules['email'] = $rules['email'] . ',email,' . $this->form['id'];
+            $rules = array_filter($rules, function ($key) {
+                return in_array($key, array_keys($this->form));
+            }, ARRAY_FILTER_USE_KEY);
+        } else {
+            $rules = array_filter($this->createUserRules, function ($key) {
+                return in_array($key, array_keys($this->form));
+            }, ARRAY_FILTER_USE_KEY);
         }
+        Validator::make($this->form, $rules, [], $this->userValidationAttributes)->validate();
 
+        if ($this->photo) {
+            $this->validateOnly('photo', $this->photoRules);
+        }
     }
 
     public function addNew()
@@ -72,20 +74,25 @@ class ListUsers extends Component
     {
         $validatedData = Validator::make($this->form, $this->createUserRules, [], $this->userValidationAttributes)->validate();
 
-        // encrypt password
-        $validatedData['password'] = bcrypt($validatedData['password']);
-
         if ($this->photo) {
+            $this->validate($this->photoRules);
             $imageUrl = $this->photo->store('/', 'avatars');
-            $validatedData['avatar'] = $imageUrl;
+            // $validatedData['photo'] = $imageUrl;           
         }
-        unset($validatedData['password_confirmation']);
-        dd($validatedData);
-        User::create($validatedData);
 
+        // Generate dataRecord (form + imageUrl + password_incripted - password_confirmation)
+        $dataRecord = $this->form;
+        if ($this->photo) {
+            $dataRecord['photo'] = $imageUrl;
+        }
+        $dataRecord['password'] = bcrypt($dataRecord['password']);
+        unset($dataRecord['password_confirmation']);
 
-        // $this->reset();
-        $this->reset(['form', 'photo']);
+        // dd($dataRecord);
+        User::create($dataRecord);
+
+        $this->reset();
+        // $this->reset(['form', 'photo']);
         $this->dispatchBrowserEvent('alert-success', ['message' => 'User created successfully.']);
         $this->dispatchBrowserEvent('hide-user-form', ['message' => 'User Created Succesfully!']);
     }
@@ -95,11 +102,17 @@ class ListUsers extends Component
         return array_key_exists($fieldName, $this->form) ? 'is-valid' : '';
     }
 
+    public function clearPhoto()
+    {
+        $this->photo = null;
+        $this->resetValidation('photo');
+    }
+
     public function render()
     {
         $groups = Group::query()
             ->where('status', '=', 'ENABLED')
-            // ->where('id','!=',1)
+            ->where('id', '!=', 1)
             ->get();
 
         $users = User::query()
