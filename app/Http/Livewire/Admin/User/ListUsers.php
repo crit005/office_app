@@ -52,6 +52,7 @@ class ListUsers extends Component
     {
         if ($this->showEditModal) {
             $rules = $this->editUserRules;
+            $rules['username'] = $rules['username'] . ',username,' . $this->form['id'];
             $rules['email'] = $rules['email'] . ',email,' . $this->form['id'];
             $rules = array_filter($rules, function ($key) {
                 return in_array($key, array_keys($this->form));
@@ -72,7 +73,7 @@ class ListUsers extends Component
     {
         $this->reset(['form', 'photo']);
         $this->showEditModal = false;
-        $this->dispatchBrowserEvent('show-user-form',["photo"=>asset("images/no_profile.jpg")]);
+        $this->dispatchBrowserEvent('show-user-form', ["photo" => asset("images/no_profile.jpg")]);
     }
 
     public function createUser()
@@ -82,7 +83,7 @@ class ListUsers extends Component
         if ($this->photo) {
             $this->validate($this->photoRules);
             $imageUrl = $this->photo->store('/', 'avatars');
-            // $validatedData['photo'] = $imageUrl;           
+            // $validatedData['photo'] = $imageUrl;
         }
 
         // Generate dataRecord (form + imageUrl + password_incripted - password_confirmation)
@@ -109,12 +110,12 @@ class ListUsers extends Component
 
     public function edit(User $user)
     {
-        $this->reset(['form','photo']);
+        $this->reset(['form', 'photo']);
         $this->showEditModal = true;
         $this->user = $user;
         $this->form = $user->toArray();
         // dd($this->form);
-        $this->dispatchBrowserEvent('show-user-form',["photo"=>$user->photo_url]);
+        $this->dispatchBrowserEvent('show-user-form', ["photo" => $user->photo_url]);
     }
 
     public function clearPhoto()
@@ -130,11 +131,19 @@ class ListUsers extends Component
             ->where('id', '!=', 1)
             ->get();
 
+        $userInactive = User::query()
+            ->latest()
+            ->where('status', '=', 'INACTIVE')
+            ->where('group_id', '!=', '1');
+
+
         $users = User::query()
+            ->latest()
             ->where('status', '=', 'ACTIVE')
             ->where('group_id', '!=', '1')
+            ->union($userInactive)
             ->paginate(10);
-            // ->get();
+        // ->get();
         return view('livewire.admin.user.list-users', ['groups' => $groups, 'users' => $users]);
     }
 }

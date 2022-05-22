@@ -54,9 +54,9 @@
                                             <th scope="col">Name</th>
                                             <th scope="col">User</th>
                                             <th scope="col">Email</th>
-                                            <th scope="col">Group</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Options</th>
+                                            <th scope="col" class="text-center">Group</th>
+                                            <th scope="col" class="text-center">Status</th>
+                                            <th scope="col" class="text-center">Options</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -66,11 +66,11 @@
                                             <td>{{$user->name}}</td>
                                             <td>{{$user->username}}</td>
                                             <td>{{$user->email}}</td>
-                                            <td>{{$user->group->name}}</td>
+                                            <td class="text-center">{{$user->group->name}}</td>
                                             <td class="text-center"><i class="far fa-circle {{$user->getStatusTextCollor()}}"></i></td>
-                                            <td>
-                                                <a href="" wire:click.prevent="edit({{$user}})"><i class="fa fa-edit mr-2"></i></a>
-                                                <a href="" ><i class="fa fa-trash text-danger"></i></a>
+                                            <td class="text-center">
+                                                <button class="btn btn-sm btn-primary" wire:click.prevent="edit({{$user}})"><i class="fa fa-edit"></i></button>
+                                                <button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
                                             </td>
                                         </tr>
                                         @empty
@@ -78,8 +78,8 @@
                                             <td colspan="7" class="text-center"> No user found...</td>
                                         </tr>
                                         @endforelse
-    
-    
+
+
                                     </tbody>
                                 </table>
                             </div>
@@ -122,7 +122,7 @@
                                             {{$message}}
                                             @enderror
                                             <label for="name">Name:</label>
-                                            <input wire:model.debounce='form.name' type="text"
+                                            <input wire:model.lazy='form.name' type="text"
                                                 class="form-control @error('name') is-invalid @else {{$this->getValidClass('name')}} @enderror" id="name"
                                                 placeholder="Your name">
                                             @error('name')
@@ -132,7 +132,7 @@
 
                                         <div class="form-group">
                                             <label for="username">Username:</label>
-                                            <input wire:model.debounce='form.username' type="text"
+                                            <input wire:model.lazy='form.username' type="text"
                                                 class="form-control  @error('username') is-invalid @else {{$this->getValidClass('username')}} @enderror"
                                                 name="username" id="username" placeholder="Username">
                                             @error('username')
@@ -141,7 +141,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="name">Email:</label>
-                                            <input wire:model.debounce='form.email' type="email"
+                                            <input wire:model.lazy='form.email' type="email"
                                                 class="form-control  @error('email') is-invalid @else {{$this->getValidClass('email')}} @enderror" name="email"
                                                 id="email" placeholder="Enter email">
                                             @error('email')
@@ -151,7 +151,7 @@
 
                                         <div class="form-group">
                                             <label for="password">Password:</label>
-                                            <input wire:model.debounce='form.password_confirmation' type="password"
+                                            <input wire:model.lazy='form.password_confirmation' type="password"
                                                 class="form-control @error('password_confirmation') is-invalid @else {{$this->getValidClass('password_confirmation')}} @enderror"
                                                 name="password_confirmation" id="password_confirmation"
                                                 placeholder="Confirm password">
@@ -162,7 +162,7 @@
 
                                         <div class="form-group">
                                             <label for="confirm_password">Confirm Password:</label>
-                                            <input wire:model.debounce='form.password' type="password"
+                                            <input wire:model.lazy='form.password' type="password"
                                                 class="form-control @error('password') is-invalid @else {{$this->getValidClass('password')}} @enderror"
                                                 name="password" id="password" placeholder="Password">
                                             @error('password')
@@ -173,7 +173,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="group">Group:</label>
-                                            <select wire:model.debounce='form.group_id'
+                                            <select wire:model.lazy='form.group_id'
                                                 class="form-control @error('group_id') is-invalid @else {{$this->getValidClass('group_id')}} @enderror" name="group"
                                                 id="group">
                                                 <option value="">Select group</option>
@@ -188,7 +188,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="status">Status:</label>
-                                            <select wire:model.debounce='form.status'
+                                            <select wire:model.lazy='form.status'
                                                 class="form-control @error('status') is-invalid @else {{$this->getValidClass('status')}} @enderror" name="status"
                                                 id="status">
                                                 <option value="">Select satus</option>
@@ -199,12 +199,12 @@
                                             <div class="invalid-feedback">{{$message}}</div>
                                             @enderror
                                         </div>
-                                        
+
                                         <div class="form-group" >
                                             @if ($photo)
                                             <script>let imagePreview = "{{$photo->temporaryUrl()}}";</script>
                                             @else
-                                            <script>let imagePreview = "{{$photo['photo_url']?? asset('images/no_profile.jpg')}}";</script>                                            
+                                            <script>let imagePreview = "{{$photo['photo_url']?? asset('images/no_profile.jpg')}}";</script>
                                             @endif
 
                                             {{-- <script>let imagePreview = null;</script> --}}
@@ -212,7 +212,7 @@
                                             x-on:livewire-upload-start="isUploading = true; progress = 0;"
                                             x-on:livewire-upload-finish="isUploading = false"
                                             x-on:livewire-upload-error="isUploading = false"
-                                            x-on:livewire-upload-progress="progress = $event.detail.progress"                                            
+                                            x-on:livewire-upload-progress="progress = $event.detail.progress"
                                             >
                                                 <label for="photo" >Photo:</label>
 
@@ -235,7 +235,7 @@
                                                         else{
                                                             imagePreview=null;
                                                             $refs.image.value=null;
-                                                        } 
+                                                        }
                                                     "
                                                 >
 
@@ -243,13 +243,13 @@
                                                     <img x-on:click="$refs.image.click()" x-bind:src ="imagePreview ? imagePreview : '{{asset("images/no_profile.jpg")}}'" alt=""
                                                         style="height: 100%; width: 100%;">
                                                     @if ($photo)
-                                                        
+
                                                     <button wire:click.prevent='clearPhoto()' class="btn btn-sm btn-danger m-2" style="position: absolute; bottom: 0; right:0;"
                                                     wire:loading.attr="disabled" wire:target='clearPhoto'
-                                                    x-on:click="imagePreview = null;">                                                    
-                                                        <i wire:loading class="fa fa-spinner fa-spin"></i>
-                                                        <i wire:loading.remove class="fa fa-trash"></i>
-                                                    </button> 
+                                                    x-on:click="imagePreview = null;">
+                                                        <i wire:loading  wire:target='clearPhoto' class="fa fa-spinner fa-spin"></i>
+                                                        <i wire:loading.remove  wire:target='clearPhoto' class="fa fa-trash"></i>
+                                                    </button>
                                                     @endif
                                                 </div>
                                                 <div class="text-center" x-show="!isUploading">
@@ -258,8 +258,8 @@
                                                     @else
                                                     Choose Image
                                                     @endif
-                                                </div>                                                
-                                                <div x-show="isUploading" style="margin-top: 5px">       
+                                                </div>
+                                                <div x-show="isUploading" style="margin-top: 5px">
                                                     <div class="progress rounded" style="height: 5px">
                                                         <div class="progress-bar bg-primary progress-bar-striped rounded" x-bind:style="`width: ${progress}%`"></div>
                                                     </div>
@@ -283,7 +283,7 @@
                                     <div class="col-12">
                                         <div class="form-group">
                                             <label for="description">Description:</label>
-                                            <textarea wire:model.debounce='form.description' name="description"
+                                            <textarea wire:model.lazy='form.description' name="description"
                                                 id="description" class="form-control" rows="3"
                                                 placeholder="Enter ..."></textarea>
                                         </div>
@@ -303,7 +303,7 @@
                         </form>
                     </div>
                 </div>
-            </div>            
+            </div>
         </div>
         <!-- /.container-fluid -->
     </div>
@@ -311,11 +311,11 @@
 </div>
 @push('js')
 <script>
-    window.addEventListener('show-user-form', e =>{   
+    window.addEventListener('show-user-form', e =>{
         imagePreview = e.detail.photo;
         $('#userModal').modal({backdrop: 'static', keyboard: false});
     });
-    window.addEventListener('hide-user-form', e =>{        
+    window.addEventListener('hide-user-form', e =>{
         $('#userModal').modal('hide');
     });
 
@@ -327,7 +327,7 @@
             icon: 'success',
             confirmButtonText: 'OK'
         });
-    });    
+    });
 
 </script>
 @endpush

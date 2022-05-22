@@ -24,7 +24,7 @@ class User extends Authenticatable
         'email',
         'password',
         'group_id',
-        'sttus',
+        'status',
         'photo',
         'description',
         'personall',
