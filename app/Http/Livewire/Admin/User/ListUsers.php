@@ -7,14 +7,19 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 class ListUsers extends Component
 {
     use WithFileUploads;
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
 
     public $form = [];
     public $photo;
     public $showEditModal = false;
+    public $user;
 
     protected $createUserRules = [
         'name' => 'required',
@@ -67,7 +72,7 @@ class ListUsers extends Component
     {
         $this->reset(['form', 'photo']);
         $this->showEditModal = false;
-        $this->dispatchBrowserEvent('show-user-form');
+        $this->dispatchBrowserEvent('show-user-form',["photo"=>asset("images/no_profile.jpg")]);
     }
 
     public function createUser()
@@ -102,6 +107,16 @@ class ListUsers extends Component
         return array_key_exists($fieldName, $this->form) ? 'is-valid' : '';
     }
 
+    public function edit(User $user)
+    {
+        $this->reset(['form','photo']);
+        $this->showEditModal = true;
+        $this->user = $user;
+        $this->form = $user->toArray();
+        // dd($this->form);
+        $this->dispatchBrowserEvent('show-user-form',["photo"=>$user->photo_url]);
+    }
+
     public function clearPhoto()
     {
         $this->photo = null;
@@ -118,7 +133,8 @@ class ListUsers extends Component
         $users = User::query()
             ->where('status', '=', 'ACTIVE')
             ->where('group_id', '!=', '1')
-            ->get();
+            ->paginate(10);
+            // ->get();
         return view('livewire.admin.user.list-users', ['groups' => $groups, 'users' => $users]);
     }
 }

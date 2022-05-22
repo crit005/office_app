@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -49,8 +50,32 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected $appends  = [
+        'photo_url'
+    ];
+
     public function group()
     {
         return $this->belongsTo(Group::class);
+    }
+
+    public function getPhotoUrlAttribute()
+    {
+        if ($this->photo && Storage::disk('avatars')->exists($this->photo)) {
+            return Storage::disk('avatars')->url($this->photo);
+        }
+
+        return asset("images/no_profile.jpg");
+    }
+
+    public function getStatusTextCollor()
+    {
+        if($this->status == 'ACTIVE'){
+            return 'text-success';
+        }elseif($this->status == 'INACTIVE'){
+            return 'text-warning';
+        }
+        return 'text-danger';
+
     }
 }

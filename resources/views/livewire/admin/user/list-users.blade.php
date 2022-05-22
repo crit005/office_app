@@ -45,54 +45,59 @@
                             </div>
                         </div>
                         <!-- /.card-header -->
-                        <div class="card-body p-0">
-                            <table class="table table-striped .table-responsive">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">User</th>
-                                        <th scope="col" class="d-none d-md-block" style="margin-bottom: -1px">Email</th>
-                                        <th scope="col">Group</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Options</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($users as $user)
-                                    <tr>
-                                        <th scope="row">{{$loop->iteration}}</th>
-                                        <td>{{$user->name}}</td>
-                                        <td>{{$user->username}}</td>
-                                        <td class="d-none d-md-block">{{$user->email}}</td>
-                                        <td>{{$user->group->name}}</td>
-                                        <td><span class="tag tag-success">{{$user->status}}</span></td>
-                                        <td>
-                                            <a href="#"><i class="fa fa-edit mr-2"></i></a>
-                                            <a href="#"><i class="fa fa-trash text-danger"></i></a>
-                                        </td>
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center"> No user found...</td>
-                                    </tr>
-                                    @endforelse
-
-
-                                </tbody>
-                            </table>
+                        <div class="card-body p-0" >
+                            <div class="table-responsive rounded" style="background:none; border: none;">
+                                <table class="table table-hover">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">User</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Group</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Options</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($users as $user)
+                                        <tr>
+                                            <th scope="row">{{$loop->iteration}}</th>
+                                            <td>{{$user->name}}</td>
+                                            <td>{{$user->username}}</td>
+                                            <td>{{$user->email}}</td>
+                                            <td>{{$user->group->name}}</td>
+                                            <td class="text-center"><i class="far fa-circle {{$user->getStatusTextCollor()}}"></i></td>
+                                            <td>
+                                                <a href="" wire:click.prevent="edit({{$user}})"><i class="fa fa-edit mr-2"></i></a>
+                                                <a href="" ><i class="fa fa-trash text-danger"></i></a>
+                                            </td>
+                                        </tr>
+                                        @empty
+                                        <tr>
+                                            <td colspan="7" class="text-center"> No user found...</td>
+                                        </tr>
+                                        @endforelse
+    
+    
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <!-- /.card-body -->
+                        <div class="card-footer">
+                            <div class="d-flex flex-row justify-content-center">
+                                <div>
+                                    {{ $users->links() }}
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
                     <!-- /.card -->
                 </div>
             </div>
             <!-- /.Row for table -->
-
-            <!-- Button trigger modal -->
-            {{-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#userModal">
-                Launch demo modal
-            </button> --}}
 
             <!-- Modal -->
             <div wire:ignore.self class="modal fade" id="userModal" tabindex="-1" role="dialog"
@@ -196,7 +201,13 @@
                                         </div>
                                         
                                         <div class="form-group" >
-                                            <script>let imagePreview = null;</script>
+                                            @if ($photo)
+                                            <script>let imagePreview = "{{$photo->temporaryUrl()}}";</script>
+                                            @else
+                                            <script>let imagePreview = "{{$photo['photo_url']?? asset('images/no_profile.jpg')}}";</script>                                            
+                                            @endif
+
+                                            {{-- <script>let imagePreview = null;</script> --}}
                                             <div x-data="{isUploading: false, progress: 0}"
                                             x-on:livewire-upload-start="isUploading = true; progress = 0;"
                                             x-on:livewire-upload-finish="isUploading = false"
@@ -301,7 +312,7 @@
 @push('js')
 <script>
     window.addEventListener('show-user-form', e =>{   
-        imagePreview = null;
+        imagePreview = e.detail.photo;
         $('#userModal').modal({backdrop: 'static', keyboard: false});
     });
     window.addEventListener('hide-user-form', e =>{        
