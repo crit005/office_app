@@ -22,4 +22,3 @@ Route::get('/', function () {
 
 Route::get('admin/dashboard', [Dashboard::class, 'index'])->name('admin.dashboard');
 Route::get('admin/users', ListUsers::class)->name('admin.users');
-Route::get('login', Login::class)->name('login');

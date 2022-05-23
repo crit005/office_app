@@ -46,7 +46,7 @@ return [
     |
     */
 
-    'username' => 'email',
+    'username' => 'username',
 
     'email' => 'email',
 
@@ -142,6 +142,7 @@ return [
             'confirmPassword' => true,
             // 'window' => 0,
         ]),
+
     ],
 
 ];
