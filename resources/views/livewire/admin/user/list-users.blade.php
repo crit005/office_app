@@ -45,7 +45,7 @@
                             </div>
                         </div>
                         <!-- /.card-header -->
-                        <div class="card-body p-0" >
+                        <div class="card-body p-0">
                             <div class="table-responsive rounded" style="background:none; border: none;">
                                 <table class="table table-hover">
                                     <thead class="thead-dark">
@@ -67,10 +67,23 @@
                                             <td>{{$user->username}}</td>
                                             <td>{{$user->email}}</td>
                                             <td class="text-center">{{$user->group->name}}</td>
-                                            <td class="text-center"><i class="far fa-circle {{$user->getStatusTextCollor()}}"></i></td>
+                                            <td class="text-center"><i
+                                                    class="far fa-circle {{$user->getStatusTextCollor()}}"></i></td>
                                             <td class="text-center">
-                                                <button class="btn btn-sm btn-primary" wire:click.prevent="edit({{$user}})"><i class="fa fa-edit"></i></button>
-                                                <button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                                                <button class="btn btn-sm btn-primary"
+                                                    wire:click.prevent="edit({{$user}})"><i class="fa fa-edit"></i>
+                                                </button>
+
+                                                <button class="btn btn-sm btn-danger"
+                                                    wire:click.prevent="confirmTrash({{$user}})">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+
+                                                <button class="btn btn-sm btn-danger"
+                                                    wire:click.prevent="confirmUserRemoval({{$user->id}})">
+                                                    <i class="fas fa-eraser"></i>
+                                                </button>
+
                                             </td>
                                         </tr>
                                         @empty
@@ -113,7 +126,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form wire:submit.prevent='{{$showEditModal?'updateUser':'createUser'}}'>
+                        <form wire:submit.prevent='{{$showEditModal?' updateUser':'createUser'}}'>
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -122,9 +135,9 @@
                                             {{$message}}
                                             @enderror
                                             <label for="name">Name:</label>
-                                            <input wire:model.lazy='form.name' type="text"
-                                                class="form-control @error('name') is-invalid @else {{$this->getValidClass('name')}} @enderror" id="name"
-                                                placeholder="Your name">
+                                            <input wire:model.debounce='form.name' type="text"
+                                                class="form-control @error('name') is-invalid @else {{$this->getValidClass('name')}} @enderror"
+                                                name="name" id="name" placeholder="Your name">
                                             @error('name')
                                             <div class="invalid-feedback">{{$message}}</div>
                                             @enderror
@@ -132,7 +145,7 @@
 
                                         <div class="form-group">
                                             <label for="username">Username:</label>
-                                            <input wire:model.lazy='form.username' type="text"
+                                            <input wire:model.debounce='form.username' type="text"
                                                 class="form-control  @error('username') is-invalid @else {{$this->getValidClass('username')}} @enderror"
                                                 name="username" id="username" placeholder="Username">
                                             @error('username')
@@ -141,9 +154,9 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="name">Email:</label>
-                                            <input wire:model.lazy='form.email' type="email"
-                                                class="form-control  @error('email') is-invalid @else {{$this->getValidClass('email')}} @enderror" name="email"
-                                                id="email" placeholder="Enter email">
+                                            <input wire:model.debounce='form.email' type="email"
+                                                class="form-control  @error('email') is-invalid @else {{$this->getValidClass('email')}} @enderror"
+                                                name="email" id="email" placeholder="Enter email">
                                             @error('email')
                                             <div class="invalid-feedback">{{$message}}</div>
                                             @enderror
@@ -151,7 +164,17 @@
 
                                         <div class="form-group">
                                             <label for="password">Password:</label>
-                                            <input wire:model.lazy='form.password_confirmation' type="password"
+                                            <input wire:model.debounce='form.password' type="password"
+                                                class="form-control @error('password') is-invalid @else {{$this->getValidClass('password')}} @enderror"
+                                                name="password" id="password" placeholder="Password">
+                                            @error('password')
+                                            <div class="invalid-feedback">{{$message}}</div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="confirm_password">Confirm Password:</label>
+                                            <input wire:model.debounce='form.password_confirmation' type="password"
                                                 class="form-control @error('password_confirmation') is-invalid @else {{$this->getValidClass('password_confirmation')}} @enderror"
                                                 name="password_confirmation" id="password_confirmation"
                                                 placeholder="Confirm password">
@@ -159,23 +182,13 @@
                                             <div class="invalid-feedback">{{$message}}</div>
                                             @enderror
                                         </div>
-
-                                        <div class="form-group">
-                                            <label for="confirm_password">Confirm Password:</label>
-                                            <input wire:model.lazy='form.password' type="password"
-                                                class="form-control @error('password') is-invalid @else {{$this->getValidClass('password')}} @enderror"
-                                                name="password" id="password" placeholder="Password">
-                                            @error('password')
-                                            <div class="invalid-feedback">{{$message}}</div>
-                                            @enderror
-                                        </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="group">Group:</label>
-                                            <select wire:model.lazy='form.group_id'
-                                                class="form-control @error('group_id') is-invalid @else {{$this->getValidClass('group_id')}} @enderror" name="group"
-                                                id="group">
+                                            <select wire:model.debounce='form.group_id'
+                                                class="form-control @error('group_id') is-invalid @else {{$this->getValidClass('group_id')}} @enderror"
+                                                name="group" id="group">
                                                 <option value="">Select group</option>
                                                 @foreach ($groups as $group)
                                                 <option value="{{$group['id']}}">{{$group['name']}}</option>
@@ -188,9 +201,9 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="status">Status:</label>
-                                            <select wire:model.lazy='form.status'
-                                                class="form-control @error('status') is-invalid @else {{$this->getValidClass('status')}} @enderror" name="status"
-                                                id="status">
+                                            <select wire:model.debounce='form.status'
+                                                class="form-control @error('status') is-invalid @else {{$this->getValidClass('status')}} @enderror"
+                                                name="status" id="status">
                                                 <option value="">Select satus</option>
                                                 <option value="ACTIVE">Active</option>
                                                 <option value="INACTIVE">Inactive</option>
@@ -200,25 +213,23 @@
                                             @enderror
                                         </div>
 
-                                        <div class="form-group" >
+                                        <div class="form-group">
 
-                                            <script>let imagePreview = null;</script>    
+                                            <script>
+                                                let imagePreview = null;
+                                            </script>
 
                                             <div x-data="{isUploading: false, progress: 0}"
-                                            x-on:livewire-upload-start="isUploading = true; progress = 0;"
-                                            x-on:livewire-upload-finish="isUploading = false"
-                                            x-on:livewire-upload-error="isUploading = false"
-                                            x-on:livewire-upload-progress="progress = $event.detail.progress"
-                                            >
-                                                <label for="photo" >Photo:</label>
+                                                x-on:livewire-upload-start="isUploading = true; progress = 0;"
+                                                x-on:livewire-upload-finish="isUploading = false"
+                                                x-on:livewire-upload-error="isUploading = false"
+                                                x-on:livewire-upload-progress="progress = $event.detail.progress">
+                                                <label for="photo">Photo:</label>
 
-                                                <input type="file"
-                                                    wire:model='photo'
-                                                    accept="image/png, image/jpeg"
+                                                <input type="file" wire:model='photo' accept="image/png, image/jpeg"
                                                     x-ref="image"
                                                     class="form-control d-none @error('photo') is-invalid @enderror"
-                                                    name="photo" id="photo"
-                                                    x-on:change="
+                                                    name="photo" id="photo" x-on:change="
                                                         FileUploadPath = $refs.image.value;
                                                         extention = FileUploadPath.substring(FileUploadPath.lastIndexOf('.') + 1).toLowerCase();
                                                         if(extention == 'jpg' || extention == 'png' || extention == 'jpeg' || extention == 'gif' || extention == 'svg'){
@@ -232,22 +243,30 @@
                                                             imagePreview=null;
                                                             $refs.image.value=null;
                                                         }
-                                                    "
-                                                >
+                                                ">
 
-                                                <div style="position: relative;" class="img-thumbnail text-center  @error('photo') is-invalid @enderror">
-                                                    <img x-on:click="$refs.image.click()" x-bind:src ="imagePreview ? imagePreview : '{{asset("images/no_profile.jpg")}}'" alt=""
-                                                        style="height: 100%; width: 100%;">
-                                                    @if ($photo || (!in_array(asset("images/no_profile.jpg"),$form) && in_array('photo_url',$form)))
-
-                                                    <button wire:click.prevent='clearPhoto()' class="btn btn-sm btn-danger m-2" style="position: absolute; bottom: 0; right:0;"
-                                                    wire:loading.attr="disabled" wire:target='clearPhoto'
-                                                    x-on:click="imagePreview = null;">
-                                                        <i wire:loading  wire:target='clearPhoto' class="fa fa-spinner fa-spin"></i>
-                                                        <i wire:loading.remove  wire:target='clearPhoto' class="fa fa-trash"></i>
+                                                <div style="position: relative;"
+                                                    class="img-thumbnail text-center  @error('photo') is-invalid @enderror">
+                                                    <img x-on:click="$refs.image.click()" x-bind:src="imagePreview ? imagePreview : 
+                                                        '{{asset("images/no_profile.jpg")}}'" alt=""
+                                                        style="height: 100%; width: 100%; cursor: pointer;">
+                                                    
+                                                    @if ($photo || (!in_array(asset("images/no_profile.jpg"),$form) &&
+                                                    array_key_exists('photo_url',$form)))
+                                                    
+                                                    <button wire:click.prevent='clearPhoto()'
+                                                        class="btn btn-sm btn-danger m-2"
+                                                        style="position: absolute; bottom: 0; right:0;"
+                                                        wire:loading.attr="disabled" wire:target='clearPhoto'
+                                                        x-on:click="imagePreview = null;">
+                                                        <i wire:loading wire:target='clearPhoto'
+                                                            class="fa fa-spinner fa-spin"></i>
+                                                        <i wire:loading.remove wire:target='clearPhoto'
+                                                            class="fa fa-trash"></i>
                                                     </button>
                                                     @endif
                                                 </div>
+
                                                 <div class="text-center" x-show="!isUploading">
                                                     @if ($photo)
                                                     {{$photo->getClientOriginalName()}}
@@ -257,9 +276,11 @@
                                                 </div>
                                                 <div x-show="isUploading" style="margin-top: 5px">
                                                     <div class="progress rounded" style="height: 5px">
-                                                        <div class="progress-bar bg-primary progress-bar-striped rounded" x-bind:style="`width: ${progress}%`"></div>
+                                                        <div class="progress-bar bg-primary progress-bar-striped rounded"
+                                                            x-bind:style="`width: ${progress}%`"></div>
                                                     </div>
-                                                    <div class="text-sm text-center">Uploading: <span x-text='progress'></span>%</div>
+                                                    <div class="text-sm text-center">Uploading: <span
+                                                            x-text='progress'></span>%</div>
                                                 </div>
 
                                                 @error('photo')
@@ -275,27 +296,26 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    {{-- @dump($photo) --}}
+
                                     <div class="col-12">
                                         <div class="form-group">
                                             <label for="description">Description:</label>
-                                            <textarea wire:model.lazy='form.description' name="description"
+                                            <textarea wire:model.debounce='form.description' name="description"
                                                 id="description" class="form-control" rows="3"
                                                 placeholder="Enter ..."></textarea>
                                         </div>
                                     </div>
                                 </div>
-
-
                             </div>
+
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
                                         class="fa fa-times mr-2"></i>Cancel</button>
-                                <button type="submit" class="btn btn-primary"
-                                wire:loading.attr="disabled"
-                                ><i
+                                        
+                                <button type="submit" class="btn btn-primary" wire:loading.attr="disabled"><i
                                         class="fa fa-save mr-2"></i>Save</button>
                             </div>
+
                         </form>
                     </div>
                 </div>
@@ -315,6 +335,38 @@
         $('#userModal').modal('hide');
     });
 
+    window.addEventListener('show-confirm-trash', e =>{
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              @this.putUserToTrash();
+            }
+          })
+    });
+
+    window.addEventListener('show-confirm-delete', e =>{
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This user will be deleted permanently!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              @this.deleteUser();
+            }
+          })
+    });
+
     // public event
     window.addEventListener('alert-success', e =>{
         Swal.fire({
@@ -327,4 +379,3 @@
 
 </script>
 @endpush
-

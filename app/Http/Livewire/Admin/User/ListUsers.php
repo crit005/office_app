@@ -22,6 +22,7 @@ class ListUsers extends Component
     public $photo;
     public $showEditModal = false;
     public $user;
+    public $userIdBegingRemoved = null;
 
     protected $createUserRules = [
         'name' => 'required',
@@ -30,7 +31,7 @@ class ListUsers extends Component
         'group_id' => 'required|integer',
         'status' => 'required',
         'password' => 'required|confirmed',
-        'password_confirmation' => 'required',
+        'password_confirmation' => 'required|same:password',
     ];
 
     protected $editUserRules = [
@@ -40,14 +41,14 @@ class ListUsers extends Component
         'group_id' => 'required|integer',
         'status' => 'required',
         'password' => 'sometimes|confirmed',
-        'password_confirmation' => 'sometimes',
+        'password_confirmation' => 'sometimes|same:password',
     ];
 
     protected $photoRules = ['photo' => 'sometimes|image|mimes:jpg,png,jpeg,gif,svg',];
 
     protected $userValidationAttributes = [
         'group_id' => 'group',
-        'password_confirmation' => 'password',
+        'password_confirmation' => 'confirm password',
     ];
     // End component variable //
 
@@ -93,12 +94,16 @@ class ListUsers extends Component
         $this->resetValidation('photo');
     }
 
+    function resetComponentVariables()
+    {
+        $this->reset(['form', 'photo', 'showEditModal', 'userIdBegingRemoved', 'user']);
+    }
     // End Realtime validation //
 
     // New User //
     public function addNew()
     {
-        $this->reset(['form', 'photo']);
+        $this->resetComponentVariables();
         $this->showEditModal = false;
         $this->dispatchBrowserEvent('show-user-form', ["photo" => asset("images/no_profile.jpg")]);
     }
@@ -122,8 +127,7 @@ class ListUsers extends Component
 
         User::create($dataRecord);
 
-        // $this->reset();
-        $this->reset(['form', 'photo']);
+        $this->resetComponentVariables();
         $this->dispatchBrowserEvent('alert-success', ['message' => 'User created successfully.']);
         $this->dispatchBrowserEvent('hide-user-form', ['message' => 'User Created Succesfully!']);
     }
@@ -132,7 +136,7 @@ class ListUsers extends Component
     // Update user //
     public function edit(User $user)
     {
-        $this->reset(['form', 'photo', 'showEditModal']);
+        $this->resetComponentVariables();
         $this->showEditModal = true;
         $this->user = $user;
         $this->form = $user->toArray();
@@ -170,12 +174,52 @@ class ListUsers extends Component
 
         $this->user = null;
 
-        $this->reset(['form', 'photo', 'showEditModal']);
+        $this->resetComponentVariables();
 
         $this->dispatchBrowserEvent('alert-success', ['message' => 'User updated successfully.']);
         $this->dispatchBrowserEvent('hide-user-form', ['message' => 'User Updated Succesfully!']);
     }
     // End Update User //
+
+    // Trash user //
+    public function confirmTrash(User $user)
+    {
+        $this->resetComponentVariables();
+        $this->user = $user;
+        $this->form = $user->toArray();
+        $this->dispatchBrowserEvent('show-confirm-trash');
+    }
+
+    public function putUserToTrash()
+    {
+        $this->form['username'] = $this->form['username'] . "##D##" . $this->form['id'];
+        $this->form['email'] = $this->form['email'] . "##D##" . $this->form['id'];
+        $this->form['status'] = "DELETED";
+        $this->user->update($this->form);
+
+        $this->dispatchBrowserEvent('alert-success', ['message' => 'User ID: ' . $this->form['id'] . ', has delete successfully!']);
+        $this->resetComponentVariables();
+    }
+    // End Trash user
+
+    // Remove user //
+    public function confirmUserRemoval($userId)
+    {
+        $this->resetComponentVariables();
+        $this->userIdBegingRemoved = $userId;
+
+        $this->dispatchBrowserEvent('show-confirm-delete');
+    }
+
+    public function deleteUser()
+    {
+        $user = User::findOrFail($this->userIdBegingRemoved);
+
+        $user->delete();
+        $this->dispatchBrowserEvent('alert-success', ['message' => 'User ID: ' . $this->userIdBegingRemoved . ', has delete successfully!']);
+        $this->resetComponentVariables();
+    }
+    // End remove user
 
 
     public function render()
@@ -185,11 +229,16 @@ class ListUsers extends Component
             ->where('id', '!=', 1)
             ->get();
 
+        $userDeleted = User::query()
+            ->latest()
+            ->where('status', '=', 'DELETED');
+
         $userInactive = User::query()
             ->latest()
             ->where('status', '=', 'INACTIVE')
             ->where('group_id', '!=', '1');
 
+        //$userInactive->union($userDeleted);
 
         $users = User::query()
             ->latest()

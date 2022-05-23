@@ -1,5 +1,5 @@
 body {
-    background: url('../images/bg.jpg') no-repeat top right;
+    background: url('../images/bg.jpg') no-repeat top right fixed;
 }
 
 .blur-light {
