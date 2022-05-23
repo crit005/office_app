@@ -60,9 +60,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($users as $user)
+                                        @forelse ($users as $indext => $user)
                                         <tr>
-                                            <th scope="row">{{$loop->iteration}}</th>
+                                            <th scope="row">{{$users->firstItem() + $indext}}</th>
                                             <td>{{$user->name}}</td>
                                             <td>{{$user->username}}</td>
                                             <td>{{$user->email}}</td>
@@ -113,7 +113,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form wire:submit.prevent='createUser()'>
+                        <form wire:submit.prevent='{{$showEditModal?'updateUser':'createUser'}}'>
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -201,13 +201,9 @@
                                         </div>
 
                                         <div class="form-group" >
-                                            @if ($photo)
-                                            <script>let imagePreview = "{{$photo->temporaryUrl()}}";</script>
-                                            @else
-                                            <script>let imagePreview = "{{$photo['photo_url']?? asset('images/no_profile.jpg')}}";</script>
-                                            @endif
 
-                                            {{-- <script>let imagePreview = null;</script> --}}
+                                            <script>let imagePreview = null;</script>    
+
                                             <div x-data="{isUploading: false, progress: 0}"
                                             x-on:livewire-upload-start="isUploading = true; progress = 0;"
                                             x-on:livewire-upload-finish="isUploading = false"
@@ -242,7 +238,7 @@
                                                 <div style="position: relative;" class="img-thumbnail text-center  @error('photo') is-invalid @enderror">
                                                     <img x-on:click="$refs.image.click()" x-bind:src ="imagePreview ? imagePreview : '{{asset("images/no_profile.jpg")}}'" alt=""
                                                         style="height: 100%; width: 100%;">
-                                                    @if ($photo)
+                                                    @if ($photo || (!in_array(asset("images/no_profile.jpg"),$form) && in_array('photo_url',$form)))
 
                                                     <button wire:click.prevent='clearPhoto()' class="btn btn-sm btn-danger m-2" style="position: absolute; bottom: 0; right:0;"
                                                     wire:loading.attr="disabled" wire:target='clearPhoto'

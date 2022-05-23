@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Admin\User;
 
 use App\Models\Group;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -14,6 +15,7 @@ class ListUsers extends Component
     use WithFileUploads;
     use WithPagination;
 
+    // Component variable //
     protected $paginationTheme = 'bootstrap';
 
     public $form = [];
@@ -47,8 +49,10 @@ class ListUsers extends Component
         'group_id' => 'group',
         'password_confirmation' => 'password',
     ];
+    // End component variable //
 
-    public function updated($propertyName)
+    // Realtime validation //
+    public function updatedForm($value)
     {
         if ($this->showEditModal) {
             $rules = $this->editUserRules;
@@ -63,12 +67,35 @@ class ListUsers extends Component
             }, ARRAY_FILTER_USE_KEY);
         }
         Validator::make($this->form, $rules, [], $this->userValidationAttributes)->validate();
+    }
 
+    public function updatedPhoto($var)
+    {
         if ($this->photo) {
             $this->validateOnly('photo', $this->photoRules);
+        } else {
+            $this->resetValidation('photo');
         }
     }
 
+    public function getValidClass(String $fieldName)
+    {
+        return array_key_exists($fieldName, $this->form) ? 'is-valid' : '';
+    }
+
+    public function clearPhoto()
+    {
+        $this->photo = null;
+        if ($this->showEditModal) {
+            $this->form['photo_url'] = asset("images/no_profile.jpg");
+            $this->form['photo'] = null;
+        }
+        $this->resetValidation('photo');
+    }
+
+    // End Realtime validation //
+
+    // New User //
     public function addNew()
     {
         $this->reset(['form', 'photo']);
@@ -83,7 +110,6 @@ class ListUsers extends Component
         if ($this->photo) {
             $this->validate($this->photoRules);
             $imageUrl = $this->photo->store('/', 'avatars');
-            // $validatedData['photo'] = $imageUrl;
         }
 
         // Generate dataRecord (form + imageUrl + password_incripted - password_confirmation)
@@ -94,23 +120,19 @@ class ListUsers extends Component
         $dataRecord['password'] = bcrypt($dataRecord['password']);
         unset($dataRecord['password_confirmation']);
 
-        // dd($dataRecord);
         User::create($dataRecord);
 
-        $this->reset();
-        // $this->reset(['form', 'photo']);
+        // $this->reset();
+        $this->reset(['form', 'photo']);
         $this->dispatchBrowserEvent('alert-success', ['message' => 'User created successfully.']);
         $this->dispatchBrowserEvent('hide-user-form', ['message' => 'User Created Succesfully!']);
     }
+    // End New User //
 
-    public function getValidClass(String $fieldName)
-    {
-        return array_key_exists($fieldName, $this->form) ? 'is-valid' : '';
-    }
-
+    // Update user //
     public function edit(User $user)
     {
-        $this->reset(['form', 'photo']);
+        $this->reset(['form', 'photo', 'showEditModal']);
         $this->showEditModal = true;
         $this->user = $user;
         $this->form = $user->toArray();
@@ -118,11 +140,43 @@ class ListUsers extends Component
         $this->dispatchBrowserEvent('show-user-form', ["photo" => $user->photo_url]);
     }
 
-    public function clearPhoto()
+    public function updateUser()
     {
-        $this->photo = null;
-        $this->resetValidation('photo');
+        $rules = $this->editUserRules;
+        $rules['username'] = $rules['username'] . ',username,' . $this->form['id'];
+        $rules['email'] = $rules['email'] . ',email,' . $this->form['id'];
+
+        $validatedData = Validator::make($this->form, $rules, [], $this->userValidationAttributes)->validate();
+
+        // photo validation
+        if ($this->photo) {
+            // delete old photo befor update
+            if (!is_null($this->user->photo)) {
+                Storage::disk('avatars')->delete($this->user->photo);
+            }
+            // Stor new photo
+            $imageUrl = $this->photo->store('/', 'avatars');
+            $this->form['photo'] = $imageUrl;
+        }
+
+        // encrypt new password
+        if (!empty($validatedData['password'])) {
+            $this->form['password'] = bcrypt($validatedData['password']);
+        }
+
+
+
+        $this->user->update($this->form);
+
+        $this->user = null;
+
+        $this->reset(['form', 'photo', 'showEditModal']);
+
+        $this->dispatchBrowserEvent('alert-success', ['message' => 'User updated successfully.']);
+        $this->dispatchBrowserEvent('hide-user-form', ['message' => 'User Updated Succesfully!']);
     }
+    // End Update User //
+
 
     public function render()
     {
