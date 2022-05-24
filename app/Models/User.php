@@ -47,7 +47,7 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'email_verified_at' => 'datetime',        
     ];
 
     protected $appends  = [
@@ -58,7 +58,7 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Group::class);
     }
-
+    
     public function getPhotoUrlAttribute()
     {
         if ($this->photo && Storage::disk('avatars')->exists($this->photo)) {
@@ -70,12 +70,16 @@ class User extends Authenticatable
 
     public function getStatusTextCollor()
     {
-        if($this->status == 'ACTIVE'){
+        if ($this->status == 'ACTIVE') {
             return 'text-success';
-        }elseif($this->status == 'INACTIVE'){
+        } elseif ($this->status == 'INACTIVE') {
             return 'text-warning';
         }
         return 'text-danger';
+    }
 
+    public function isAdmin()
+    {
+       return $this->group_id == 1;
     }
 }

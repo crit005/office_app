@@ -33,7 +33,7 @@
 
                             <div class="card-tools">
                                 <div class="input-group input-group-sm" style="width: 150px;">
-                                    <input type="text" name="table_search" class="form-control float-right"
+                                    <input wire:model.debounce='search' type="text" name="table_search" class="form-control float-right"
                                         placeholder="Search">
 
                                     <div class="input-group-append">
@@ -77,12 +77,14 @@
                                                 <button class="btn btn-sm btn-danger"
                                                     wire:click.prevent="confirmTrash({{$user}})">
                                                     <i class="fa fa-trash"></i>
-                                                </button>
+                                                </button> 
 
-                                                <button class="btn btn-sm btn-danger"
-                                                    wire:click.prevent="confirmUserRemoval({{$user->id}})">
+                                                @if (Auth()->user()->isAdmin())
+                                                <button class="btn btn-sm btn-danger" wire:click.prevent="confirmUserRemoval({{$user->id}})">
                                                     <i class="fas fa-eraser"></i>
                                                 </button>
+                                                @endif
+                                                
 
                                             </td>
                                         </tr>
@@ -119,8 +121,18 @@
                     <div class="modal-content modal-blur-light">
                         <div class="modal-header">
                             <div>
-                                <h5 class="modal-title text-white" id="exampleModalLongTitle">New User</h5>
-                                <span class="d-block small text-white">Input By: <strong>Konteha</strong></span>
+                                <h5 class="modal-title text-white" id="exampleModalLongTitle">
+                                    @if ($showEditModal)
+                                    Edit User
+                                    @else
+                                    New User
+                                    @endif
+                                </h5>
+                                <span class="d-block small text-white">Input By: <strong>
+                                        @if ($creater)
+                                        {{$creater['name']}}
+                                        @endif
+                                    </strong></span>
                             </div>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -309,13 +321,22 @@
                             </div>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
-                                        class="fa fa-times mr-2"></i>Cancel</button>
-                                        
-                                <button type="submit" class="btn btn-primary" wire:loading.attr="disabled"><i
-                                        class="fa fa-save mr-2"></i>Save</button>
+                                <div class="d-flex justify-content-between" style="width: 100%;">
+                                    <div class="text-white">Created_at:
+                                        @if (array_key_exists('created_at',$form))
+                                        {{date('Y-m-d',strtotime($form['created_at']))}}
+                                        @else
+                                        ...
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times mr-2"></i>Cancel</button>
+                                    
+                                        <button type="submit" class="btn btn-primary" wire:loading.attr="disabled"><i
+                                                class="fa fa-save mr-2"></i>Save</button>
+                                    </div>
+                                </div>
                             </div>
-
                         </form>
                     </div>
                 </div>

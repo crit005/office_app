@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Admin\User;
 
 use App\Models\Group;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
@@ -23,6 +24,8 @@ class ListUsers extends Component
     public $showEditModal = false;
     public $user;
     public $userIdBegingRemoved = null;
+    public $search = null;
+    public $creater = null;
 
     protected $createUserRules = [
         'name' => 'required',
@@ -79,6 +82,11 @@ class ListUsers extends Component
         }
     }
 
+    public function updatedSearch($var)
+    {
+        $this->resetPage();
+    }
+
     public function getValidClass(String $fieldName)
     {
         return array_key_exists($fieldName, $this->form) ? 'is-valid' : '';
@@ -105,6 +113,8 @@ class ListUsers extends Component
     {
         $this->resetComponentVariables();
         $this->showEditModal = false;
+        $this->creater = $this->getCreater();
+
         $this->dispatchBrowserEvent('show-user-form', ["photo" => asset("images/no_profile.jpg")]);
     }
 
@@ -123,7 +133,9 @@ class ListUsers extends Component
             $dataRecord['photo'] = $imageUrl;
         }
         $dataRecord['password'] = bcrypt($dataRecord['password']);
-        unset($dataRecord['password_confirmation']);
+        $dataRecord['created_by'] = Auth::user()->id;
+
+        // unset($dataRecord['password_confirmation']);
 
         User::create($dataRecord);
 
@@ -140,7 +152,7 @@ class ListUsers extends Component
         $this->showEditModal = true;
         $this->user = $user;
         $this->form = $user->toArray();
-        // dd($this->form);
+        $this->creater = $this->getCreater();
         $this->dispatchBrowserEvent('show-user-form', ["photo" => $user->photo_url]);
     }
 
@@ -221,6 +233,16 @@ class ListUsers extends Component
     }
     // End remove user
 
+    public function getCreater()
+    {
+        if ($this->showEditModal) {
+            if (!$this->form['created_by']) {
+                return null;
+            }
+            return User::find($this->form['created_by'])->toArray();
+        }
+        return Auth::user();
+    }
 
     public function render()
     {
@@ -240,13 +262,17 @@ class ListUsers extends Component
 
         //$userInactive->union($userDeleted);
 
-        $users = User::query()
-            ->latest()
-            ->where('status', '=', 'ACTIVE')
+        $users = User::where('status', '=', 'ACTIVE')
             ->where('group_id', '!=', '1')
+            ->where(function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('username', 'like', '%' . $this->search . '%')
+                    ->orWhere('email', 'like', '%' . $this->search . '%');
+            })
+            ->latest()
             ->union($userInactive)
             ->paginate(10);
-        // ->get();
+
         return view('livewire.admin.user.list-users', ['groups' => $groups, 'users' => $users]);
     }
 }
