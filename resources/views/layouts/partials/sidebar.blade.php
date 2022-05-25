@@ -46,68 +46,123 @@
                 <!-- Add icons to the links using the .nav-icon class
        with font-awesome or any other icon font library -->
                 <li class="nav-item">
-                    <a href="{{ route('admin.dashboard') }}"
-                        class="nav-link {{ request()->is('admin/dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('dashboard') }}"
+                        class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Dashboard
                         </p>
                     </a>
                 </li>
-                <li class="nav-item menu-open">
-                    <a href="#" class="nav-link active">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
+
+                <li class="nav-item">
+                    <a href="{{ route('dashboard') }}"
+                        class="nav-link {{ request()->is('expand') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-shopping-cart"></i>
                         <p>
-                            Starter Pages
-                            <i class="right fas fa-angle-left"></i>
+                            Expand
+                        </p>
+                    </a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a href="{{ route('dashboard') }}"
+                        class="nav-link {{ request()->is('cashdrawer') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-passport"></i>
+                        <p>
+                            Passport
+                        </p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('dashboard') }}"
+                        class="nav-link {{ request()->is('cashdrawer') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-plane-departure"></i>
+                        <p>
+                            Longleav
+                        </p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('dashboard') }}"
+                        class="nav-link {{ request()->is('cashdrawer') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-motorcycle"></i>
+                        <p>
+                            Moto
+                        </p>
+                    </a>
+                </li>
+
+
+                {{-- Setting menu --}}
+                <li class="nav-item {{ Request::segment(1)=='setting'? 'menu-open' : 'menu-close'}}">
+                    <a href="#" class="nav-link {{ Request::segment(1)=='setting'? 'active' : ''}}">
+                        <i class="nav-icon fas fa-cog"></i>
+                        <p class="red">
+                            Setting
+                            <i class="right fas fa-angle-down"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
+                        {{-- Depatment --}}
                         <li class="nav-item">
-                            <a href="#" class="nav-link active">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Active Page</p>
+                            <a href="#" class="nav-link {{ request()->is('setting/depatment') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-dice-d6"></i>
+                                <p>
+                                    Depatment
+                                </p>
                             </a>
                         </li>
+
+                        {{-- Currency --}}
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Inactive Page</p>
+                            <a href="#" class="nav-link {{ request()->is('setting/currency') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-hand-holding-usd"></i>
+                                <p>
+                                    Currency
+                                </p>
                             </a>
                         </li>
+
+                        {{-- Cashdrawer --}}
+                        <li class="nav-item">
+                            <a href="{{ route('dashboard') }}"
+                                class="nav-link {{ request()->is('setting/cashdrawer') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-cash-register"></i>
+                                <p>
+                                    Cashdrawer
+                                </p>
+                            </a>
+                        </li>
+
+                        {{-- User Menu --}}
+                        <li class="nav-item">
+                            <a href="{{ route('setting.users') }}"
+                                class="nav-link {{ request()->is('setting/users') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-users"></i>
+                                <p>
+                                    Users
+                                </p>
+                            </a>
+                        </li>
+
+                        {{-- Profile Menu --}}
+                        <li class="nav-item">
+                            <a href="{{ route('setting.users') }}"
+                                class="nav-link {{ request()->is('setting/profile') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-user"></i>
+                                <p>
+                                    Profile
+                                </p>
+                            </a>
+                        </li>
+
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-th"></i>
-                        <p>
-                            Simple Link
-                            <span class="right badge badge-danger">New</span>
-                        </p>
-                    </a>
-                </li>
 
-                {{-- Currency --}}
-                <li class="nav-item">
-                    <a href="#"
-                        class="nav-link {{ request()->is('admin/currency') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-hand-holding-usd"></i>
-                        <p>
-                            Currency
-                        </p>
-                    </a>
-                </li>
-
-                {{-- User Menu --}}
-                <li class="nav-item">
-                    <a href="{{ route('admin.users') }}"
-                        class="nav-link {{ request()->is('admin/users') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-users"></i>
-                        <p>
-                            Users
-                        </p>
-                    </a>
-                </li>
 
                 {{-- Logout mentu --}}
                 <li class="nav-item">

@@ -11,7 +11,7 @@ body {
 }
 
 .blur-sidebar {
-    background: rgb(18 18 18 / 28%);
+    background: rgb(18 18 18 / 83%);
     box-shadow: 0 4px 30px rgb(0 0 0 / 10%);
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
@@ -76,7 +76,7 @@ body {
     border:none;
 }
 
-.img-thumbnail.is-invalid{    
+.img-thumbnail.is-invalid{
     border-color: #dc3545;
 }
 
@@ -103,4 +103,8 @@ body {
     background: rgb(239,61,78,0.63);
     background: linear-gradient(0deg, rgb(239 61 78) 0%,  rgb(141, 34, 45) 100% );
     outline: 3px solid rgb(141 34 45 / 38%);
+}
+
+.nav-treeview .nav-item .active i{
+    color:var(--blue);
 }

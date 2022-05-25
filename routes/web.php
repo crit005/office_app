@@ -20,7 +20,7 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('admin/dashboard', [Dashboard::class, 'index'])->name('admin.dashboard');
-    Route::get('admin/users', ListUsers::class)->name('admin.users');
+    Route::get('dashboard', [Dashboard::class, 'index'])->name('dashboard');
+    Route::get('setting/users', ListUsers::class)->name('setting.users');
 });
 

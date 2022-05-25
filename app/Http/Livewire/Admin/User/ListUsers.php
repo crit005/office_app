@@ -255,12 +255,22 @@ class ListUsers extends Component
 
         $userDeleted = User::query()
             ->latest()
-            ->where('status', '=', 'DELETED');
+            ->where('status', '=', 'DELETED')
+            ->where(function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('username', 'like', '%' . $this->search . '%')
+                    ->orWhere('email', 'like', '%' . $this->search . '%');
+            });
 
         $userInactive = User::query()
             ->latest()
             ->where('status', '=', 'INACTIVE')
-            ->where('group_id', '!=', '1');
+            ->where('group_id', '!=', '1')
+            ->where(function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('username', 'like', '%' . $this->search . '%')
+                    ->orWhere('email', 'like', '%' . $this->search . '%');
+            });
 
         if (auth()->user()->isAdmin()) {
             $userInactive->union($userDeleted);
