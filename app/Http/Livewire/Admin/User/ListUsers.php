@@ -4,7 +4,6 @@ namespace App\Http\Livewire\Admin\User;
 
 use App\Models\Group;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
@@ -120,7 +119,7 @@ class ListUsers extends Component
 
     public function createUser()
     {
-        $validatedData = Validator::make($this->form, $this->createUserRules, [], $this->userValidationAttributes)->validate();
+        Validator::make($this->form, $this->createUserRules, [], $this->userValidationAttributes)->validate();
 
         if ($this->photo) {
             $this->validate($this->photoRules);
@@ -133,7 +132,7 @@ class ListUsers extends Component
             $dataRecord['photo'] = $imageUrl;
         }
         $dataRecord['password'] = bcrypt($dataRecord['password']);
-        $dataRecord['created_by'] = Auth::user()->id;
+        $dataRecord['created_by'] = auth()->user()->id;
 
         // unset($dataRecord['password_confirmation']);
 
@@ -204,8 +203,8 @@ class ListUsers extends Component
 
     public function putUserToTrash()
     {
-        $this->form['username'] = $this->form['username'] . "##D##" . $this->form['id'];
-        $this->form['email'] = $this->form['email'] . "##D##" . $this->form['id'];
+        $this->form['username'] = $this->form['username'] . "#d#" . $this->form['id'];
+        $this->form['email'] = $this->form['email'] . "#d#" . $this->form['id'];
         $this->form['status'] = "DELETED";
         $this->user->update($this->form);
 
@@ -226,7 +225,10 @@ class ListUsers extends Component
     public function deleteUser()
     {
         $user = User::findOrFail($this->userIdBegingRemoved);
-
+        // delete old photo befor update
+        if (!is_null($user->photo)) {
+            Storage::disk('avatars')->delete($user->photo);
+        }
         $user->delete();
         $this->dispatchBrowserEvent('alert-success', ['message' => 'User ID: ' . $this->userIdBegingRemoved . ', has delete successfully!']);
         $this->resetComponentVariables();
@@ -241,7 +243,7 @@ class ListUsers extends Component
             }
             return User::find($this->form['created_by'])->toArray();
         }
-        return Auth::user();
+        return auth()->user();
     }
 
     public function render()
@@ -260,7 +262,9 @@ class ListUsers extends Component
             ->where('status', '=', 'INACTIVE')
             ->where('group_id', '!=', '1');
 
-        //$userInactive->union($userDeleted);
+        if (auth()->user()->isAdmin()) {
+            $userInactive->union($userDeleted);
+        }
 
         $users = User::where('status', '=', 'ACTIVE')
             ->where('group_id', '!=', '1')
@@ -269,7 +273,7 @@ class ListUsers extends Component
                     ->orWhere('username', 'like', '%' . $this->search . '%')
                     ->orWhere('email', 'like', '%' . $this->search . '%');
             })
-            ->latest()
+            // ->latest()
             ->union($userInactive)
             ->paginate(10);
 

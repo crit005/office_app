@@ -67,25 +67,28 @@
                                             <td>{{$user->username}}</td>
                                             <td>{{$user->email}}</td>
                                             <td class="text-center">{{$user->group->name}}</td>
-                                            <td class="text-center"><i
-                                                    class="far fa-circle {{$user->getStatusTextCollor()}}"></i></td>
+
                                             <td class="text-center">
-                                                <button class="btn btn-sm btn-primary"
-                                                    wire:click.prevent="edit({{$user}})"><i class="fa fa-edit"></i>
-                                                </button>
+                                                <div class="d-flex justify-content-center pt-1">
+                                                    <div class="{{$user->getStatusBage()}}"></div>
+                                                </div>
+                                            </td>
 
-                                                <button class="btn btn-sm btn-danger"
-                                                    wire:click.prevent="confirmTrash({{$user}})">
-                                                    <i class="fa fa-trash"></i>
-                                                </button> 
-
-                                                @if (Auth()->user()->isAdmin())
-                                                <button class="btn btn-sm btn-danger" wire:click.prevent="confirmUserRemoval({{$user->id}})">
-                                                    <i class="fas fa-eraser"></i>
-                                                </button>
-                                                @endif
+                                            <td class="text-center">
+                                                <div class="d-flex justify-content-center">
+                                                    <button class="btn btn-xs btn-primary mr-2" wire:click.prevent="edit({{$user}})"><i class="fa fa-edit"></i>
+                                                    </button>
                                                 
-
+                                                    <button class="btn btn-xs btn-danger mr-2" wire:click.prevent="confirmTrash({{$user}})">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                
+                                                    @if (Auth()->user()->isAdmin())
+                                                    <button class="btn btn-xs btn-danger" wire:click.prevent="confirmUserRemoval({{$user->id}})">
+                                                        <i class="fas fa-eraser"></i>
+                                                    </button>
+                                                    @endif
+                                                </div> 
                                             </td>
                                         </tr>
                                         @empty

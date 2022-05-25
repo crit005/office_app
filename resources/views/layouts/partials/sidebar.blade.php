@@ -87,6 +87,17 @@
                     </a>
                 </li>
 
+                {{-- Currency --}}
+                <li class="nav-item">
+                    <a href="#"
+                        class="nav-link {{ request()->is('admin/currency') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-hand-holding-usd"></i>
+                        <p>
+                            Currency
+                        </p>
+                    </a>
+                </li>
+
                 {{-- User Menu --}}
                 <li class="nav-item">
                     <a href="{{ route('admin.users') }}"

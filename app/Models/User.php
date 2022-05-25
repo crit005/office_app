@@ -68,14 +68,14 @@ class User extends Authenticatable
         return asset("images/no_profile.jpg");
     }
 
-    public function getStatusTextCollor()
+    public function getStatusBage()
     {
         if ($this->status == 'ACTIVE') {
-            return 'text-success';
+            return 'statusBageSuccess';
         } elseif ($this->status == 'INACTIVE') {
-            return 'text-warning';
+            return 'statusBageWarnning';
         }
-        return 'text-danger';
+        return 'statusBageDanger';
     }
 
     public function isAdmin()
