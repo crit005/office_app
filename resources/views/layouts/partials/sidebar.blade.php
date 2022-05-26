@@ -44,7 +44,11 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> 7969a6b18c5a87b6733ba36e7f6842d2d208864c
                 {{-- Dashboar Menu --}}
                 <li class="nav-item">
                     <a href="{{ route('dashboard') }}"
