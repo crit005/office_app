@@ -43,8 +43,9 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <!-- Add icons to the links using the .nav-icon class
-       with font-awesome or any other icon font library -->
+                <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
+
+                {{-- Dashboar Menu --}}
                 <li class="nav-item">
                     <a href="{{ route('dashboard') }}"
                         class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
@@ -55,6 +56,7 @@
                     </a>
                 </li>
 
+                {{-- Expand Menu --}}
                 <li class="nav-item">
                     <a href="{{ route('dashboard') }}"
                         class="nav-link {{ request()->is('expand') ? 'active' : '' }}">
@@ -65,7 +67,7 @@
                     </a>
                 </li>
 
-
+                {{-- Passport Menu --}}
                 <li class="nav-item">
                     <a href="{{ route('dashboard') }}"
                         class="nav-link {{ request()->is('cashdrawer') ? 'active' : '' }}">
@@ -76,6 +78,7 @@
                     </a>
                 </li>
 
+                {{-- Longleav Menu --}}
                 <li class="nav-item">
                     <a href="{{ route('dashboard') }}"
                         class="nav-link {{ request()->is('cashdrawer') ? 'active' : '' }}">
@@ -86,6 +89,7 @@
                     </a>
                 </li>
 
+                {{-- MOto Menu --}}
                 <li class="nav-item">
                     <a href="{{ route('dashboard') }}"
                         class="nav-link {{ request()->is('cashdrawer') ? 'active' : '' }}">
@@ -107,22 +111,33 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        {{-- Depatment --}}
+
+                        {{-- Depatment Menu --}}
                         <li class="nav-item">
                             <a href="#" class="nav-link {{ request()->is('setting/depatment') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-dice-d6"></i>
+                                <i class="vav-icon fas fa-sitemap"></i>
                                 <p>
                                     Depatment
                                 </p>
                             </a>
                         </li>
 
-                        {{-- Currency --}}
+                        {{-- Currency Menu --}}
                         <li class="nav-item">
-                            <a href="#" class="nav-link {{ request()->is('setting/currency') ? 'active' : '' }}">
+                            <a href="{{route('setting.currencies')}}" class="nav-link {{ request()->is('setting/currencies') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-hand-holding-usd"></i>
                                 <p>
-                                    Currency
+                                    Currencies
+                                </p>
+                            </a>
+                        </li>
+
+                        {{-- Item Menu --}}
+                        <li class="nav-item">
+                            <a href="#" class="nav-link {{ request()->is('setting/items') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-dice-d6"></i>
+                                <p>
+                                    Items
                                 </p>
                             </a>
                         </li>
@@ -131,7 +146,7 @@
                         <li class="nav-item">
                             <a href="{{ route('dashboard') }}"
                                 class="nav-link {{ request()->is('setting/cashdrawer') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-cash-register"></i>
+                                <i class="nav-icon fas fa-inbox"></i>
                                 <p>
                                     Cashdrawer
                                 </p>

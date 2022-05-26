@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -29,6 +30,20 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
+
+        DB::table('users')->insert(
+            array([
+                'name' => 'Admin',
+                'username' => 'admin',
+                'email' => 'admin@office.com',
+                'password' => '$2y$10$wv6Y63YFIw7VYaMyAS0yZ.W49a5eVTjXSRzfJUu7tz5cdQGUN8yj.',
+                'group_id' => 1,
+                'status' => 'ACTIVE',
+                'description' => 'First user',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ])
+        );
     }
 
     /**

@@ -72,6 +72,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
     @stack('js')
+    <script>
+        window.addEventListener('alert-success', e =>{
+            Swal.fire({
+                title: 'Success!',
+                text: e.detail.message,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
     @livewireScripts
 </body>
 

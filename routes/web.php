@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Dashboard;
 use App\Http\Livewire\Admin\User\ListUsers;
+use App\Http\Livewire\Setting\ListCurrency;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,5 +23,6 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [Dashboard::class, 'index'])->name('dashboard');
     Route::get('setting/users', ListUsers::class)->name('setting.users');
+    Route::get('setting/currencies', ListCurrency::class)->name('setting.currencies');
 });
 
