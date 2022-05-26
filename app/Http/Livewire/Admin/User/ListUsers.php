@@ -132,7 +132,7 @@ class ListUsers extends Component
             $dataRecord['photo'] = $imageUrl;
         }
         $dataRecord['password'] = bcrypt($dataRecord['password']);
-        $dataRecord['created_by'] = auth()->user()->id;
+        $dataRecord['created_by'] = auth()->user()->id?? null;
 
         // unset($dataRecord['password_confirmation']);
 
