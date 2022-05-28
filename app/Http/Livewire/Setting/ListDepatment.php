@@ -182,14 +182,14 @@ class ListDepatment extends Component
 
 
     public function render()
-    {        
+    {
         if (auth()->user()->isAdmin()) {
             $depatments = Depatment::query()
             ->where(function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('position', 'like', '%' . $this->search . '%')
                     ->orWhere('status', 'like', '%' . $this->search . '%');
-            })        
+            })
             ->orderBy('status', 'desc')
             ->orderBy('position', 'asc')
             ->orderBy('name', 'asc')
@@ -202,13 +202,13 @@ class ListDepatment extends Component
                 $query->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('position', 'like', '%' . $this->search . '%')
                     ->orWhere('status', 'like', '%' . $this->search . '%');
-            })        
+            })
             ->orderBy('status', 'desc')
             ->orderBy('position', 'asc')
             ->orderBy('name', 'asc')
             ->paginate(10);
         }
-      
+
         return view('livewire.setting.list-depatment',['depatments' => $depatments]);
     }
 }

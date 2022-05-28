@@ -58,11 +58,9 @@
                                             <th scope="col" class="text-center">Options</th>
                                         </tr>
                                     </thead>
-                                    <tbody wire:sortable="updateDepatmentOrder" id="sortable">
-                                        {{-- <tbody id="sortable"> --}}
+                                        <tbody id="sortable">
                                         @forelse ($depatments as $indext => $depatment)
-                                        <tr wire:sortable.item="{{ $depatment->id }}" wire:key="depatment-{{ $depatment->id }}">
-                                            {{-- <th scope="row" wire:sortable.handle>{{$indext + 1}}</th> --}}
+                                        <tr wire:sortable.item="{{ $depatment->id }}" wire:key="depatment-{{ $depatment->id }}" id="{{ $depatment->id }}">
                                             <th scope="row">
                                                 @if(!$search)
                                                 <span  wire:sortable.handle  class="handle ui-sortable-handle text-gray mr-2"  style="cursor: move">
@@ -248,7 +246,7 @@
     $('.modal-dialog').draggable({
     handle: ".modal-header"
     });
-    
+
 
     window.addEventListener('show-confirm-trash', e =>{
         Swal.fire({
@@ -282,9 +280,21 @@
           })
     });
 
-    // $( function() {
-    // $( "#sortable" ).sortable();
-    // } );
+    $( function() {
+        $( "#sortable" ).sortable({
+        update: function( event, ui ) {
+            var arrOrder = $(this).sortable('toArray');
+            var items=[];
+            arrOrder.forEach((item, index) => {
+                items.push({'order':index+1 ,'value' : item});
+            });
+            // var productOrder = $(this).sortable('toArray').toString();
+            @this.updateDepatmentOrder(items);
+        },
+        handle: '.handle',
+        opacity: 0.9,
+        });
+    } );
 
 
 </script>
