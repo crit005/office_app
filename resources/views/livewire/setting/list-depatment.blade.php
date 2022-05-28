@@ -50,20 +50,30 @@
                                 <table class="table table-hover">
                                     <thead class="thead-dark">
                                         <tr>
-                                            <th scope="col">#</th>
+                                            <th scope="col" >#</th>
                                             <th scope="col">Depatment Name</th>
-                                            <th scope="col">Position</th>
-                                            <th scope="col">Created By</th>
+                                            <th scope="col" class="text-center">Position</th>
+                                            <th scope="col" class="text-center">Created By</th>
                                             <th scope="col" class="text-center">Status</th>
                                             <th scope="col" class="text-center">Options</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody wire:sortable="updateDepatmentOrder" id="sortable">
+                                        {{-- <tbody id="sortable"> --}}
                                         @forelse ($depatments as $indext => $depatment)
-                                        <tr>
-                                            <th scope="row">{{$depatments->firstItem() + $indext}}</th>
+                                        <tr wire:sortable.item="{{ $depatment->id }}" wire:key="depatment-{{ $depatment->id }}">
+                                            {{-- <th scope="row" wire:sortable.handle>{{$indext + 1}}</th> --}}
+                                            <th scope="row">
+                                                @if(!$search)
+                                                <span  wire:sortable.handle  class="handle ui-sortable-handle text-gray mr-2"  style="cursor: move">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </span>
+                                                @endif
+                                                {{$depatments->firstItem() + $indext}}
+                                            </th>
                                             <td>{{$depatment->name}}</td>
-                                            <td>{{$depatment->position}}</td>
+                                            <td class="text-center">{{$depatment->position}}</td>
                                             <td class="text-center">{{$depatment->user->name}}</td>
 
                                             <td class="text-center">
@@ -84,7 +94,7 @@
 
                                                     @if (Auth()->user()->isAdmin())
                                                     <button class="btn btn-xs btn-danger"
-                                                        wire:click.prevent="confirmUserRemoval({{$depatment->id}})">
+                                                        wire:click.prevent="confirmDepatmentRemoval({{$depatment->id}})">
                                                         <i class="fas fa-eraser"></i>
                                                     </button>
                                                     @endif
@@ -118,7 +128,7 @@
             <!-- /.Row for table -->
 
             <!-- Modal -->
-            <div wire:ignore.self class="modal fade" id="depatmentModal" tabindex="-1" role="dialog"
+            <div wire:ignore.self class="modal fade blur-bg-dialog " id="depatmentModal" tabindex="-1" role="dialog"
                 aria-labelledby="depatmentModalTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content modal-blur-light">
@@ -232,6 +242,13 @@
     window.addEventListener('hide-depatment-form', e =>{
         $('#depatmentModal').modal('hide');
     });
+    $('doucument').ready(function(){
+        // alert('test');
+    })
+    $('.modal-dialog').draggable({
+    handle: ".modal-header"
+    });
+    
 
     window.addEventListener('show-confirm-trash', e =>{
         Swal.fire({
@@ -244,7 +261,7 @@
             confirmButtonText: 'Yes, delete it!'
           }).then((result) => {
             if (result.isConfirmed) {
-              @this.putUserToTrash();
+              @this.putDepatmentToTrash();
             }
           })
     });
@@ -260,10 +277,15 @@
             confirmButtonText: 'Yes, delete it!'
           }).then((result) => {
             if (result.isConfirmed) {
-              @this.deleteUser();
+              @this.deleteDepatment();
             }
           })
     });
+
+    // $( function() {
+    // $( "#sortable" ).sortable();
+    // } );
+
 
 </script>
 @endpush

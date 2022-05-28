@@ -52,6 +52,6 @@ return new class extends Migration
      */
     public function down()
     {
-        DB::table('depatments')->delete();
+        DB::table('depatments')->truncate();
     }
 };

@@ -64,13 +64,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <!-- jQuery -->
 
-    <script src="{{asset('backend/plugins/jquery/jquery.min.js')}}"></script>
+    {{-- <script src="{{asset('backend/plugins/jquery/jquery.min.js')}}"></script> --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
     <!-- Bootstrap 4 -->
     <script src="{{asset('backend/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <!-- AdminLTE App -->
     <script src="{{asset('backend/dist/js/adminlte.min.js')}}"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
+    
     @stack('js')
     <script>
         window.addEventListener('alert-success', e =>{
@@ -83,6 +86,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         });
     </script>
     @livewireScripts
+    <script src="https://cdn.jsdelivr.net/gh/livewire/sortable@v0.x.x/dist/livewire-sortable.js"></script>
 </body>
 
 </html>

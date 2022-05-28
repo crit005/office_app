@@ -18,6 +18,15 @@ body {
     /* border-right: 1px solid rgb(135 135 135 / 30%);*/
 }
 
+.blur-bg-dialog {
+    background: rgba(0, 0, 0, 0.25);
+    /*box-shadow: 0 4px 30px rgb(0 0 0 / 10%);*/
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    /* border-right: 1px solid rgb(135 135 135 / 30%);*/
+}
+
+
 .brand-link {
     height: 4.05rem;
     border-bottom: rgb(255 255 255 / 30%) solid 1px;
@@ -62,7 +71,7 @@ body {
 }
 
 .modal-blur-light .modal-body {
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 1);
     margin: 0 14px;
     border-radius: 5px;
     backdrop-filter: blur(30px);
@@ -178,3 +187,9 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 /* end switch button */
+
+.draggable-mirror{
+    /* display: none; */
+    background-color: white;      
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+}

@@ -171,42 +171,44 @@ class ListDepatment extends Component
         return auth()->user();
     }
 
+    public function updateDepatmentOrder($items)
+    {
+        // dd($this->page);
+        // dd($items);
+        foreach($items as $item){
+            Depatment::find($item['value'])->update(['position' => (($this->page - 1)* 10) + $item['order']]);
+        }
+    }
+
 
     public function render()
-    {
-        $depatmentDeleted = Depatment::query()
-            ->latest()
-            ->where('status', '=', 'DELETED')
-            ->where(function ($query) {
-                $query->where('name', 'like', '%' . $this->search . '%')
-                    ->orWhere('position', 'like', '%' . $this->search . '%')
-                    ->orWhere('status', 'like', '%' . $this->search . '%');
-            });
-
-        $depatmentDisabled = Depatment::query()
-            ->latest()
-            ->where('status', '=', 'DISABLED')
-            // ->where('group_id', '!=', '1')
-            ->where(function ($query) {
-                $query->where('name', 'like', '%' . $this->search . '%')
-                    ->orWhere('position', 'like', '%' . $this->search . '%')
-                    ->orWhere('status', 'like', '%' . $this->search . '%');
-            });
-
+    {        
         if (auth()->user()->isAdmin()) {
-            $depatmentDisabled->union($depatmentDeleted);
-        }
-
-        $depatments = Depatment::where('status', '=', 'ENABLED')
+            $depatments = Depatment::query()
             ->where(function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('position', 'like', '%' . $this->search . '%')
                     ->orWhere('status', 'like', '%' . $this->search . '%');
-            })
-            // ->latest()
-            ->union($depatmentDisabled)
+            })        
+            ->orderBy('status', 'desc')
+            ->orderBy('position', 'asc')
+            ->orderBy('name', 'asc')
             ->paginate(10);
 
+        }else{
+            $depatments = Depatment::query()
+            ->where('status', '!=', 'DELETED')
+            ->where(function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('position', 'like', '%' . $this->search . '%')
+                    ->orWhere('status', 'like', '%' . $this->search . '%');
+            })        
+            ->orderBy('status', 'desc')
+            ->orderBy('position', 'asc')
+            ->orderBy('name', 'asc')
+            ->paginate(10);
+        }
+      
         return view('livewire.setting.list-depatment',['depatments' => $depatments]);
     }
 }

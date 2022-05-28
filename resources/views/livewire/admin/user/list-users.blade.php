@@ -78,17 +78,17 @@
                                                 <div class="d-flex justify-content-center">
                                                     <button class="btn btn-xs btn-primary mr-2" wire:click.prevent="edit({{$user}})"><i class="fa fa-edit"></i>
                                                     </button>
-
+                                                
                                                     <button class="btn btn-xs btn-danger mr-2" wire:click.prevent="confirmTrash({{$user}})">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
-
+                                                
                                                     @if (Auth()->user()->isAdmin())
                                                     <button class="btn btn-xs btn-danger" wire:click.prevent="confirmUserRemoval({{$user->id}})">
                                                         <i class="fas fa-eraser"></i>
                                                     </button>
                                                     @endif
-                                                </div>
+                                                </div> 
                                             </td>
                                         </tr>
                                         @empty
@@ -262,13 +262,13 @@
 
                                                 <div style="position: relative;"
                                                     class="img-thumbnail text-center  @error('photo') is-invalid @enderror">
-                                                    <img x-on:click="$refs.image.click()" x-bind:src="imagePreview ? imagePreview :
+                                                    <img x-on:click="$refs.image.click()" x-bind:src="imagePreview ? imagePreview : 
                                                         '{{asset("images/no_profile.jpg")}}'" alt=""
                                                         style="height: 100%; width: 100%; cursor: pointer;">
-
+                                                    
                                                     @if ($photo || (!in_array(asset("images/no_profile.jpg"),$form) &&
                                                     array_key_exists('photo_url',$form)))
-
+                                                    
                                                     <button wire:click.prevent='clearPhoto()'
                                                         class="btn btn-sm btn-danger m-2"
                                                         style="position: absolute; bottom: 0; right:0;"
@@ -334,7 +334,7 @@
                                     </div>
                                     <div>
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times mr-2"></i>Cancel</button>
-
+                                    
                                         <button type="submit" class="btn btn-primary" wire:loading.attr="disabled"><i
                                                 class="fa fa-save mr-2"></i>Save</button>
                                     </div>
@@ -392,14 +392,14 @@
     });
 
     // public event
-    {{-- window.addEventListener('alert-success', e =>{
+    window.addEventListener('alert-success', e =>{
         Swal.fire({
             title: 'Success!',
             text: e.detail.message,
             icon: 'success',
             confirmButtonText: 'OK'
         });
-    }); --}}
+    });
 
 </script>
 @endpush
