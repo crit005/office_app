@@ -197,7 +197,20 @@ input:checked + .slider:before {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
 }
 .ui-sortable-helper{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     background: white;
     border: none;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
 }
+
+.ui-sortable-helper td, .ui-sortable-helper th {
+    background-color: white;
+    width: 100%;
+}
+
+/* .nav-treeview li{
+    padding-left: 30px;
+    width: calc(220px - 0.5rem * 2);
+} */

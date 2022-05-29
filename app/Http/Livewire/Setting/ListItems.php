@@ -25,7 +25,7 @@ class ListItems extends Component
     public $creater = null;
 
     protected $itemRules = [
-        'name' => 'required|unique:depatments',
+        'name' => 'required|unique:items',
         'position' => 'required|integer',
         'status' => 'required',
     ];
@@ -93,7 +93,7 @@ class ListItems extends Component
         $this->dispatchBrowserEvent('alert-success', ['message' => 'Item created successfully.']);
         $this->dispatchBrowserEvent('hide-item-form');
     }
-    // End New Depatment //
+    // End New Item //
 
     // Update user //
     public function edit(Items $item)
@@ -106,7 +106,7 @@ class ListItems extends Component
         $this->dispatchBrowserEvent('show-item-form');
     }
 
-    public function updateDepatment()
+    public function updateItem()
     {
         $rules = $this->itemRules;
         $rules['name'] = $rules['name'] . ',name,' . $this->form['id'];
@@ -120,7 +120,7 @@ class ListItems extends Component
         $this->dispatchBrowserEvent('alert-success', ['message' => 'Item updated successfully.']);
         $this->dispatchBrowserEvent('hide-item-form');
     }
-    // End Update Depatment //
+    // End Update Item //
 
     // Trash user //
     public function confirmTrash(Items $item)
@@ -143,7 +143,7 @@ class ListItems extends Component
     // End Trash user
 
     // Remove user //
-    public function confirmDepatmentRemoval($itemId)
+    public function confirmItemRemoval($itemId)
     {
         $this->resetComponentVariables();
         $this->itemIdBegingRemoved = $itemId;
@@ -151,7 +151,7 @@ class ListItems extends Component
         $this->dispatchBrowserEvent('show-confirm-delete');
     }
 
-    public function deleteDepatment()
+    public function deleteItem()
     {
         $item = Items::findOrFail($this->itemIdBegingRemoved);
         $item->delete();
@@ -172,7 +172,7 @@ class ListItems extends Component
     }
 
     public function updateItemOrder($items)
-    {        
+    {
         foreach($items as $item){
             Items::find($item['value'])->update(['position' => (($this->page - 1)* env('PAGINATE')) + $item['order']]);
         }
@@ -192,6 +192,7 @@ class ListItems extends Component
     {
         if (auth()->user()->isAdmin()) {
             $items = Items::query()
+            ->where('status', '!=', 'SYSTEM')
             ->where(function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('position', 'like', '%' . $this->search . '%')
@@ -205,6 +206,7 @@ class ListItems extends Component
         }else{
             $items = Items::query()
             ->where('status', '!=', 'DELETED')
+            ->where('status', '!=', 'SYSTEM')
             ->where(function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('position', 'like', '%' . $this->search . '%')

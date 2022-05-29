@@ -114,7 +114,7 @@
                         {{-- Depatment Menu --}}
                         <li class="nav-item">
                             <a href="{{route('setting.depatments')}}" class="nav-link {{ request()->is('setting/depatments') ? 'active' : '' }}">
-                                <i class="vav-icon fas fa-sitemap"></i>
+                                <i class="vav-icon fas fa-sitemap ml-4"></i>
                                 <p>
                                     Depatment
                                 </p>
@@ -124,7 +124,7 @@
                         {{-- Currency Menu --}}
                         <li class="nav-item">
                             <a href="{{route('setting.currencies')}}" class="nav-link {{ request()->is('setting/currencies') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-hand-holding-usd"></i>
+                                <i class="nav-icon fas fa-hand-holding-usd ml-4"></i>
                                 <p>
                                     Currencies
                                 </p>
@@ -134,7 +134,7 @@
                         {{-- Item Menu --}}
                         <li class="nav-item">
                             <a href="{{route('setting.items')}}" class="nav-link {{ request()->is('setting/items') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-dice-d6"></i>
+                                <i class="nav-icon fas fa-dice-d6 ml-4"></i>
                                 <p>
                                     Items
                                 </p>
@@ -145,7 +145,7 @@
                         <li class="nav-item">
                             <a href="{{ route('dashboard') }}"
                                 class="nav-link {{ request()->is('setting/cashdrawer') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-inbox"></i>
+                                <i class="nav-icon fas fa-inbox  ml-4"></i>
                                 <p>
                                     Cashdrawer
                                 </p>
@@ -156,7 +156,7 @@
                         <li class="nav-item">
                             <a href="{{ route('setting.users') }}"
                                 class="nav-link {{ request()->is('setting/users') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-users"></i>
+                                <i class="nav-icon fas fa-users ml-4"></i>
                                 <p>
                                     Users
                                 </p>
@@ -167,7 +167,7 @@
                         <li class="nav-item">
                             <a href="{{ route('setting.users') }}"
                                 class="nav-link {{ request()->is('setting/profile') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-user"></i>
+                                <i class="nav-icon fas fa-user ml-4"></i>
                                 <p>
                                     Profile
                                 </p>

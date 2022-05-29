@@ -63,7 +63,7 @@
                                         <tr wire:key="item-{{ $item->id }}" id="{{ $item->id }}">
                                             <th scope="row">
                                                 @if(!$search)
-                                                <i class="fas fa-arrows-alt mr-2" style="cursor: move"></i>
+                                                <i class="fas fa-arrows-alt mr-2 handle" style="cursor: move"></i>
                                                 @endif
                                                 {{$items->firstItem() + $indext}}
                                             </th>
@@ -71,7 +71,7 @@
                                             <td class="text-center">{{$item->position}}</td>
                                             <td class="text-center">{{$item->user->name}}</td>
 
-                                            <td class="text-center d-flex align-middle justify-content-center">                                                
+                                            <td class="text-center d-flex align-middle justify-content-center">
                                                 <label class="switch mr-2">
                                                     <input type="checkbox" value="{{$item->id}}"
                                                         wire:click.prevent="togleStatus(event.target.value)"
@@ -187,6 +187,9 @@
                                                 <option value="">Select satus</option>
                                                 <option value="ENABLED">Enabled</option>
                                                 <option value="DISABLED">Disabled</option>
+                                                @if(auth()->user()->isAdmin())
+                                                <option value="SYSTEM">System</option>
+                                                @endif
                                             </select>
                                             @error('status')
                                             <div class="invalid-feedback">{{$message}}</div>

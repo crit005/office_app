@@ -55,8 +55,8 @@
                                         @forelse ($currencies as $indext => $currency)
                                         <tr wire:key="depatment-{{ $currency->id }}" id="{{ $currency->id }}">
                                             <th scope="row">
-                                                @if(!$search)                                                
-                                                <i class="fas fa-arrows-alt mr-2" style="cursor: move"></i>
+                                                @if(!$search)
+                                                <i class="fas fa-arrows-alt mr-2 handle" style="cursor: move"></i>
                                                 @endif
                                                 {{ $currencies->firstItem() + $indext }}</th>
                                             <td>{{ $currency->country_and_currency }}</td>
@@ -120,6 +120,6 @@
         handle: '.handle',
         opacity: 0.9,
         });
-    } );    
+    } );
 </script>
 @endpush

@@ -63,7 +63,7 @@
                                         <tr wire:key="depatment-{{ $depatment->id }}" id="{{ $depatment->id }}">
                                             <th scope="row">
                                                 @if(!$search)
-                                                <i class="fas fa-arrows-alt mr-2" style="cursor: move"></i>
+                                                <i class="fas fa-arrows-alt mr-2 handle" style="cursor: move"></i>
                                                 @endif
                                                 {{$depatments->firstItem() + $indext}}
                                             </th>
@@ -71,7 +71,7 @@
                                             <td class="text-center">{{$depatment->position}}</td>
                                             <td class="text-center">{{$depatment->user->name}}</td>
 
-                                            <td class="text-center d-flex align-middle justify-content-center">                                                
+                                            <td class="text-center d-flex align-middle justify-content-center">
                                                 <label class="switch mr-2">
                                                     <input type="checkbox" value="{{$depatment->id}}"
                                                         wire:click.prevent="togleStatus(event.target.value)"
