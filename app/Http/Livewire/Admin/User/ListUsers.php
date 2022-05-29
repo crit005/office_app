@@ -259,7 +259,7 @@ class ListUsers extends Component
                 ->orWhere('username', 'like', '%' . $this->search . '%')
                 ->orWhere('email', 'like', '%' . $this->search . '%')
                 ->orWhere('status', 'like', '%' . $this->search . '%')
-                ->orderBy('status','asc')
+                ->orderBy('status','desc')
                 ->orderBy('name','asc')
                 ->paginate(env('PAGINAT'));
         } else {
@@ -271,7 +271,7 @@ class ListUsers extends Component
                     ->orWhere('username', 'like', '%' . $this->search . '%')
                     ->orWhere('email', 'like', '%' . $this->search . '%')
                     ->orWhere('status', 'like', '%' . $this->search . '%');
-            })->orderBy('status','asc')
+            })->orderBy('status','desc')
             ->orderBy('name','asc')
             ->paginate(env('PAGINAT'));
         }        

@@ -68,10 +68,11 @@
                                             <td>{{$user->email}}</td>
                                             <td class="text-center">{{$user->group->name}}</td>
 
-                                            <td class="text-center">
-                                                <div class="d-flex justify-content-center pt-1">
+                                            <td class="text-center d-flex align-middle justify-content-center">
+                                                <div class="d-flex justify-content-center pt-1 mr-2">
                                                     <div class="{{$user->getStatusBage()}}"></div>
                                                 </div>
+                                                <span class="text-xs">{{$user->status}}</span>
                                             </td>
 
                                             <td class="text-center">
@@ -220,8 +221,8 @@
                                                 class="form-control @error('status') is-invalid @else {{$this->getValidClass('status')}} @enderror"
                                                 name="status" id="status">
                                                 <option value="">Select satus</option>
-                                                <option value="ACTIVE">Active</option>
-                                                <option value="INACTIVE">Inactive</option>
+                                                <option value="ENABLED">Enabled</option>
+                                                <option value="DISABLED">Disabled</option>
                                             </select>
                                             @error('status')
                                             <div class="invalid-feedback">{{$message}}</div>

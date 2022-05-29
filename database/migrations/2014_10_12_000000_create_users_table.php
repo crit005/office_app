@@ -38,7 +38,7 @@ return new class extends Migration
                 'email' => 'admin@office.com',
                 'password' => '$2y$10$wv6Y63YFIw7VYaMyAS0yZ.W49a5eVTjXSRzfJUu7tz5cdQGUN8yj.',
                 'group_id' => 1,
-                'status' => 'ACTIVE',
+                'status' => 'ENABLED',
                 'description' => 'First user',
                 'created_at' => now(),
                 'updated_at' => now(),

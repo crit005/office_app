@@ -70,9 +70,9 @@ class User extends Authenticatable
 
     public function getStatusBage()
     {
-        if ($this->status == 'ACTIVE') {
+        if ($this->status == 'ENABLED') {
             return 'statusBageSuccess';
-        } elseif ($this->status == 'INACTIVE') {
+        } elseif ($this->status == 'DISABLED') {
             return 'statusBageWarnning';
         }
         return 'statusBageDanger';
