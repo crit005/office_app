@@ -60,7 +60,7 @@
                                     </thead>
                                         <tbody id="sortable">
                                         @forelse ($depatments as $indext => $depatment)
-                                        <tr wire:sortable.item="{{ $depatment->id }}" wire:key="depatment-{{ $depatment->id }}" id="{{ $depatment->id }}">
+                                        <tr wire:key="depatment-{{ $depatment->id }}" id="{{ $depatment->id }}">
                                             <th scope="row">
                                                 @if(!$search)
                                                 <span  wire:sortable.handle  class="handle ui-sortable-handle text-gray mr-2"  style="cursor: move">
@@ -74,8 +74,14 @@
                                             <td class="text-center">{{$depatment->position}}</td>
                                             <td class="text-center">{{$depatment->user->name}}</td>
 
-                                            <td class="text-center">
-                                                {{$depatment->status}}
+                                            <td class="text-center d-flex align-middle justify-content-center">                                                
+                                                <label class="switch mr-2">
+                                                    <input type="checkbox" value="{{$depatment->id}}"
+                                                        wire:click.prevent="togleStatus(event.target.value)"
+                                                        @if($depatment->status == 'ENABLED') checked @endif>
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <span class="text-xs">{{$depatment->status}}</span>
                                             </td>
 
                                             <td class="text-center">

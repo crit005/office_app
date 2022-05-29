@@ -84,6 +84,69 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 confirmButtonText: 'OK'
             });
         });
+
+        window.addEventListener('alert-warning', e =>{
+            Swal.fire({
+                title: 'Warning!',
+                text: e.detail.message,
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+        });
+
+        window.addEventListener('alert-info', e =>{
+            Swal.fire({
+                title: 'Info!',
+                text: e.detail.message,
+                icon: 'info',
+                confirmButtonText: 'OK'
+            });
+        });
+        
+        window.addEventListener('alert-error', e =>{
+            Swal.fire({
+                title: 'Error!',
+                text: e.detail.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
+
+        window.addEventListener('alert', e =>{
+            Swal.fire({
+                title: e.detail.title ?? 'Success!',
+                text: e.detail.message ?? '',
+                icon: e.detail.icon ?? 'success',
+                confirmButtonText: e.detail.button ?? 'OK',
+                showCloseButton: e.detail.closeButton ?? false,
+                background: e.detail.background ?? false,
+                color: e.detail.color ?? false,
+                iconColor: e.detail.iconColor ?? false
+            });
+        });
+        
+        window.addEventListener('toast',e =>{
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+            })        
+            Toast.fire({
+                icon: e.detail.icon ?? 'success',
+                title: e.detail.title ?? 'Signed in successfully',
+                showCloseButton: e.detail.closeButton ?? true,
+                background: e.detail.background ?? false,
+                color: e.detail.color ?? false,
+                iconColor: e.detail.iconColor ?? false
+            })
+        });
+
     </script>
     @livewireScripts
 </body>

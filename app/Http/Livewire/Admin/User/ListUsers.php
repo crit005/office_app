@@ -132,7 +132,7 @@ class ListUsers extends Component
             $dataRecord['photo'] = $imageUrl;
         }
         $dataRecord['password'] = bcrypt($dataRecord['password']);
-        $dataRecord['created_by'] = auth()->user()->id?? null;
+        $dataRecord['created_by'] = auth()->user()->id ?? null;
 
         // unset($dataRecord['password_confirmation']);
 
@@ -253,39 +253,28 @@ class ListUsers extends Component
             ->where('id', '!=', 1)
             ->get();
 
-        $userDeleted = User::query()
-            ->latest()
-            ->where('status', '=', 'DELETED')
-            ->where(function ($query) {
-                $query->where('name', 'like', '%' . $this->search . '%')
-                    ->orWhere('username', 'like', '%' . $this->search . '%')
-                    ->orWhere('email', 'like', '%' . $this->search . '%');
-            });
-
-        $userInactive = User::query()
-            ->latest()
-            ->where('status', '=', 'INACTIVE')
-            ->where('group_id', '!=', '1')
-            ->where(function ($query) {
-                $query->where('name', 'like', '%' . $this->search . '%')
-                    ->orWhere('username', 'like', '%' . $this->search . '%')
-                    ->orWhere('email', 'like', '%' . $this->search . '%');
-            });
-
         if (auth()->user()->isAdmin()) {
-            $userInactive->union($userDeleted);
-        }
-
-        $users = User::where('status', '=', 'ACTIVE')
+            $users = User::query()
+                ->where('name', 'like', '%' . $this->search . '%')
+                ->orWhere('username', 'like', '%' . $this->search . '%')
+                ->orWhere('email', 'like', '%' . $this->search . '%')
+                ->orWhere('status', 'like', '%' . $this->search . '%')
+                ->orderBy('status','asc')
+                ->orderBy('name','asc')
+                ->paginate(env('PAGINAT'));
+        } else {
+            $users = User::query()            
+            ->where('status', '!=', 'DELETED')
             ->where('group_id', '!=', '1')
             ->where(function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('username', 'like', '%' . $this->search . '%')
-                    ->orWhere('email', 'like', '%' . $this->search . '%');
-            })
-            // ->latest()
-            ->union($userInactive)
-            ->paginate(10);
+                    ->orWhere('email', 'like', '%' . $this->search . '%')
+                    ->orWhere('status', 'like', '%' . $this->search . '%');
+            })->orderBy('status','asc')
+            ->orderBy('name','asc')
+            ->paginate(env('PAGINAT'));
+        }        
 
         return view('livewire.admin.user.list-users', ['groups' => $groups, 'users' => $users]);
     }

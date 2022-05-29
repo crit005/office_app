@@ -51,21 +51,28 @@
                                             <th scope="col" class="text-center">Status</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="sortable">
                                         @forelse ($currencies as $indext => $currency)
-                                        <tr>
-                                            <th scope="row">{{ $currencies->firstItem() + $indext }}</th>
+                                        <tr wire:key="depatment-{{ $currency->id }}" id="{{ $currency->id }}">
+                                            <th scope="row">
+                                                @if(!$search)
+                                                <span class="handle ui-sortable-handle text-gray mr-2"  style="cursor: move">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </span>
+                                                @endif
+                                                {{ $currencies->firstItem() + $indext }}</th>
                                             <td>{{ $currency->country_and_currency }}</td>
                                             <td>{{ $currency->code }}</td>
                                             <td>{{ $currency->symbol }}</td>
-                                            <td>
-                                                <label class="switch">
+                                            <td class=" d-flex align-middle justify-content-center">
+                                                <label class="switch mr-2">
                                                     <input type="checkbox" value="{{$currency->id}}"
                                                         wire:click.prevent="togleStatus(event.target.value)"
                                                         @if($currency->status == 'ENABLED') checked @endif>
                                                     <span class="slider round"></span>
                                                 </label>
-
+                                                <span class="text-xs">{{$currency->status}}</span>
                                             </td>
                                         </tr>
                                         @empty
@@ -99,3 +106,23 @@
     </div>
     <!-- /.content -->
 </div>
+
+@push('js')
+<script>
+    $( function() {
+        $( "#sortable" ).sortable({
+        update: function( event, ui ) {
+            var arrOrder = $(this).sortable('toArray');
+            var items=[];
+            arrOrder.forEach((item, index) => {
+                items.push({'order':index+1 ,'value' : item});
+            });
+            // var productOrder = $(this).sortable('toArray').toString();
+            @this.updateCurrencyOrder(items);
+        },
+        handle: '.handle',
+        opacity: 0.9,
+        });
+    } );    
+</script>
+@endpush

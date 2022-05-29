@@ -172,12 +172,20 @@ class ListDepatment extends Component
     }
 
     public function updateDepatmentOrder($items)
-    {
-        // dd($this->page);
-        // dd($items);
+    {        
         foreach($items as $item){
             Depatment::find($item['value'])->update(['position' => (($this->page - 1)* 10) + $item['order']]);
         }
+
+        $this->dispatchBrowserEvent('toast',["title"=>"Department reposition are successfully!"]);
+    }
+
+    public function togleStatus($id)
+    {
+        $depatment = Depatment::findOrFail($id);
+        $depatment->status = $depatment->status == 'ENABLED'? 'DISABLED':'ENABLED';
+        $depatment->update();
+        $this->dispatchBrowserEvent('toast', ['message' => "Depatmet status updated successfully!"]);
     }
 
 
@@ -193,7 +201,7 @@ class ListDepatment extends Component
             ->orderBy('status', 'desc')
             ->orderBy('position', 'asc')
             ->orderBy('name', 'asc')
-            ->paginate(10);
+            ->paginate(env('PAGINATE'));
 
         }else{
             $depatments = Depatment::query()
@@ -206,7 +214,7 @@ class ListDepatment extends Component
             ->orderBy('status', 'desc')
             ->orderBy('position', 'asc')
             ->orderBy('name', 'asc')
-            ->paginate(10);
+            ->paginate(env('PAGINATE'));
         }
 
         return view('livewire.setting.list-depatment',['depatments' => $depatments]);
