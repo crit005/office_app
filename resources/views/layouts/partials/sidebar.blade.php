@@ -133,7 +133,7 @@
 
                         {{-- Item Menu --}}
                         <li class="nav-item">
-                            <a href="#" class="nav-link {{ request()->is('setting/items') ? 'active' : '' }}">
+                            <a href="{{route('setting.items')}}" class="nav-link {{ request()->is('setting/items') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-dice-d6"></i>
                                 <p>
                                     Items

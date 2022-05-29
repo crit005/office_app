@@ -29,7 +29,7 @@ class ListCurrency extends Component
     public function updateCurrencyOrder($items)
     {          
         foreach($items as $item){
-            Currency::find($item['value'])->update(['position' => (($this->page - 1)* 10) + $item['order']]);
+            Currency::find($item['value'])->update(['position' => (($this->page - 1)* env('PAGINATE')) + $item['order']]);
         }
 
         $this->dispatchBrowserEvent('toast',["title"=>"Currency reposition are successfully!"]);

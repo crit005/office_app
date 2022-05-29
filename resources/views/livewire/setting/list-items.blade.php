@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0 text-white">Depatments</h1>
+                    <h1 class="m-0 text-white">Items</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -26,9 +26,9 @@
                         <div class="card-header">
                             {{-- <h3 class="card-title text-white">List Users</h3> --}}
                             <button wire:click.prevent='addNew()' type="button" class="btn btn-primary" {{--
-                                data-toggle="modal" data-target="#depatmentModal" --}}>
+                                data-toggle="modal" data-target="#itemModal" --}}>
                                 <i class="fa fa-user-plus mr-2"></i>
-                                New Depatment
+                                New Item
                             </button>
 
                             <div class="card-tools">
@@ -51,7 +51,7 @@
                                     <thead class="thead-dark">
                                         <tr>
                                             <th scope="col" >#</th>
-                                            <th scope="col">Depatment Name</th>
+                                            <th scope="col">Item Name</th>
                                             <th scope="col" class="text-center">Position</th>
                                             <th scope="col" class="text-center">Created By</th>
                                             <th scope="col" class="text-center">Status</th>
@@ -59,43 +59,43 @@
                                         </tr>
                                     </thead>
                                         <tbody id="sortable">
-                                        @forelse ($depatments as $indext => $depatment)
-                                        <tr wire:key="depatment-{{ $depatment->id }}" id="{{ $depatment->id }}">
+                                        @forelse ($items as $indext => $item)
+                                        <tr wire:key="item-{{ $item->id }}" id="{{ $item->id }}">
                                             <th scope="row">
                                                 @if(!$search)
                                                 <i class="fas fa-arrows-alt mr-2" style="cursor: move"></i>
                                                 @endif
-                                                {{$depatments->firstItem() + $indext}}
+                                                {{$items->firstItem() + $indext}}
                                             </th>
-                                            <td>{{$depatment->name}}</td>
-                                            <td class="text-center">{{$depatment->position}}</td>
-                                            <td class="text-center">{{$depatment->user->name}}</td>
+                                            <td>{{$item->name}}</td>
+                                            <td class="text-center">{{$item->position}}</td>
+                                            <td class="text-center">{{$item->user->name}}</td>
 
                                             <td class="text-center d-flex align-middle justify-content-center">                                                
                                                 <label class="switch mr-2">
-                                                    <input type="checkbox" value="{{$depatment->id}}"
+                                                    <input type="checkbox" value="{{$item->id}}"
                                                         wire:click.prevent="togleStatus(event.target.value)"
-                                                        @if($depatment->status == 'ENABLED') checked @endif>
+                                                        @if($item->status == 'ENABLED') checked @endif>
                                                     <span class="slider round"></span>
                                                 </label>
-                                                <span class="text-xs">{{$depatment->status}}</span>
+                                                <span class="text-xs">{{$item->status}}</span>
                                             </td>
 
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center">
                                                     <button class="btn btn-xs btn-primary mr-2"
-                                                        wire:click.prevent="edit({{$depatment}})"><i
+                                                        wire:click.prevent="edit({{$item}})"><i
                                                             class="fa fa-edit"></i>
                                                     </button>
 
                                                     <button class="btn btn-xs btn-danger mr-2"
-                                                        wire:click.prevent="confirmTrash({{$depatment}})">
+                                                        wire:click.prevent="confirmTrash({{$item}})">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
 
                                                     @if (Auth()->user()->isAdmin())
                                                     <button class="btn btn-xs btn-danger"
-                                                        wire:click.prevent="confirmDepatmentRemoval({{$depatment->id}})">
+                                                        wire:click.prevent="confirmItemRemoval({{$item->id}})">
                                                         <i class="fas fa-eraser"></i>
                                                     </button>
                                                     @endif
@@ -104,7 +104,7 @@
                                         </tr>
                                         @empty
                                         <tr>
-                                            <td colspan="6" class="text-center"> No depatment found...</td>
+                                            <td colspan="6" class="text-center"> No item found...</td>
                                         </tr>
                                         @endforelse
 
@@ -117,7 +117,7 @@
                         <div class="card-footer">
                             <div class="d-flex flex-row justify-content-center">
                                 <div>
-                                    {{ $depatments->links() }}
+                                    {{ $items->links() }}
                                 </div>
 
                             </div>
@@ -129,17 +129,17 @@
             <!-- /.Row for table -->
 
             <!-- Modal -->
-            <div wire:ignore.self class="modal fade blur-bg-dialog " id="depatmentModal" tabindex="-1" role="dialog"
-                aria-labelledby="depatmentModalTitle" aria-hidden="true">
+            <div wire:ignore.self class="modal fade blur-bg-dialog " id="itemModal" tabindex="-1" role="dialog"
+                aria-labelledby="itemModalTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content modal-blur-light">
                         <div class="modal-header">
                             <div>
                                 <h5 class="modal-title text-white" id="exampleModalLongTitle">
                                     @if ($showEditModal)
-                                    Edit Depatment
+                                    Edit Item
                                     @else
-                                    New Depatment
+                                    New Item
                                     @endif
                                 </h5>
                                 <span class="d-block small text-white">Input By: <strong>
@@ -152,7 +152,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form wire:submit.prevent='{{$showEditModal?' updateDepatment':'createDepatment'}}'>
+                        <form wire:submit.prevent='{{$showEditModal?' updateItem':'createItem'}}'>
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-md-12">
@@ -160,7 +160,7 @@
                                             @error('form.name')
                                             {{$message}}
                                             @enderror
-                                            <label for="name">Depatment Name:</label>
+                                            <label for="name">Item Name:</label>
                                             <input wire:model.debounce='form.name' type="text"
                                                 class="form-control @error('name') is-invalid @else {{$this->getValidClass('name')}} @enderror"
                                                 name="name" id="name" placeholder="Your name">
@@ -236,12 +236,12 @@
 </div>
 @push('js')
 <script>
-    window.addEventListener('show-depatment-form', e =>{
-        $('#depatmentModal').modal({backdrop: 'static', keyboard: false});
+    window.addEventListener('show-item-form', e =>{
+        $('#itemModal').modal({backdrop: 'static', keyboard: false});
     });
 
-    window.addEventListener('hide-depatment-form', e =>{
-        $('#depatmentModal').modal('hide');
+    window.addEventListener('hide-item-form', e =>{
+        $('#itemModal').modal('hide');
     });
     $('doucument').ready(function(){
         // alert('test');
@@ -262,7 +262,7 @@
             confirmButtonText: 'Yes, delete it!'
           }).then((result) => {
             if (result.isConfirmed) {
-              @this.putDepatmentToTrash();
+              @this.putItemToTrash();
             }
           })
     });
@@ -270,7 +270,7 @@
     window.addEventListener('show-confirm-delete', e =>{
         Swal.fire({
             title: 'Are you sure?',
-            text: "This depatment will be deleted permanently!",
+            text: "This item will be deleted permanently!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -278,7 +278,7 @@
             confirmButtonText: 'Yes, delete it!'
           }).then((result) => {
             if (result.isConfirmed) {
-              @this.deleteDepatment();
+              @this.deleteItem();
             }
           })
     });
@@ -292,7 +292,7 @@
                 items.push({'order':index+1 ,'value' : item});
             });
             // var productOrder = $(this).sortable('toArray').toString();
-            @this.updateDepatmentOrder(items);
+            @this.updateItemOrder(items);
         },
         handle: '.handle',
         opacity: 0.9,
