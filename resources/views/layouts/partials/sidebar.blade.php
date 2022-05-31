@@ -150,8 +150,8 @@
 
                         {{-- Cashdrawer --}}
                         <li class="nav-item">
-                            <a href="{{ route('dashboard') }}"
-                                class="nav-link {{ request()->is('setting/cashdrawer') ? 'active' : '' }}">
+                            <a href="{{ route('payment.cashdrawers') }}"
+                                class="nav-link {{ request()->is('payment/cashdrawers') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-inbox  ml-4"></i>
                                 <p>
                                     Cashdrawer
