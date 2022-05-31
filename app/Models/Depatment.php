@@ -17,7 +17,7 @@ class Depatment extends Model
         'description',
     ];
 
-    public function owner()
+    public function user()
     {
         return $this->belongsTo(User::class,'created_by');
     }

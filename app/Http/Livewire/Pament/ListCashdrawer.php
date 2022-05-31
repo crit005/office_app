@@ -30,6 +30,7 @@ class ListCashdrawer extends Component
     ];
 
 
+
     protected $cashdrawerValidationAttributes = [
         'name' => 'name',
     ];
@@ -37,11 +38,11 @@ class ListCashdrawer extends Component
 
     // Realtime validation //
     public function updatedForm($value)
-    {        
+    {
             $rules = array_filter($this->cashdrawerRules, function ($key) {
                 return in_array($key, array_keys($this->form));
             }, ARRAY_FILTER_USE_KEY);
-        
+
         Validator::make($this->form, $rules, [], $this->cashdrawerValidationAttributes)->validate();
     }
 
@@ -64,16 +65,17 @@ class ListCashdrawer extends Component
     // New Cashdrawer //
     public function addNew()
     {
+        date_default_timezone_set('Asia/Phnom_Penh');
         $this->resetComponentVariables();
         $this->form['name'] = auth()->user()->id . "#" . date('M-Y',strtotime(now()));
-        $this->form['group'] = date('Y-m',strtotime(now()));;
+        $this->form['group'] = date('M-Y',strtotime(now()));
         $this->dispatchBrowserEvent('show-cashdrawer-form');
     }
 
     public function createCashdrawer()
-    {   
+    {
         Validator::make($this->form, $this->cashdrawerRules, [], $this->cashdrawerValidationAttributes)->validate();
-        
+
         $dataRecord = $this->form;
 
         $dataRecord['owner'] = auth()->user()->id;
@@ -162,7 +164,7 @@ class ListCashdrawer extends Component
         // }
         // return auth()->user();
     }
-    
+
 
     public function togleStatus($id)
     {
@@ -171,15 +173,15 @@ class ListCashdrawer extends Component
         $cashdrawer->update();
         $this->dispatchBrowserEvent('toast', ['message' => "Cashdrawer status updated successfully!"]);
     }
-    
+
     public function render()
     {
-        
-            $cashdrawers = Cashdrawer::query()            
-            ->orderBy('status', 'desc')            
+
+            $cashdrawers = Cashdrawer::query()
+            ->orderBy('status', 'desc')
             ->orderBy('name', 'asc')
             ->paginate(env('PAGINATE'));
-        
+
         return view('livewire.pament.list-cashdrawer',['cashdrawers'=>$cashdrawers]);
     }
 }

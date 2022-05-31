@@ -178,16 +178,20 @@
                                             <div class="invalid-feedback">{{$message}}</div>
                                             @enderror
                                         </div>
-
+                                        {{-- @dump($form); --}}
                                         <div class="form-group">
                                             <label for="group">Group:</label>
-                                            <input wire:model.debounce='form.group' type="month"
+                                            {{-- <input wire:model.debounce='form.group' type="month"
                                                 class="form-control  @error('group') is-invalid @else {{$this->getValidClass('group')}} @enderror"
-                                                name="group" id="group" placeholder="group">
+                                                name="group" id="group" placeholder="group"> --}}
+                                                <x-datepicker wire:model="form.group" id="group" :error="'group'" :format="'MMM-Y'"/>
                                             @error('group')
                                             <div class="invalid-feedback">{{$message}}</div>
                                             @enderror
                                         </div>
+
+
+
                                         <div class="form-group">
                                             <label for="description">Description:</label>
                                             <textarea wire:model.debounce='form.description' name="description"
@@ -238,7 +242,7 @@
     window.addEventListener('hide-cashdrawer-form', e =>{
         $('#cashdrawerModal').modal('hide');
     });
-    
+
     $('.modal-dialog').draggable({
     handle: ".modal-header"
     });

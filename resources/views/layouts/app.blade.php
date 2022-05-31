@@ -74,6 +74,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
 
+    <link rel="stylesheet" href="{{ asset('backend/plugins/toastr/toastr.min.css' )}}">
+
+    <link rel="stylesheet"
+        href="{{ asset('backend/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' )}}">
+    {{-- icheck box --}}
+    <link rel="stylesheet" href="{{ asset('backend/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+
+    <script src="{{ asset('backend/plugins/toastr/toastr.min.js') }}"></script>
+
+    <script src="{{ asset('backend/plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('backend/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/ckeditor.js"></script>
+
     @stack('js')
     <script>
         window.addEventListener('alert-success', e =>{
@@ -102,7 +116,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 confirmButtonText: 'OK'
             });
         });
-        
+
         window.addEventListener('alert-error', e =>{
             Swal.fire({
                 title: 'Error!',
@@ -124,7 +138,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 iconColor: e.detail.iconColor ?? false
             });
         });
-        
+
         window.addEventListener('toast',e =>{
             const Toast = Swal.mixin({
                 toast: true,
@@ -136,7 +150,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 toast.addEventListener('mouseenter', Swal.stopTimer)
                 toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
-            })        
+            })
             Toast.fire({
                 icon: e.detail.icon ?? 'success',
                 title: e.detail.title ?? 'Signed in successfully',
