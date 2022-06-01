@@ -32,7 +32,7 @@ class ListCashdrawer extends Component
 
 
     protected $cashdrawerValidationAttributes = [
-        'name' => 'name',
+        'group' => 'month',
     ];
     // End component variable //
 
@@ -42,7 +42,9 @@ class ListCashdrawer extends Component
             $rules = array_filter($this->cashdrawerRules, function ($key) {
                 return in_array($key, array_keys($this->form));
             }, ARRAY_FILTER_USE_KEY);
-
+        if(array_key_exists('group',$this->form)){
+            $this->form['name'] = auth()->user()->id . "#" . date('M-Y',strtotime($this->form['group']));
+        }
         Validator::make($this->form, $rules, [], $this->cashdrawerValidationAttributes)->validate();
     }
 

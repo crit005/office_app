@@ -141,22 +141,16 @@
                 aria-labelledby="cashdrawerModalTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content modal-blur-light">
-                        <div class="modal-header">
-                            <div>
+                        <div class="modal-header d-flex">
+                            <div class="flex-fill">
                                 <h5 class="modal-title text-white" id="exampleModalLongTitle">
-                                    {{-- @if ($showEditModal)
-                                    Edit Cashdrawer
-                                    @else
-                                    New Cashdrawer
-                                    @endif --}}
-                                    Active Cashdrawer
+                                   
+                                    Active Cashdrawer: {{array_key_exists('name',$form)? $form['name']:''}}
                                 </h5>
-                                <span class="d-block small text-white">Input By: <strong>
-                                        {{-- @if ($creater)
-                                        {{$creater['name']}}
-                                        @endif --}}
+                                <span class="d-block small text-white">Owner: <strong>                                        
                                         You
                                     </strong></span>
+
                             </div>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -171,7 +165,7 @@
                                             {{$message}}
                                             @enderror
                                             <label for="name">Cashdrawer Name:</label>
-                                            <input wire:model.debounce='form.name' type="text"
+                                            <input wire:model.debounce='form.name' type="text" disabled
                                                 class="form-control @error('name') is-invalid @else {{$this->getValidClass('name')}} @enderror"
                                                 name="name" id="name" placeholder="Your name">
                                             @error('name')
@@ -180,11 +174,14 @@
                                         </div>
                                         {{-- @dump($form); --}}
                                         <div class="form-group">
-                                            <label for="group">Group:</label>
+                                            <label for="group">Month:</label>
                                             {{-- <input wire:model.debounce='form.group' type="month"
                                                 class="form-control  @error('group') is-invalid @else {{$this->getValidClass('group')}} @enderror"
                                                 name="group" id="group" placeholder="group"> --}}
-                                                <x-datepicker wire:model="form.group" id="group" :error="'group'" :format="'MMM-Y'"/>
+                                            <x-datepicker wire:model="form.group" id="group" :error="'group'"
+                                                :format="'MMM-Y'" 
+                                                :minDate="'04/01/2022'" 
+                                                />
                                             @error('group')
                                             <div class="invalid-feedback">{{$message}}</div>
                                             @enderror
