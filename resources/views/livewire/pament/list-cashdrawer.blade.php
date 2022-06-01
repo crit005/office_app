@@ -24,12 +24,12 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            {{-- <h3 class="card-title text-white">List Users</h3> --}}
-                            <button wire:click.prevent='addNew()' type="button" class="btn btn-primary" {{--
-                                data-toggle="modal" data-target="#cashdrawerModal" --}}>
+                            @if ($showNewButton)
+                            <button wire:click.prevent='addNew()' type="button" class="btn btn-primary">
                                 <i class="fa fa-user-plus mr-2"></i>
                                 Active Your Cashdrawer
                             </button>
+                            @endif
 
                             <div class="card-tools">
                                 <div class="input-group input-group-sm" style="width: 150px;">
@@ -144,10 +144,10 @@
                         <div class="modal-header d-flex">
                             <div class="flex-fill">
                                 <h5 class="modal-title text-white" id="exampleModalLongTitle">
-                                   
+
                                     Active Cashdrawer: {{array_key_exists('name',$form)? $form['name']:''}}
                                 </h5>
-                                <span class="d-block small text-white">Owner: <strong>                                        
+                                <span class="d-block small text-white">Owner: <strong>
                                         You
                                     </strong></span>
 
@@ -179,7 +179,9 @@
                                                 class="form-control  @error('group') is-invalid @else {{$this->getValidClass('group')}} @enderror"
                                                 name="group" id="group" placeholder="group"> --}}
                                             <x-datepicker wire:model="form.group" id="group" :error="'group'"
-                                                :format="'MMM-Y'"                                                
+                                                :format="'MMM-Y'"
+                                                {{-- :minDate="$this->getMinDateForDatePicker()" --}}
+                                                :maxDate="$this->getMaxDateForDatePicker()"
                                                 />
                                             @error('group')
                                             <div class="invalid-feedback">{{$message}}</div>
@@ -291,9 +293,6 @@
         });
     } );
 
-//     PAGINATE = 10
-// MINDATE = "01/01/2013"
-// MAXDATE = "01/01/3000"
-// DATE_FORMAT = "Y-M-d"
+
 </script>
 @endpush
