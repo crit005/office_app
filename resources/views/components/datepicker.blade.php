@@ -1,4 +1,4 @@
-@props(['id','error','format','viewMode','minDate','maxDate'])
+@props(['id','error','format','viewMode'])
 {{-- {{dump($id)}} --}}
 
 <input {{$attributes}} type="text" class="form-control datetimepicker-input @error($error)
@@ -9,14 +9,11 @@
 
 @push('js')
 <script type="text/javascript">
-    // console.log("'{{$minDate ?? false}}'");
     $('#{{$id}}').datetimepicker({
-            format:"{{$format ?? 'L'}}",
+            format:"{{$format?? 'L'}}",
             defaultDate:moment().toDate(),
+            // format:'L',
             viewMode:"{{$viewMode ?? 'days'}}",
-            // minDate:"{{$minDate ?? 'false'}}",
-            minDate:moment("{{$minDate ?? env('MINDATE')}}","MM/DD/YYYY"),
-            maxDate:moment().toDate()
         });
 
 </script>

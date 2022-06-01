@@ -21,6 +21,7 @@ class ListCashdrawer extends Component
     public $cashdrawer;
     public $cashdrawerIdBegingRemoved = null;
     public $search = null;
+    public $minDate = null;
     // public $creater = null;
 
     protected $cashdrawerRules = [
@@ -42,7 +43,7 @@ class ListCashdrawer extends Component
             $rules = array_filter($this->cashdrawerRules, function ($key) {
                 return in_array($key, array_keys($this->form));
             }, ARRAY_FILTER_USE_KEY);
-        if(array_key_exists('group',$this->form)){
+        if(array_key_exists('group',$this->form)){            
             $this->form['name'] = auth()->user()->id . "#" . date('M-Y',strtotime($this->form['group']));
         }
         Validator::make($this->form, $rules, [], $this->cashdrawerValidationAttributes)->validate();
@@ -67,16 +68,22 @@ class ListCashdrawer extends Component
     // New Cashdrawer //
     public function addNew()
     {
-        date_default_timezone_set('Asia/Phnom_Penh');
+        // date_default_timezone_set('Asia/Phnom_Penh');
+        $this->minDate = date('Y-m-d',strtotime(Cashdrawer::max('group')));
+        // dd($this->minDate);
         $this->resetComponentVariables();
         $this->form['name'] = auth()->user()->id . "#" . date('M-Y',strtotime(now()));
         $this->form['group'] = date('M-Y',strtotime(now()));
+        // $this->dispatchBrowserEvent('deActiveDatePicker',["minDate"=> $this->minDate]);
         $this->dispatchBrowserEvent('show-cashdrawer-form');
+
     }
 
     public function createCashdrawer()
-    {
-        Validator::make($this->form, $this->cashdrawerRules, [], $this->cashdrawerValidationAttributes)->validate();
+    {   $minDate = date('Y-m-d',strtotime(Cashdrawer::max('group')));
+        $rule = $this->cashdrawerRules;
+        $rule['group'] = $rule['group'].'|after_or_equal:"'.$minDate.'"';
+        Validator::make($this->form, $rule, [], $this->cashdrawerValidationAttributes)->validate();
 
         $dataRecord = $this->form;
 
@@ -173,14 +180,14 @@ class ListCashdrawer extends Component
         $cashdrawer = Cashdrawer::findOrFail($id);
         $cashdrawer->status = $cashdrawer->status == 'OPEN'? 'CLOSED':'OPEN';
         $cashdrawer->update();
-        $this->dispatchBrowserEvent('toast', ['message' => "Cashdrawer status updated successfully!"]);
+        $this->dispatchBrowserEvent('toast', ['title' => "Cashdrawer status updated successfully!"]);
     }
 
     public function render()
     {
 
             $cashdrawers = Cashdrawer::query()
-            ->orderBy('status', 'desc')
+            ->orderBy('status', 'ASC')
             ->orderBy('name', 'asc')
             ->paginate(env('PAGINATE'));
 

@@ -179,8 +179,7 @@
                                                 class="form-control  @error('group') is-invalid @else {{$this->getValidClass('group')}} @enderror"
                                                 name="group" id="group" placeholder="group"> --}}
                                             <x-datepicker wire:model="form.group" id="group" :error="'group'"
-                                                :format="'MMM-Y'" 
-                                                :minDate="'04/01/2022'" 
+                                                :format="'MMM-Y'"                                                
                                                 />
                                             @error('group')
                                             <div class="invalid-feedback">{{$message}}</div>
@@ -244,7 +243,6 @@
     handle: ".modal-header"
     });
 
-
     window.addEventListener('show-confirm-trash', e =>{
         Swal.fire({
             title: 'Are you sure?',
@@ -293,6 +291,9 @@
         });
     } );
 
-
+//     PAGINATE = 10
+// MINDATE = "01/01/2013"
+// MAXDATE = "01/01/3000"
+// DATE_FORMAT = "Y-M-d"
 </script>
 @endpush
