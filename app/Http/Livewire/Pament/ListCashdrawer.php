@@ -17,25 +17,23 @@ class ListCashdrawer extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $form = [];
-    // public $showEditModal = false;
     public $cashdrawer;
     public $cashdrawerIdBegingRemoved = null;
+    public $cashdrawerIdBegingClose = null;
     public $search = null;
     public $minDate = null;
     public $maxDate = null;
     public $showNewButton = false;
-    // public $creater = null;
 
     protected $cashdrawerRules = [
         'name' => 'required|unique:cashdrawers',
-        'group' => 'required|date',
-        // 'status' => 'required',
+        'month' => 'required|date',
     ];
 
 
 
     protected $cashdrawerValidationAttributes = [
-        'group' => 'month',
+        'month' => 'month',
     ];
     // End component variable //
 
@@ -45,8 +43,9 @@ class ListCashdrawer extends Component
         $rules = array_filter($this->cashdrawerRules, function ($key) {
             return in_array($key, array_keys($this->form));
         }, ARRAY_FILTER_USE_KEY);
-        if (array_key_exists('group', $this->form)) {
-            $this->form['name'] = auth()->user()->id . "#" . date('M-Y', strtotime($this->form['group']));
+        if (array_key_exists('month', $this->form)) {
+            $this->form['name'] = auth()->user()->id . "#" . date('M-Y', strtotime($this->form['month']));
+            $rules['month'] = $rules['month'] . '|after:"' . $this->minDate . '"' . '|before_or_equal:"' . $this->maxDate . '"';
         }
         Validator::make($this->form, $rules, [], $this->cashdrawerValidationAttributes)->validate();
     }
@@ -69,32 +68,35 @@ class ListCashdrawer extends Component
 
     public function mount()
     {
-        $this->minDate = date('Y-m-d', strtotime(Cashdrawer::max('group'))) ?? env('MINDATE');
-        $this->maxDate = date('Y-m-d', strtotime(now()));
+        $this->minDate = $this->getMinDate();
+        $this->maxDate = $this->getMaxDate();
     }
 
 
     // New Cashdrawer //
     public function addNew()
     {
-        $this->minDate = date('Y-m-d', strtotime(Cashdrawer::max('group')));
+        $this->minDate = $this->getMinDate();
+        $this->maxDate = $this->getMaxDate();
         $this->resetComponentVariables();
         $this->form['name'] = auth()->user()->id . "#" . date('M-Y', strtotime(now()));
-        $this->form['group'] = date('M-Y', strtotime(now()));
+        $this->form['month'] = date('M-Y', strtotime(now()));
         $this->dispatchBrowserEvent('show-cashdrawer-form');
     }
 
     public function createCashdrawer()
     {
-        $minDate = date('Y-m-d', strtotime(Cashdrawer::max('group')));
-        $rule = $this->cashdrawerRules;
-        $rule['group'] = $rule['group'] . '|after_or_equal:"' . $minDate . '"';
-        Validator::make($this->form, $rule, [], $this->cashdrawerValidationAttributes)->validate();
+        $this->minDate = $this->getMinDate();
+        $this->maxDate = $this->getMaxDate();
+
+        $rules = $this->cashdrawerRules;
+        $rules['month'] = $rules['month'] . '|after:"' . $this->minDate . '"' . '|before_or_equal:"' . $this->maxDate . '"';
+        Validator::make($this->form, $rules, [], $this->cashdrawerValidationAttributes)->validate();
 
         $dataRecord = $this->form;
 
         $dataRecord['owner'] = auth()->user()->id;
-        $dataRecord['group'] = date("Y-m-01", strtotime($dataRecord['group']));
+        $dataRecord['month'] = date("Y-m-01", strtotime($dataRecord['month']));
 
         Cashdrawer::create($dataRecord);
 
@@ -104,116 +106,57 @@ class ListCashdrawer extends Component
     }
     // End New Cashdrawer //
 
-    // Update user //
-    public function edit(Cashdrawer $cashdrawer)
+
+    public function confirmCloseCashdrawer($id)
     {
-        // $this->resetComponentVariables();
-        // // $this->showEditModal = true;
-        // $this->cashdrawer = $cashdrawer;
-        // $this->form = $cashdrawer->toArray();
-        // // $this->creater = $this->getCreater();
-        // $this->dispatchBrowserEvent('show-cashdrawer-form');
+        $cashdrawer = Cashdrawer::where('id', '=', $id)->where('owner', '=', auth()->user()->id)->first();
+        if (!$cashdrawer) {
+            $this->dispatchBrowserEvent('alert-warning', ['message' => "Cashdrawer not found!"]);
+            return;
+        }
+        if ($cashdrawer['status'] == 'CLOSED') {
+            $this->dispatchBrowserEvent('alert-info', ['message' => "This cashdrawer cannot bo open again!"]);
+            return;
+        }
+        $this->cashdrawerIdBegingClose = $id;
+        $this->dispatchBrowserEvent('show-confirm-close', ['message' => 'You will not be able to opent this cashdrawer again!']);
     }
 
-    public function updateCashdrawer()
+    public function closeCashdrawer()
     {
-        // $rules = $this->cashdrawerRules;
-        // $rules['name'] = $rules['name'] . ',name,' . $this->form['id'];
-
-        // $validatedData = Validator::make($this->form, $rules, [], $this->cashdrawerValidationAttributes)->validate();
-
-        // $this->cashdrawer->update($this->form);
-
-        // $this->resetComponentVariables();
-
-        // $this->dispatchBrowserEvent('alert-success', ['message' => 'Cashdrawer updated successfully.']);
-        // $this->dispatchBrowserEvent('hide-cashdrawer-form');
-    }
-    // End Update Cashdrawer //
-
-    // Trash user //
-    public function confirmTrash(Cashdrawer $cashdrawer)
-    {
-        // $this->resetComponentVariables();
-        // $this->cashdrawer = $cashdrawer;
-        // $this->form = $cashdrawer->toArray();
-        // $this->dispatchBrowserEvent('show-confirm-trash');
-    }
-
-    public function putCashdrawerToTrash()
-    {
-        // $this->form['name'] = $this->form['name'] . "#d#" . $this->form['id'];
-        // $this->form['status'] = "DELETED";
-        // $this->cashdrawer->update($this->form);
-
-        // $this->dispatchBrowserEvent('alert-success', ['message' => 'Cashdrawer ID: ' . $this->form['id'] . ', has delete successfully!']);
-        // $this->resetComponentVariables();
-    }
-    // End Trash user
-
-    // Remove user //
-    public function confirmCashdrawerRemoval($cashdrawerId)
-    {
-        // $this->resetComponentVariables();
-        // $this->cashdrawerIdBegingRemoved = $cashdrawerId;
-
-        // $this->dispatchBrowserEvent('show-confirm-delete');
-    }
-
-    public function deleteCashdrawer()
-    {
-        // $cashdrawer = Cashdrawer::findOrFail($this->cashdrawerIdBegingRemoved);
-        // $cashdrawer->delete();
-        // $this->dispatchBrowserEvent('alert-success', ['message' => 'Cashdrawer ID: ' . $this->cashdrawerIdBegingRemoved . ', has delete successfully!']);
-        // $this->resetComponentVariables();
-    }
-    // End remove user
-
-    public function getCreater()
-    {
-        // if ($this->showEditModal) {
-        //     if (!$this->form['created_by']) {
-        //         return null;
-        //     }
-        //     return User::find($this->form['created_by'])->toArray();
-        // }
-        // return auth()->user();
-    }
-
-
-    public function togleStatus($id)
-    {
-        $cashdrawer = Cashdrawer::findOrFail($id);
-        $cashdrawer->status = $cashdrawer->status == 'OPEN' ? 'CLOSED' : 'OPEN';
+        $cashdrawer = Cashdrawer::findOrFail($this->cashdrawerIdBegingClose);
+        $cashdrawer->status = 'CLOSED';
         $cashdrawer->update();
-        $this->dispatchBrowserEvent('toast', ['title' => "Cashdrawer status updated successfully!"]);
+        $this->dispatchBrowserEvent('toast', ['title' => "Cashdrawer has closed successfully!"]);
     }
 
-    public function getMinDateForDatePicker()
+    public function getMinDate()
     {
-        return date('m/d/Y', strtotime($this->minDate));
+        $minDate = Cashdrawer::where('owner', '=', auth()->user()->id)->max('month');
+        return $minDate = $minDate ? date('M-Y', strtotime($minDate)) : env('MINDATE');
     }
-    public function getMaxDateForDatePicker()
+
+    public function getMaxDate()
     {
-        return date('m/d/Y', strtotime($this->maxDate));
+        return date('M-Y', strtotime(now()));
     }
 
     public function render()
     {
-        // $countCashdrawer = Cashdrawer::where('owner', '=', auth()->user()->id)->count('owner');
-        // $countCashdrawer > 0 ? $this->showNewButton = false : $this->showNewButton = true;
-        $this->showNewButton = true;
+        $countCashdrawer = Cashdrawer::where('owner', '=', auth()->user()->id)->where('status', '=', 'OPEN')->count('owner');
+        $countCashdrawer > 0 ? $this->showNewButton = false : $this->showNewButton = true;
+        // $this->showNewButton = true;
 
         if (auth()->user()->group_id > 2) {
             $cashdrawers = Cashdrawer::query()
                 ->where('owner', '=', auth()->user()->id)
-                ->orderBy('status', 'ASC')
-                ->orderBy('name', 'asc')
+                ->orderBy('status', 'desc')
+                ->orderBy('month', 'desc')
                 ->paginate(env('PAGINATE'));
         } else {
             $cashdrawers = Cashdrawer::query()
-                ->orderBy('status', 'ASC')
-                ->orderBy('name', 'asc')
+                ->orderBy('status', 'desc')
+                ->orderBy('month', 'desc')
                 ->paginate(env('PAGINATE'));
         }
 

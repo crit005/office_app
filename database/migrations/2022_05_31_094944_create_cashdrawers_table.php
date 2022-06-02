@@ -16,11 +16,10 @@ return new class extends Migration
         Schema::create('cashdrawers', function (Blueprint $table) {
             $table->id();
             $table->string("name");
-            $table->double("balance")->default(0);
-            $table->date("group");
+            $table->date("month");
             $table->foreignId("owner")->nullable()->references("id")->on("users")->nullOnDelete();
             $table->longText("description")->nullable();
-            $table->enum("status",["OPEN", "CLOSED"])->default("OPEN");
+            $table->string("status")->default("OPEN");
             $table->timestamps();
         });
     }

@@ -10,16 +10,12 @@
 
 @push('js')
 <script type="text/javascript">
-    $(function(e){
-
+    $(function(e){ 
     $('#{{$id}}').datetimepicker({
-            format:"{{$format?? 'L'}}",
+            format:"{{$format ?? 'L'}}",
             defaultDate:moment().toDate(),
             // format:'L',
             viewMode:"{{$viewMode ?? 'days'}}",
-            // minDate:moment(05/13/2022,'MMM/d/Y'),
-            minDate:moment($('#{{$id}}').data("mindate"),'MMM/d/Y'),
-            maxDate:moment($('#{{$id}}').data("maxdate"),'MMM/d/Y'),
         });
 })
 

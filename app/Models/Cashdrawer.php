@@ -11,8 +11,7 @@ class Cashdrawer extends Model
 
     protected $fillable=[
         "name",
-        "balance",
-        "group",
+        "month",
         "owner",
         "description",
         "status"

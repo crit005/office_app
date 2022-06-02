@@ -76,14 +76,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <link rel="stylesheet" href="{{ asset('backend/plugins/toastr/toastr.min.css' )}}">
 
-    <link rel="stylesheet"
-        href="{{ asset('backend/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' )}}">
+    
     {{-- icheck box --}}
     <link rel="stylesheet" href="{{ asset('backend/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
 
     <script src="{{ asset('backend/plugins/toastr/toastr.min.js') }}"></script>
 
     <script src="{{ asset('backend/plugins/moment/moment.min.js') }}"></script>
+
+    <link rel="stylesheet"
+        href="{{ asset('backend/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' )}}">
     <script src="{{ asset('backend/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 
     <script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/ckeditor.js"></script>

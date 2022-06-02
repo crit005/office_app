@@ -64,9 +64,6 @@
                                         @forelse ($cashdrawers as $indext => $cashdrawer)
                                         <tr wire:key="depatment-{{ $cashdrawer->id }}" id="{{ $cashdrawer->id }}">
                                             <th scope="row">
-                                                @if(!$search)
-                                                <i class="fas fa-arrows-alt mr-2 handle" style="cursor: move"></i>
-                                                @endif
                                                 {{$cashdrawers->firstItem() + $indext}}
                                             </th>
                                             <td>{{$cashdrawer->name}}</td>
@@ -75,18 +72,31 @@
 
                                             <td class="text-center">Null</td>
 
-                                            <td class="text-center">{{date("M-Y",strtotime($cashdrawer->group))}}</td>
+                                            <td class="text-center">{{date("M-Y",strtotime($cashdrawer->month))}}</td>
 
                                             <td class="text-center">{{$cashdrawer->user->name}}</td>
 
                                             <td class="text-center d-flex align-middle justify-content-center">
-                                                <label class="switch mr-2">
+                                                {{-- <label class="switch mr-2">
                                                     <input type="checkbox" value="{{$cashdrawer->id}}"
-                                                        wire:click.prevent="togleStatus(event.target.value)"
-                                                        @if($cashdrawer->status == 'OPEN') checked @endif>
+                                                        @if($cashdrawer->status == 'OPEN')
+                                                    wire:click.prevent="confirmCloseCashdrawer(event.target.value)"
+                                                    checked
+                                                    @else
+                                                    disabled
+                                                    @endif>
                                                     <span class="slider round"></span>
-                                                </label>
-                                                <span class="text-xs">{{$cashdrawer->status}}</span>
+                                                </label> --}}
+                                                @if($cashdrawer->status == 'OPEN')
+                                                
+                                                <button wire:click.prevent="confirmCloseCashdrawer({{$cashdrawer->id}})" type="button" 
+                                                    class="btn btn-xs btn-outline-success">
+                                                    <i class="fas fa-folder-open mr-2"></i> <span class="text-xs">{{$cashdrawer->status}}</span>
+                                                </button>
+                                                @else
+                                                <i class="fas fa-folder mr-2"></i> <span class="text-xs">{{$cashdrawer->status}}</span>
+                                                @endif
+                                                
                                             </td>
 
                                             <td class="text-center">
@@ -174,16 +184,10 @@
                                         </div>
                                         {{-- @dump($form); --}}
                                         <div class="form-group">
-                                            <label for="group">Month:</label>
-                                            {{-- <input wire:model.debounce='form.group' type="month"
-                                                class="form-control  @error('group') is-invalid @else {{$this->getValidClass('group')}} @enderror"
-                                                name="group" id="group" placeholder="group"> --}}
-                                            <x-datepicker wire:model="form.group" id="group" :error="'group'"
-                                                :format="'MMM-Y'"
-                                                {{-- :minDate="$this->getMinDateForDatePicker()" --}}
-                                                :maxDate="$this->getMaxDateForDatePicker()"
-                                                />
-                                            @error('group')
+                                            <label for="month">Month:</label>
+                                            <x-datepicker wire:model="form.month" id="month" :error="'month'"
+                                                :format="'MMM-Y'" />
+                                            @error('month')
                                             <div class="invalid-feedback">{{$message}}</div>
                                             @enderror
                                         </div>
@@ -244,55 +248,22 @@
     $('.modal-dialog').draggable({
     handle: ".modal-header"
     });
-
-    window.addEventListener('show-confirm-trash', e =>{
+    
+    window.addEventListener('show-confirm-close', e =>{
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: e.detail.message,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonText: 'Yes, close it!'
           }).then((result) => {
             if (result.isConfirmed) {
-              @this.putCashdrawerToTrash();
+              @this.closeCashdrawer();
             }
           })
     });
-
-    window.addEventListener('show-confirm-delete', e =>{
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "This depatment will be deleted permanently!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-          }).then((result) => {
-            if (result.isConfirmed) {
-              @this.deleteCashdrawer();
-            }
-          })
-    });
-
-    $( function() {
-        $( "#sortable" ).sortable({
-        update: function( event, ui ) {
-            var arrOrder = $(this).sortable('toArray');
-            var items=[];
-            arrOrder.forEach((item, index) => {
-                items.push({'order':index+1 ,'value' : item});
-            });
-            // var productOrder = $(this).sortable('toArray').toString();
-            @this.updateCashdrawerOrder(items);
-        },
-        handle: '.handle',
-        opacity: 0.9,
-        });
-    } );
-
 
 </script>
 @endpush
