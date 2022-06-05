@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Dashboard;
 use App\Http\Livewire\Admin\User\ListUsers;
+use App\Http\Livewire\Pament\AddCash;
 use App\Http\Livewire\Pament\ListCashdrawer;
+use App\Http\Livewire\Pament\ListCashTransactions;
 use App\Http\Livewire\Setting\ListCurrency;
 use App\Http\Livewire\Setting\ListDepatment;
 use App\Http\Livewire\Setting\ListItems;
@@ -32,5 +34,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Payment Rout
     Route::get('payment/cashdrawers', ListCashdrawer::class)->name('payment.cashdrawers');
+    Route::get('payment/cashtransactions', ListCashTransactions::class)->name('payment.cashtransactions');
+    Route::get('payment/addcash', AddCash::class)->name('payment.addcash');
 });
 

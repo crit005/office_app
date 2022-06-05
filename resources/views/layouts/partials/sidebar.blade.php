@@ -159,6 +159,17 @@
                             </a>
                         </li>
 
+                        {{-- CashTransaction --}}
+                        <li class="nav-item">
+                            <a href="{{ route('payment.cashtransactions') }}"
+                                class="nav-link {{ request()->is('payment/cashtransactions') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-inbox  ml-4"></i>
+                                <p>
+                                    Cas Transactions
+                                </p>
+                            </a>
+                        </li>
+
                     </ul>
                 </li>
 

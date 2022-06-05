@@ -8,4 +8,37 @@ use Illuminate\Database\Eloquent\Model;
 class CashTransaction extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'tr_date',
+        'item_id',
+        'item_name',
+        'amount',
+        'bk_amount',
+        'balance',
+        'user_balance',
+        'currency_id',
+        'to_from',
+        'month',
+        'description',
+        'owner',
+        'type',
+        'status',
+        'tr_id'
+    ];
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class,'currency_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class,'owner');
+    }
+
+    public function item()
+    {
+        return $this->belongsTo(Items::class,'item_id');
+    }
 }

@@ -17,14 +17,19 @@ return new class extends Migration
             $table->id();
             $table->date('tr_date');
             $table->foreignId('item_id')->nullable()->references('id')->on('items')->nullOnDelete();            
+            $table->string('item_name')->nullable();
             $table->double('amount')->default(0);
+            $table->double('bk_amount')->default(0);
+            $table->double('balance')->default(0);
+            $table->double('user_balance')->default(0);
             $table->foreignId('currency_id')->nullable()->references('id')->on('currencies')->nullOnDelete();            
-            $table->bigInteger('to')->nullable();
+            $table->bigInteger('to_from')->nullable();
+            $table->date('month');
             $table->longText('description')->nullable();
             $table->foreignId('owner')->nullable()->references('id')->on('users')->nullOnDelete();            
             $table->string('type');
-            $table->string('other_item')->nullable();
             $table->string('status'); //(COMPLEATED, SENDED, REJECTED)
+            $table->bigInteger('tr_id');
             $table->timestamps();
         });
     }
