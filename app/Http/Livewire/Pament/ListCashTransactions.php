@@ -14,9 +14,9 @@ class ListCashTransactions extends Component
 
     // Component variable //
     protected $paginationTheme = 'bootstrap';
-    
+
     public $search = null;
-    
+
 
     public function updatedSearch($var)
     {
@@ -26,18 +26,18 @@ class ListCashTransactions extends Component
     public function render()
     {
         if (auth()->user()->id <= 2) {
-            $transactions = CashTransaction::query()            
+            $transactions = CashTransaction::query()
             ->orderBy('month', 'desc')
             ->orderBy('tr_date', 'desc')
-            ->orderBy('name', 'asc')
+            // ->orderBy('name', 'asc')
             ->paginate(env('PAGINATE'));
 
         }else{
-            $transactions = CashTransaction::query() 
-            ->where('owner','=',auth()->user()->id)           
+            $transactions = CashTransaction::query()
+            ->where('owner','=',auth()->user()->id)
             ->orderBy('month', 'desc')
             ->orderBy('tr_date', 'desc')
-            ->orderBy('name', 'asc')
+            // ->orderBy('name', 'asc')
             ->paginate(env('PAGINATE'));
         }
         return view('livewire.pament.list-cash-transactions',['transactions'=>$transactions]);
