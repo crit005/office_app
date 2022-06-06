@@ -13,8 +13,9 @@
         </li> --}}
     </ul>
     <div>
-        <span class="d-block text-white">Your Cashdrawer</span>
-        <span class="text-small text-white">Anen-May-2022: </span><span class="text-black">861285 ฿ / 6538 $</span>
+        {{-- <span class="d-block text-white">Your Cashdrawer</span>
+        <span class="text-small text-white">Anen-May-2022: </span><span class="text-black">861285 ฿ / 6538 $</span> --}}
+        <livewire:components.user-balance />
     </div>
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">

@@ -28,7 +28,7 @@
                             <a href="{{route('payment.addcash')}}">
                                 <button type="button" class="btn btn-primary" {{--
                                     data-toggle="modal" data-target="#depatmentModal" --}}>
-                                    <i class="fa fa-user-plus mr-2"></i>
+                                    <i class="fa fa-plus-circle mr-2"></i>
                                     Expand
                                 </button>
                             </a>
@@ -67,19 +67,27 @@
                                     <tbody id="sortable">
                                         @forelse ($transactions as $indext => $transaction)
                                         <tr wire:key="depatment-{{ $transaction->id }}" id="{{ $transaction->id }}">
-                                            <th scope="row">                                                
+                                            <th scope="row">
                                                 {{$transactions->firstItem() + $indext}}
                                                 {{$transaction->id}}
                                             </th>
 
                                             <td>{{$transaction->tr_date}}</td>
                                             <td class="text-center">{{$transaction->item_name}}</td>
-                                            <td class="text-center">{{$transaction->balance - $transaction->amount ."
-                                                ".$transaction->currency->symbol}}</td>
-                                            <td class="text-center">{{$transaction->amount ."
-                                                ".$transaction->currency->symbol}}</td>
-                                            <td class="text-center">{{$transaction->balance ."
-                                                ".$transaction->currency->symbol}}</td>
+
+                                            @if (auth()->user()->group_id <=2)
+                                            <td class="text-center">{{$transaction->balance - $transaction->amount ." ".$transaction->currency->symbol}}</td>
+                                            @else
+                                            <td class="text-center">{{$transaction->user_balance - $transaction->amount ." ".$transaction->currency->symbol}}</td>
+                                            @endif
+
+                                            <td class="text-center">{{$transaction->amount ." ".$transaction->currency->symbol}}</td>
+
+                                            @if (auth()->user()->group_id <=2)
+                                            <td class="text-center">{{$transaction->balance ." ".$transaction->currency->symbol}}</td>
+                                            @else
+                                            <td class="text-center">{{$transaction->user_balance ." ".$transaction->currency->symbol}}</td>
+                                            @endif
                                             <td class="text-center">{{$transaction->month}}</td>
                                             <td class="text-center">{{$transaction->user->name}}</td>
                                             <td class="text-center">{{$transaction->type}}</td>

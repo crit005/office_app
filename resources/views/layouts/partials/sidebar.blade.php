@@ -89,8 +89,8 @@
                 </li>
 
                 {{-- Paynebt menu --}}
-                {{-- <li class="nav-item {{ Request::segment(1)=='payment'? 'menu-open' : 'menu-close'}}"> --}}
-                <li class="nav-item menu-open">
+                <li class="nav-item {{ Request::segment(1)=='payment'? 'menu-open' : 'menu-close'}}">
+                {{-- <li class="nav-item menu-open"> --}}
                     <a href="#" class="nav-link {{ Request::segment(1)=='payment'? 'active' : ''}}">
                         <i class="nav-icon fas fa-shopping-cart"></i>
                         <p class="red">
@@ -114,8 +114,8 @@
 
                         {{-- Add Cash Menu --}}
                         <li class="nav-item">
-                            <a href="{{ route('dashboard') }}"
-                                class="nav-link {{ request()->is('expand') ? 'active' : '' }}">
+                            <a href="{{route('payment.addcash')}}"
+                                class="nav-link {{ request()->is('payment/addcash') ? 'active' : '' }}">
                                 {{-- <sup><i class="fas fa-plus-circle ml-4" style="font-size: .5rem"></i></sup>
                                 <i class="fas fa-dollar-sign mr-2"></i> --}}
                                 <i class="nav-icon fas fa-donate ml-4"></i>
@@ -165,7 +165,7 @@
                                 class="nav-link {{ request()->is('payment/cashtransactions') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-inbox  ml-4"></i>
                                 <p>
-                                    Cas Transactions
+                                    Cash Transactions
                                 </p>
                             </a>
                         </li>
@@ -175,8 +175,8 @@
 
 
                 {{-- Setting menu --}}
-                {{-- <li class="nav-item {{ Request::segment(1)=='setting'? 'menu-open' : 'menu-close'}}"> --}}
-                <li class="nav-item menu-open">
+                <li class="nav-item {{ Request::segment(1)=='setting'? 'menu-open' : 'menu-close'}}">
+                {{-- <li class="nav-item menu-open"> --}}
                     <a href="#" class="nav-link {{ Request::segment(1)=='setting'? 'active' : ''}}">
                         <i class="nav-icon fas fa-cog"></i>
                         <p class="red">
@@ -218,7 +218,7 @@
                                     Items
                                 </p>
                             </a>
-                        </li>                        
+                        </li>
 
                         {{-- User Menu --}}
                         <li class="nav-item">

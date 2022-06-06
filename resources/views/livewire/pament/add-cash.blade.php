@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0 text-white">Input New Cash</h1>
+                    <h1 class="m-0 text-white">Add New Cash to Your Account</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -24,26 +24,8 @@
                 <div class="col-12">
                     <div class="card">
                         <form wire:submit.prevent='addCash'>
-                            <div class="card-header">
-                                {{-- <h3 class="card-title text-white">List Users</h3> --}}
-                                <button wire:click.prevent='addNew()' type="button" class="btn btn-primary" {{--
-                                    data-toggle="modal" data-target="#depatmentModal" --}}>
-                                    <i class="fa fa-user-plus mr-2"></i>
-                                    Expand
-                                </button>
-
-                                <div class="card-tools">
-                                    <div class="input-group input-group-sm" style="width: 150px;">
-                                        <input wire:model.debounce='search' type="text" name="table_search"
-                                            class="form-control float-right" placeholder="Search">
-
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn btn-default">
-                                                <i class="fas fa-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="card-header text-white text-center">
+                                <h1 class="m-0">ADD CASH</h1>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
