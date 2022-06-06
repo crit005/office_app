@@ -69,6 +69,7 @@
                                         <tr wire:key="depatment-{{ $transaction->id }}" id="{{ $transaction->id }}">
                                             <th scope="row">                                                
                                                 {{$transactions->firstItem() + $indext}}
+                                                {{$transaction->id}}
                                             </th>
 
                                             <td>{{$transaction->tr_date}}</td>

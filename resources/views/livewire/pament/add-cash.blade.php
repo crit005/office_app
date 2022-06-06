@@ -136,3 +136,11 @@
     </div>
     <!-- /.content -->
 </div>
+
+@push('js')
+    <script>
+        function goBack(){
+            history.back();
+        }
+    </script>
+@endpush

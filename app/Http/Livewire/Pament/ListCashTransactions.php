@@ -27,16 +27,16 @@ class ListCashTransactions extends Component
     {
         if (auth()->user()->id <= 2) {
             $transactions = CashTransaction::query()
-            ->orderBy('month', 'desc')
             ->orderBy('tr_date', 'desc')
+            ->orderBy('id', 'desc')
             // ->orderBy('name', 'asc')
             ->paginate(env('PAGINATE'));
 
         }else{
             $transactions = CashTransaction::query()
             ->where('owner','=',auth()->user()->id)
-            ->orderBy('month', 'desc')
             ->orderBy('tr_date', 'desc')
+            ->orderBy('id', 'desc')
             // ->orderBy('name', 'asc')
             ->paginate(env('PAGINATE'));
         }

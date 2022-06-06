@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Pament;
 use App\Models\CashTransaction;
 use App\Models\Currency;
 use App\Models\Items;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use Illuminate\Support\Str;
@@ -18,6 +19,7 @@ class AddCash extends Component
     public $arrCurrencies;
     public $currencyIds;
     public $item;
+    public $newTranaction;
 
     public function mount()
     {
@@ -67,8 +69,16 @@ class AddCash extends Component
     {
         Validator::make($this->form, $this->cashRules, [], $this->cashValidationAttributes)->validate();
 
-        $lastBalance = 0; //require function
-        $userLastBalance = 0; //require function
+        $lastBalance = CashTransaction::where('status', '=', 'DONE')
+            ->where('tr_date', '<=', date('Y-m-d', strtotime($this->form['tr_date'])))
+            ->where('currency_id', '=', $this->form['currency_id'])
+            ->sum('amount'); //require function
+
+        $userLastBalance = CashTransaction::where('status', '=', 'DONE')
+            ->where('tr_date', '<=', date('Y-m-d', strtotime($this->form['tr_date'])))
+            ->where('currency_id', '=', $this->form['currency_id'])
+            ->where('owner', '=', auth()->user()->id)
+            ->sum('amount'); //require function
 
         $dataRecord = $this->form;
         $dataRecord['tr_date'] = date('Y-m-d', strtotime($this->form['tr_date']));
@@ -83,17 +93,47 @@ class AddCash extends Component
         $dataRecord['month'] = date('M-Y', strtotime($this->form['tr_date']));
         // $dataRecord['description'] = $this->form['description'];
         $dataRecord['owner'] = auth()->user()->id;
-        $dataRecord['type'] = "EXPAND";
+        $dataRecord['type'] = "INCOME";
         $dataRecord['status'] = "DONE";
         $dataRecord['input_type'] = "MENUL";
         // $dataRecord['uuid']= Str::uuid()->toString();
         // $dataRecord['tr_id'] = "";
 
-        CashTransaction::create($dataRecord);
+        $this->newTranaction = CashTransaction::create($dataRecord);
 
-        $this->reset(['form','selectedCurrency']);
+        $this->reset(['form', 'selectedCurrency']);
 
-        $this->dispatchBrowserEvent('alert-success',['message'=>'Cash added succeffully!']);
+        $this->form['tr_date'] = date('d-M-Y', strtotime(now()));
+
+        // update balance and user balance
+        // CashTransaction::where('currency_id', '=', $this->newTranaction->currency_id)
+        //     ->where(function ($query) {
+        //         $query->where('tr_date', '>', $this->newTranaction->tr_date)
+        //             ->orWhere('id', '>', $this->newTranaction->id);
+        //     })
+        //     ->update([
+        //         'balance' => DB::raw('balance + '.$this->newTranaction->amount),                
+        //     ]
+        //         // ‘loyalty_points’ => DB::raw(‘loyalty_points + 1’)
+        //     );
+
+        DB::update(
+            "UPDATE cash_transactions
+            SET balance = balance + ?, user_balance = if(owner = ? , user_balance + ? , user_balance)
+            WHERE currency_id = ? AND (id > ? OR tr_date > ? )
+            ",
+            [
+                $this->newTranaction->amount,
+                auth()->user()->id,
+                $this->newTranaction->amount,
+                $this->newTranaction->currency_id,
+                $this->newTranaction->id,
+                $this->newTranaction->tr_date,
+
+            ]
+        );
+
+        $this->dispatchBrowserEvent('alert-success', ['message' => 'Cash added succeffully!']);
     }
     // end add new cash
 

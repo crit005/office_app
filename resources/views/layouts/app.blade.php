@@ -97,8 +97,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 title: 'Success!',
                 text: e.detail.message,
                 icon: 'success',
-                confirmButtonText: 'OK'
-            });
+                confirmButtonText: 'OK',                
+            });            
         });
 
         window.addEventListener('alert-warning', e =>{
