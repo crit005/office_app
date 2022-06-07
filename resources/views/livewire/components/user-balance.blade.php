@@ -1,10 +1,11 @@
-<div>
+<div wire:poll>
     <span class="d-block text-white">Your Current Balance</span>
-    <span class="text-black">
-        {{-- @dump(gettype($balances))
-        @dump($balances) --}}
-        @foreach ($balances as $balance)
+
+    @foreach ($balances as $index => $balance)
+    <span class="badge @if ($balance->current_balance <= 0) badge-danger @else badge-success @endif">
         {{$balance->current_balance .$balance->symbol}}
-        @endforeach
     </span>
+    @if($index < count($balances)-1) <span class="text-white"> / </span> @endif
+    @endforeach
+
 </div>

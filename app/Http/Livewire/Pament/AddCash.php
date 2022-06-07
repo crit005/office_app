@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Pament;
 
+use App\Models\Balance;
 use App\Models\CashTransaction;
 use App\Models\Currency;
 use App\Models\Items;
@@ -131,6 +132,39 @@ class AddCash extends Component
                 $this->newTranaction->tr_date,
 
             ]
+        );
+
+        $lastBalance = CashTransaction::where('status', '=', 'DONE')            
+            ->where('currency_id', '=', $this->newTranaction->currency_id)
+            ->sum('amount'); 
+
+        $userLastBalance = CashTransaction::where('status', '=', 'DONE')            
+            ->where('currency_id', '=', $this->newTranaction->currency_id)
+            ->where('owner', '=', auth()->user()->id)
+            ->sum('amount'); //require function
+
+        Balance::upsert(
+            [
+                'user_id' => auth()->user()->id,
+                'currency_id' => $this->newTranaction->currency_id,
+                'current_balance' => $userLastBalance
+            ],
+            ['user_id', 'currency_id'],
+            ['current_balance']
+        );
+
+        $lastBalance = CashTransaction::where('status', '=', 'DONE')            
+            ->where('currency_id', '=', $this->newTranaction->currency_id)
+            ->sum('amount'); 
+
+        Balance::upsert(
+            [
+                'user_id' => 0,
+                'currency_id' => $this->newTranaction->currency_id,
+                'current_balance' => $lastBalance
+            ],
+            ['user_id', 'currency_id'],
+            ['current_balance']
         );
 
         $this->dispatchBrowserEvent('alert-success', ['message' => 'Cash added succeffully!']);
