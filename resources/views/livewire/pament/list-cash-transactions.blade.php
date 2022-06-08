@@ -55,9 +55,10 @@
                                             <th scope="col">#</th>
                                             <th scope="col" class="text-center">Date</th>
                                             <th scope="col" class="text-center">Item</th>
-                                            <th scope="col" class="text-center">Last Balance</th>
+                                            {{-- <th scope="col" class="text-center">Last Balance</th> --}}
                                             <th scope="col" class="text-center">Amount</th>
                                             <th scope="col" class="text-center">Current Balance</th>
+                                            <th scope="col" class="text-center">Use On</th>
                                             <th scope="col" class="text-center">Month</th>
                                             <th scope="col" class="text-center">Created By</th>
                                             <th scope="col" class="text-center">Type</th>
@@ -68,18 +69,17 @@
                                         @forelse ($transactions as $indext => $transaction)
                                         <tr wire:key="depatment-{{ $transaction->id }}" id="{{ $transaction->id }}">
                                             <th scope="row">
-                                                {{$transactions->firstItem() + $indext}}
-                                                {{$transaction->id}}
+                                                {{$transactions->firstItem() + $indext}}                                                
                                             </th>
 
                                             <td>{{$transaction->tr_date}}</td>
                                             <td class="text-center">{{$transaction->item_name}}</td>
 
-                                            @if (auth()->user()->group_id <=2)
+                                            {{-- @if (auth()->user()->group_id <=2)
                                             <td class="text-center">{{$transaction->balance - $transaction->amount ." ".$transaction->currency->symbol}}</td>
                                             @else
                                             <td class="text-center">{{$transaction->user_balance - $transaction->amount ." ".$transaction->currency->symbol}}</td>
-                                            @endif
+                                            @endif --}}
 
                                             <td class="text-center">{{$transaction->amount ." ".$transaction->currency->symbol}}</td>
 
@@ -88,6 +88,16 @@
                                             @else
                                             <td class="text-center">{{$transaction->user_balance ." ".$transaction->currency->symbol}}</td>
                                             @endif
+                                            
+                                            @if (in_array($transaction->item->name,['Add Cash', 'Transfer']) && $transaction->item->status == 'SYSTEM')
+                                            <td class="text-center">{{$transaction->user->name}}</td>
+                                            @elseif($transaction->item->name == 'Exchange' && $transaction->item->status == 'SYSTEM')
+                                            <td class="text-center">{{$transaction->toFromCrrency->code}}</td> 
+                                            @else
+                                            <td class="text-center">{{$transaction->depatment->name}}</td>                                            
+                                            @endif
+                                           
+
                                             <td class="text-center">{{$transaction->month}}</td>
                                             <td class="text-center">{{$transaction->user->name}}</td>
                                             <td class="text-center">{{$transaction->type}}</td>

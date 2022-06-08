@@ -34,6 +34,11 @@ class CashTransaction extends Model
         return $this->belongsTo(Currency::class,'currency_id');
     }
 
+    public function toFromCrrency()
+    {
+        return $this->belongsTo(Currency::class, 'to_from');    
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class,'owner');
@@ -42,5 +47,10 @@ class CashTransaction extends Model
     public function item()
     {
         return $this->belongsTo(Items::class,'item_id');
+    }
+
+    public function depatment()
+    {
+        return $this->belongsTo(Depatment::class,'to_from');
     }
 }
