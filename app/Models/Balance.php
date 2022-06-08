@@ -14,4 +14,15 @@ class Balance extends Model
         'currency_id',
         'current_balance'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class,'currency_id');
+    }    
+
 }

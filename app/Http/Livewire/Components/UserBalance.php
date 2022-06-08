@@ -2,35 +2,51 @@
 
 namespace App\Http\Livewire\Components;
 
-use App\Models\CashTransaction;
-use App\Models\Currency;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class UserBalance extends Component
 {
+    public $isGloble = false;
+    protected $userQuery = "
+        SELECT current_balance, currencies.symbol
+        From balances INNER JOIN currencies ON balances.currency_id = currencies.id
+        WHERE user_id = ?
+        ORDER BY currencies.position            
+        ";
+
+    protected $globleQuery = "
+        SELECT current_balance, currencies.symbol
+        From balances INNER JOIN currencies ON balances.currency_id = currencies.id
+        WHERE user_id = 0
+        ORDER BY currencies.position            
+        ";
+
+    protected $noneBalanceQuery = "
+    SELECT 0 as current_balance, currencies.symbol
+    From currencies
+    WHERE status = 'ENABLED'
+    ORDER BY currencies.position            
+    ";
+
+    public function switchGloble()
+    {
+        $this->isGloble = !$this->isGloble;
+    }
+
     public function render()
     {
+
+
         $balances = DB::select(
-            "
-            SELECT SUM(cash_transactions.amount) as current_balance, currencies.symbol
-            From cash_transactions INNER JOIN currencies ON cash_transactions.currency_id = currencies.id
-            WHERE cash_transactions.owner = ?
-            GROUP BY cash_transactions.currency_id ,currencies.symbol
-            ",
-            [
-                auth()->user()->id
-            ]
+            $this->isGloble ? $this->globleQuery : $this->userQuery,
+            $this->isGloble ? [] : [auth()->user()->id]
         );
+
         if (!$balances) {
-            $currencies = Currency::where('status', '=', 'ENABLED')->orderBy('position', 'asc')->get();
-            foreach ($currencies as $index => $currency) {
-                array_push($balances, ['current_balance' => 0, 'symbol' =>  $currency->symbol]);
-            }
-            $balances = json_decode(json_encode($balances));
+            $balances = DB::select($this->noneBalanceQuery);
         }
 
-        // $balances=CashTransaction::where('owner','=',auth()->user()->id)->latest()->get()->groupBY('currency_id');
 
         return view('livewire.components.user-balance', ['balances' => $balances]);
     }

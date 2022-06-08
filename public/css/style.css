@@ -214,3 +214,10 @@ input:checked + .slider:before {
     padding-left: 30px;
     width: calc(220px - 0.5rem * 2);
 } */
+
+.nave-balance{
+    background: #ffffff2e;
+    padding: 2px 0.5rem;
+    border-radius: 2px;
+    cursor: pointer;
+}
