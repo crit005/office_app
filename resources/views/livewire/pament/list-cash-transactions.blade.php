@@ -29,7 +29,7 @@
                                 <button type="button" class="btn btn-primary" {{--
                                     data-toggle="modal" data-target="#depatmentModal" --}}>
                                     <i class="fa fa-plus-circle mr-2"></i>
-                                    Expand
+                                    Add Cash
                                 </button>
                             </a>
 
@@ -69,7 +69,7 @@
                                         @forelse ($transactions as $indext => $transaction)
                                         <tr wire:key="depatment-{{ $transaction->id }}" id="{{ $transaction->id }}">
                                             <th scope="row">
-                                                {{$transactions->firstItem() + $indext}}                                                
+                                                {{$transactions->firstItem() + $indext}}
                                             </th>
 
                                             <td>{{$transaction->tr_date}}</td>
@@ -88,15 +88,15 @@
                                             @else
                                             <td class="text-center">{{$transaction->user_balance ." ".$transaction->currency->symbol}}</td>
                                             @endif
-                                            
+
                                             @if (in_array($transaction->item->name,['Add Cash', 'Transfer']) && $transaction->item->status == 'SYSTEM')
                                             <td class="text-center">{{$transaction->user->name}}</td>
                                             @elseif($transaction->item->name == 'Exchange' && $transaction->item->status == 'SYSTEM')
-                                            <td class="text-center">{{$transaction->toFromCrrency->code}}</td> 
+                                            <td class="text-center">{{$transaction->toFromCrrency->code}}</td>
                                             @else
-                                            <td class="text-center">{{$transaction->depatment->name}}</td>                                            
+                                            <td class="text-center">{{$transaction->depatment->name}}</td>
                                             @endif
-                                           
+
 
                                             <td class="text-center">{{$transaction->month}}</td>
                                             <td class="text-center">{{$transaction->user->name}}</td>

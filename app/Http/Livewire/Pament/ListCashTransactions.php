@@ -19,19 +19,6 @@ class ListCashTransactions extends Component
     public $search = null;
 
 
-    protected $adminQuery = "
-    SELECT ct.id, ct.tr_date, ct.item_name, ct.amount, ct.balance, ct.user_balance, cu.symbol, cu.code,
-	ct.to_from,u.name AS `owner`, ct.type, if(ct.item_name IN ('Add Cash','Transfer'), toUser.name, if(ct.item_name = 'Exchange', toCur.code, dp.name)) AS to_from
-    FROM 
-    cash_transactions AS ct INNER JOIN items AS it ON ct.item_id = it.id 
-    INNER JOIN users AS u ON ct.owner = u.id 
-    INNER JOIN depatments AS dp ON ct.to_from = dp.id
-    INNER JOIN currencies AS cu ON ct.currency_id = cu.id
-    INNER JOIN users AS toUser ON ct.to_from = toUser.id
-    INNER JOIN currencies AS toCur ON ct.to_from =  toCur.id
-    ";
-
-
     public function updatedSearch($var)
     {
         $this->resetPage();
@@ -41,10 +28,26 @@ class ListCashTransactions extends Component
     {
         if (auth()->user()->id <= 2) {
             $transactions = CashTransaction::query()
+                ->where('status','!=','DELETED')
+                ->where(function($query){
+                    $query->where('item_name','like','%'.$this->search.'%')
+                    ->orWhere('tr_date','=',date('Y-m-d',strtotime($this->search)))
+                    ->orWhere('month','like','%'.$this->search.'%')
+                    ->orWhere('type','like','%'.$this->search.'%')
+                    ->orWhere('amount','=',$this->search)
+                    ->orWhere('balance','=',$this->search)
+                    ->whereHas('user', function ($query) {
+                        return $query->where('users.name', 'like','%'.$this->search.'%');
+                    });
+
+                    ;
+                })
                 ->orderBy('tr_date', 'desc')
                 ->orderBy('id', 'desc')
+                // ->toSql();
                 // ->orderBy('name', 'asc')
                 ->paginate(env('PAGINATE'));
+                // dd($transactions);
         } else {
             $transactions = CashTransaction::query()
                 ->where('owner', '=', auth()->user()->id)
@@ -53,7 +56,7 @@ class ListCashTransactions extends Component
                 // ->orderBy('name', 'asc')
                 ->paginate(env('PAGINATE'));
         }
-        
+
 
         return view('livewire.pament.list-cash-transactions', ['transactions' => $transactions]);
     }
