@@ -24,7 +24,7 @@ class ListCashTransactions extends Component
 
     public function updatedSearch($var)
     {
-        $this->searchUserIds = User::select('id')->where('name','like','%'.$var.'%')->get();
+        $this->searchUserIds = User::select('id')->where('name','like','%'.$var.'%')->get()->toArray();
         $this->resetPage();
     }
 
