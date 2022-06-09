@@ -48,6 +48,9 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body p-0">
+
+                            @dump($searchUserIds)
+
                             <div class="table-responsive rounded" style="background:none; border: none;">
                                 <table class="table table-hover">
                                     <thead class="thead-dark">
@@ -72,7 +75,7 @@
                                                 {{$transactions->firstItem() + $indext}}
                                             </th>
 
-                                            <td>{{$transaction->tr_date}}</td>
+                                            <td>{{date(env('DATE_FORMAT'),strtotime($transaction->tr_date))}}</td>
                                             <td class="text-center">{{$transaction->item_name}}</td>
 
                                             {{-- @if (auth()->user()->group_id <=2)

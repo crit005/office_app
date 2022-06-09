@@ -3,6 +3,8 @@
 namespace App\Http\Livewire\Pament;
 
 use App\Models\CashTransaction;
+use App\Models\Items;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -17,18 +19,20 @@ class ListCashTransactions extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $search = null;
+    public $searchUserIds=[];
 
 
     public function updatedSearch($var)
     {
+        $this->searchUserIds = User::select('id')->where('name','like','%'.$var.'%')->get();
         $this->resetPage();
     }
 
     public function render()
     {
         if (auth()->user()->id <= 2) {
-            $transactions = CashTransaction::query()
-                ->where('status','!=','DELETED')
+            $transactions = CashTransaction::
+                where('status','!=','DELETED')
                 ->where(function($query){
                     $query->where('item_name','like','%'.$this->search.'%')
                     ->orWhere('tr_date','=',date('Y-m-d',strtotime($this->search)))
@@ -36,12 +40,9 @@ class ListCashTransactions extends Component
                     ->orWhere('type','like','%'.$this->search.'%')
                     ->orWhere('amount','=',$this->search)
                     ->orWhere('balance','=',$this->search)
-                    ->whereHas('user', function ($query) {
-                        return $query->where('users.name', 'like','%'.$this->search.'%');
-                    });
-
+                    // ->orWhereIn('owner',$this->searchUserIds)
                     ;
-                })
+                })                
                 ->orderBy('tr_date', 'desc')
                 ->orderBy('id', 'desc')
                 // ->toSql();

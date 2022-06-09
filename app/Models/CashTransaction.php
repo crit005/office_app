@@ -36,7 +36,7 @@ class CashTransaction extends Model
 
     public function toFromCrrency()
     {
-        return $this->belongsTo(Currency::class, 'to_from');    
+            return $this->belongsTo(Currency::class, 'to_from');
     }
 
     public function user()
