@@ -22,7 +22,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
+                    <div class="card">                        
                         <div class="card-header">
                             {{-- <h3 class="card-title text-white">List Users</h3> --}}
                             <a href="{{route('payment.addcash')}}">
@@ -47,10 +47,7 @@
                             </div>
                         </div>
                         <!-- /.card-header -->
-                        <div class="card-body p-0">
-
-                            @dump($searchUserIds)
-
+                        <div class="card-body p-0"> 
                             <div class="table-responsive rounded" style="background:none; border: none;">
                                 <table class="table table-hover">
                                     <thead class="thead-dark">
