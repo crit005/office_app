@@ -24,9 +24,11 @@ return new class extends Migration
             $table->double('user_balance')->default(0);
             $table->foreignId('currency_id')->nullable()->references('id')->on('currencies')->nullOnDelete();
             $table->bigInteger('to_from')->nullable();
+            $table->string('use_on')->nullable();
             $table->string('month');
             $table->longText('description')->nullable();
             $table->foreignId('owner')->nullable()->references('id')->on('users')->nullOnDelete();
+            $table->string('woner_name')->nullable();
             $table->string('type'); // EXPAND, INCOME
             $table->string('status'); //(COMPLEATED, SENDED, REJECTED)
             $table->string('input_type')->default('MENUL'); // MENUL, IMPORT

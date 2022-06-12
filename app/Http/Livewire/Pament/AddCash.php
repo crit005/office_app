@@ -91,9 +91,11 @@ class AddCash extends Component
         $dataRecord['user_balance'] = $userLastBalance + $this->form['amount'];
         // $dataRecord['currency_id'] = $this->form['currency_id'];
         $dataRecord['to_from'] = auth()->user()->id;
+        $dataRecord['use_on'] = auth()->user()->name;
         $dataRecord['month'] = date('M-Y', strtotime($this->form['tr_date']));
         // $dataRecord['description'] = $this->form['description'];
         $dataRecord['owner'] = auth()->user()->id;
+        $dataRecord['owner_name'] = auth()->user()->name;
         $dataRecord['type'] = "INCOME";
         $dataRecord['status'] = "DONE";
         $dataRecord['input_type'] = "MENUL";

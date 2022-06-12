@@ -49,6 +49,8 @@
                         <!-- /.card-header -->
                         <div class="card-body p-0"> 
                             <div class="table-responsive rounded" style="background:none; border: none;">
+                                @dump($dum)
+                                @dump($specificSearch)
                                 <table class="table table-hover">
                                     <thead class="thead-dark">
                                         <tr>
