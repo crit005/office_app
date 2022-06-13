@@ -31,7 +31,7 @@ class UserBalance extends Component
 
     public function switchGloble()
     {
-        $this->isGloble = !$this->isGloble;
+        $this->isGloble = !$this->isGloble;    
     }
 
     public function render()

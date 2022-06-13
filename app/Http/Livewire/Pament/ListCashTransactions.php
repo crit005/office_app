@@ -33,13 +33,23 @@ class ListCashTransactions extends Component
         'item' => 'item_name',
         'amount' => 'amount',
         'current balance' => 'balance',
-        'use on' => 'to_from',
+        'use on' => 'use_on',
         'month' => 'month',
-        'created by' => 'owner',
+        'created by' => 'owner_name',
         'type' => 'type'
     ];
 
+    public function mount()
+    {
+        if (auth()->user()->group_id > 2) {
+            $this->searchFields['current balance'] = 'user_balance';
+        }
+    }
 
+    protected $listeners =[
+        'searchListener'=>'searchListener'
+    ];
+    
     public function updatedSearch($var)
     {
         $this->specificColumn = null;
@@ -93,7 +103,7 @@ class ListCashTransactions extends Component
             ->where(function ($query) use ($search) {
                 $query->where('symbol', '=', $search)
                     ->orWhere('code', '=', $search)
-                    ->orWhere('country_and_currency', 'like', '%'.$search.'%');
+                    ->orWhere('country_and_currency', 'like', '%' . $search . '%');
             })
             ->get();
         foreach ($testCurrencies as $index => $currency) {
@@ -103,7 +113,7 @@ class ListCashTransactions extends Component
 
     public function render()
     {
-        if (auth()->user()->id <= 2) {
+        if (auth()->user()->group_id <= 2) {
             $transactions = CashTransaction::where('status', '!=', 'DELETED')
                 ->when($this->specificColumn, function ($query) {
                     $query->where($this->searchFields[$this->specificColumn], $this->specificOperator ?? 'like', $this->specificOperator ? $this->specificSearch : '%' . $this->specificSearch . '%')
@@ -117,8 +127,9 @@ class ListCashTransactions extends Component
                         ->orWhere('month', 'like', '%' . $this->search . '%')
                         ->orWhere('type', 'like', '%' . $this->search . '%')
                         ->orWhere('amount', '=', $this->search)
+                        ->orWhere('use_on', '=', $this->search)
                         ->orWhere('balance', '=', $this->search)
-                        ->orWhereIn('owner', $this->searchUserIds)
+                        ->orWhere('owner_name', $this->search)
                         ->orWhereIn('currency_id', $this->searchCurrencyIds);
                 })
                 ->orderBy('tr_date', 'desc')
@@ -126,38 +137,57 @@ class ListCashTransactions extends Component
                 // ->toSql();
                 // ->orderBy('name', 'asc')
                 ->paginate(env('PAGINATE'));
-
-            $transactionssql = CashTransaction::where('status', '!=', 'DELETED')
-                ->when($this->specificColumn, function ($query) {
-                    $query->where($this->searchFields[$this->specificColumn], $this->specificOperator ?? 'like', $this->specificOperator ? $this->specificSearch : '%' . $this->specificSearch . '%')
-                        ->when($this->searchCurrencyIds, function ($q) {
-                            $q->whereIn('currency_id', $this->searchCurrencyIds);
+        } else {
+            $transactions = CashTransaction::where('status', '!=', 'DELETED')
+                ->where('owner', '=', auth()->user()->id)
+                ->where(function ($q) {
+                    $q->when($this->specificColumn, function ($query) {
+                        $query->where($this->searchFields[$this->specificColumn], $this->specificOperator ?? 'like', $this->specificOperator ? $this->specificSearch : '%' . $this->specificSearch . '%')
+                            ->when($this->searchCurrencyIds, function ($q) {
+                                $q->whereIn('currency_id', $this->searchCurrencyIds);
+                            });
+                    })
+                        ->when($this->specificColumn == null, function ($query) {
+                            $query->where('item_name', 'like', '%' . $this->search . '%')
+                                ->orWhere('tr_date', '=', date('Y-m-d', strtotime($this->search)))
+                                ->orWhere('month', 'like', '%' . $this->search . '%')
+                                ->orWhere('type', 'like', '%' . $this->search . '%')
+                                ->orWhere('amount', '=', $this->search)
+                                ->orWhere('use_on', '=', $this->search)
+                                ->orWhere('balance', '=', $this->search)
+                                ->orWhere('owner_name', $this->search)
+                                ->orWhereIn('currency_id', $this->searchCurrencyIds);
                         });
                 })
-                ->when($this->specificColumn == null, function ($query) {
-                    $query->where('item_name', 'like', '%' . $this->search . '%')
-                        ->orWhere('tr_date', '=', date('Y-m-d', strtotime($this->search)))
-                        ->orWhere('month', 'like', '%' . $this->search . '%')
-                        ->orWhere('type', 'like', '%' . $this->search . '%')
-                        ->orWhere('amount', '=', $this->search)
-                        ->orWhere('balance', '=', $this->search)
-                        ->orWhereIn('owner', $this->searchUserIds)
-                        ->orWhereIn('currency_id', $this->searchCurrencyIds);
-                })
-                ->orderBy('tr_date', 'desc')
-                ->orderBy('id', 'desc')
-                ->toSql();
-            // ->orderBy('name', 'asc')
-            // ->paginate(env('PAGINATE'));
-            // dd($transactionssql);
-            $this->dum = $transactionssql;
-        } else {
-            $transactions = CashTransaction::query()
-                ->where('owner', '=', auth()->user()->id)
                 ->orderBy('tr_date', 'desc')
                 ->orderBy('id', 'desc')
                 // ->orderBy('name', 'asc')
                 ->paginate(env('PAGINATE'));
+
+            $this->dum = CashTransaction::where('status', '!=', 'DELETED')
+                ->where('owner', '=', auth()->user()->id)
+                ->where(function ($q) {
+                    $q->when($this->specificColumn, function ($query) {
+                        $query->where($this->searchFields[$this->specificColumn], $this->specificOperator ?? 'like', $this->specificOperator ? $this->specificSearch : '%' . $this->specificSearch . '%')
+                            ->when($this->searchCurrencyIds, function ($q) {
+                                $q->whereIn('currency_id', $this->searchCurrencyIds);
+                            });
+                    })
+                        ->when($this->specificColumn == null, function ($query) {
+                            $query->where('item_name', 'like', '%' . $this->search . '%')
+                                ->orWhere('tr_date', '=', date('Y-m-d', strtotime($this->search)))
+                                ->orWhere('month', 'like', '%' . $this->search . '%')
+                                ->orWhere('type', 'like', '%' . $this->search . '%')
+                                ->orWhere('amount', '=', $this->search)
+                                ->orWhere('use_on', '=', $this->search)
+                                ->orWhere('balance', '=', $this->search)
+                                ->orWhere('owner_name', $this->search)
+                                ->orWhereIn('currency_id', $this->searchCurrencyIds);
+                        });
+                })
+
+                ->orderBy('tr_date', 'desc')
+                ->orderBy('id', 'desc')->toSql();
         }
 
 

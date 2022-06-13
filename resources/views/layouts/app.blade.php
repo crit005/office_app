@@ -163,6 +163,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
             })
         });
 
+        // function globleSearch(val){
+        //     console.log(val);
+        //     $('#table_search').val(val);
+        //    
+        // }
+
     </script>
     @livewireScripts
 </body>
