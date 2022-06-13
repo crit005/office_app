@@ -23,7 +23,7 @@ class CashTransaction extends Model
         'month',
         'description',
         'owner',
-        'woner_name',
+        'owner_name',
         'type',
         'status',
         'input_type',

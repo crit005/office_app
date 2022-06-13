@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('month');
             $table->longText('description')->nullable();
             $table->foreignId('owner')->nullable()->references('id')->on('users')->nullOnDelete();
-            $table->string('woner_name')->nullable();
+            $table->string('owner_name')->nullable();
             $table->string('type'); // EXPAND, INCOME
             $table->string('status'); //(COMPLEATED, SENDED, REJECTED)
             $table->string('input_type')->default('MENUL'); // MENUL, IMPORT
