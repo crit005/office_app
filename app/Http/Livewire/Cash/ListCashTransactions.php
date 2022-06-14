@@ -1,16 +1,13 @@
 <?php
 
-namespace App\Http\Livewire\Pament;
+namespace App\Http\Livewire\Cash;
 
 use App\Models\CashTransaction;
 use App\Models\Currency;
-use App\Models\Items;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
-use phpDocumentor\Reflection\Types\This;
 
 class ListCashTransactions extends Component
 {
@@ -191,6 +188,6 @@ class ListCashTransactions extends Component
         }
 
 
-        return view('livewire.pament.list-cash-transactions', ['transactions' => $transactions]);
+        return view('livewire.cash.list-cash-transactions', ['transactions' => $transactions]);
     }
 }

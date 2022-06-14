@@ -89,12 +89,12 @@
                 </li>
 
                 {{-- Paynebt menu --}}
-                <li class="nav-item {{ Request::segment(1)=='payment'? 'menu-open' : 'menu-close'}}">
+                <li class="nav-item {{ Request::segment(1)=='cash'? 'menu-open' : 'menu-close'}}">
                 {{-- <li class="nav-item menu-open"> --}}
-                    <a href="#" class="nav-link {{ Request::segment(1)=='payment'? 'active' : ''}}">
+                    <a href="#" class="nav-link {{ Request::segment(1)=='cash'? 'active' : ''}}">
                         <i class="nav-icon fas fa-shopping-cart"></i>
                         <p class="red">
-                            Pament
+                            Cash
                             <i class="right fas fa-angle-down"></i>
                         </p>
                     </a>
@@ -114,8 +114,8 @@
 
                         {{-- Add Cash Menu --}}
                         <li class="nav-item">
-                            <a href="{{route('payment.addcash')}}"
-                                class="nav-link {{ request()->is('payment/addcash') ? 'active' : '' }}">
+                            <a href="{{route('cash.addcash')}}"
+                                class="nav-link {{ request()->is('cash/addcash') ? 'active' : '' }}">
                                 {{-- <sup><i class="fas fa-plus-circle ml-4" style="font-size: .5rem"></i></sup>
                                 <i class="fas fa-dollar-sign mr-2"></i> --}}
                                 <i class="nav-icon fas fa-donate ml-4"></i>
@@ -150,8 +150,8 @@
 
                         {{-- Cashdrawer --}}
                         <li class="nav-item">
-                            <a href="{{ route('payment.cashdrawers') }}"
-                                class="nav-link {{ request()->is('payment/cashdrawers') ? 'active' : '' }}">
+                            <a href="{{ route('cash.cashdrawers') }}"
+                                class="nav-link {{ request()->is('cash/cashdrawers') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-inbox  ml-4"></i>
                                 <p>
                                     Cashdrawer
@@ -161,8 +161,8 @@
 
                         {{-- CashTransaction --}}
                         <li class="nav-item">
-                            <a href="{{ route('payment.cashtransactions') }}"
-                                class="nav-link {{ request()->is('payment/cashtransactions') ? 'active' : '' }}">
+                            <a href="{{ route('cash.cashtransactions') }}"
+                                class="nav-link {{ request()->is('cash/cashtransactions') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-inbox  ml-4"></i>
                                 <p>
                                     Cash Transactions

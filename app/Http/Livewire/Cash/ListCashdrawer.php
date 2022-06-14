@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Pament;
+namespace App\Http\Livewire\Cash;
 
 use App\Models\Cashdrawer;
 use Illuminate\Support\Facades\Validator;
@@ -160,6 +160,6 @@ class ListCashdrawer extends Component
                 ->paginate(env('PAGINATE'));
         }
 
-        return view('livewire.pament.list-cashdrawer', ['cashdrawers' => $cashdrawers]);
+        return view('livewire.cash.list-cashdrawer', ['cashdrawers' => $cashdrawers]);
     }
 }

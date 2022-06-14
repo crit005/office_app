@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Pament;
+namespace App\Http\Livewire\Cash;
 
 use App\Models\Balance;
 use App\Models\CashTransaction;
@@ -9,9 +9,8 @@ use App\Models\Items;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
-use Illuminate\Support\Str;
 
-class AddCash extends Component
+class EditCash extends Component
 {
     public $form = [];
     public $selectedCurrency = null;
@@ -22,8 +21,13 @@ class AddCash extends Component
     public $item;
     public $newTranaction;
 
-    public function mount()
+    
+  
+
+    public function mount(CashTransaction $transaction)
     {
+        $this->transaction = $transaction;
+        $this->form = $transaction->toArray();
         $this->currencies = Currency::where('status', '=', 'ENABLED')->orderBy('position', 'asc')->get();
         foreach ($this->currencies as $index => $currency) {
             $this->currencyIds .= $currency->id;
@@ -108,18 +112,6 @@ class AddCash extends Component
 
         $this->form['tr_date'] = date('d-M-Y', strtotime(now()));
 
-        // update balance and user balance
-        // CashTransaction::where('currency_id', '=', $this->newTranaction->currency_id)
-        //     ->where(function ($query) {
-        //         $query->where('tr_date', '>', $this->newTranaction->tr_date)
-        //             ->orWhere('id', '>', $this->newTranaction->id);
-        //     })
-        //     ->update([
-        //         'balance' => DB::raw('balance + '.$this->newTranaction->amount),                
-        //     ]
-        //         // ‘loyalty_points’ => DB::raw(‘loyalty_points + 1’)
-        //     );
-
         DB::update(
             "UPDATE cash_transactions
             SET balance = balance + ?, user_balance = if(owner = ? , user_balance + ? , user_balance)
@@ -173,8 +165,9 @@ class AddCash extends Component
     }
     // end add new cash
 
+    
     public function render()
     {
-        return view('livewire.pament.add-cash', ['currencies' => $this->currencies]);
+        return view('livewire.cash.edit-cash',['currencies' => $this->currencies]);
     }
 }

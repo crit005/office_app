@@ -25,7 +25,7 @@
                     <div class="card">
                         <div class="card-header">
                             {{-- <h3 class="card-title text-white">List Users</h3> --}}
-                            <a href="{{route('payment.addcash')}}">
+                            <a href="{{route('cash.addcash')}}">
                                 <button type="button" class="btn btn-primary" {{-- data-toggle="modal"
                                     data-target="#depatmentModal" --}}>
                                     <i class="fa fa-plus-circle mr-2"></i>
@@ -35,9 +35,8 @@
 
                             <div class="card-tools">
                                 <div class="input-group input-group-sm" style="width: 150px;">
-                                    <input id="table_search" wire:model.debounce='search' type="text"
-                                        name="table_search" class="form-control float-right" placeholder="Search"
-                                        onchange="console.log('testtable');">
+                                    <input wire:model.debounce='search' type="text"
+                                        name="table_search" class="form-control float-right" placeholder="Search" >
 
                                     <div class="input-group-append">
                                         <button type="submit" class="btn btn-default">
@@ -50,8 +49,7 @@
                         <!-- /.card-header -->
                         <div class="card-body p-0">
                             <div class="table-responsive rounded" style="background:none; border: none;">
-                                @dump($dum)
-                                {{-- @dump($specificSearch) --}}
+                                
                                 <table class="table table-hover">
                                     <thead class="thead-dark">
                                         <tr>
@@ -78,14 +76,6 @@
                                             <td>{{date(env('DATE_FORMAT'),strtotime($transaction->tr_date))}}</td>
                                             <td class="text-center">{{$transaction->item_name}}</td>
 
-                                            {{-- @if (auth()->user()->group_id <=2) <td class="text-center">
-                                                {{$transaction->balance - $transaction->amount ."
-                                                ".$transaction->currency->symbol}}</td>
-                                                @else
-                                                <td class="text-center">{{$transaction->user_balance -
-                                                    $transaction->amount ." ".$transaction->currency->symbol}}</td>
-                                                @endif --}}
-
                                                 <td class="text-center">{{$transaction->amount ."
                                                     ".$transaction->currency->symbol}}</td>
 
@@ -105,9 +95,9 @@
 
                                                     <td class="text-center">
                                                         <div class="d-flex justify-content-center">
-                                                            <button class="btn btn-xs btn-primary mr-2">
+                                                            <a href="{{route('cash.editcash',$transaction)}}" class="btn btn-xs btn-primary mr-2">
                                                                 <i class="fa fa-edit"></i>
-                                                            </button>
+                                                            </a>
 
                                                             <button class="btn btn-xs btn-danger mr-2">
                                                                 <i class="fa fa-trash"></i>
@@ -155,8 +145,7 @@
 </div>
 @push('js')
 <script>
-    function globleSearch(val){            
-            $('#table_search').val(val);
+    function globleSearch(val){ 
             @this.search = val;
         }
 </script>
