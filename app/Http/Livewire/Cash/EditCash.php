@@ -5,7 +5,6 @@ namespace App\Http\Livewire\Cash;
 use App\Models\Balance;
 use App\Models\CashTransaction;
 use App\Models\Currency;
-use App\Models\Items;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
@@ -14,21 +13,21 @@ class EditCash extends Component
 {
     public $form = [];
     public $selectedCurrency = null;
-
+    public $transaction = null;
     public $currencies;
     public $arrCurrencies;
     public $currencyIds;
-    public $item;
+    
     public $newTranaction;
 
-    
-  
+
+
 
     public function mount(CashTransaction $transaction)
     {
         $this->transaction = $transaction;
         $this->form = $transaction->toArray();
-        $this->currencies = Currency::where('status', '=', 'ENABLED')->orderBy('position', 'asc')->get();
+        $this->currencies = Currency::where('status', '=', 'ENABLED')->orWhere('id', '=', $transaction->currency_id)->orderBy('position', 'asc')->get();
         foreach ($this->currencies as $index => $currency) {
             $this->currencyIds .= $currency->id;
             if ($index < count($this->currencies) - 1) {
@@ -37,8 +36,7 @@ class EditCash extends Component
             $this->arrCurrencies[$currency->id] = $currency->toArray();
         }
         // intit rule for currency id
-        $this->cashRules['currency_id'] .= "|in:" . $this->currencyIds;
-        $this->item = Items::where('name', '=', 'Add Cash')->where('status', '=', 'SYSTEM')->first();
+        $this->cashRules['currency_id'] .= "|in:" . $this->currencyIds;        
     }
 
     public $cashRules = [
@@ -70,71 +68,95 @@ class EditCash extends Component
     }
 
     // add new cash
-    public function addCash()
+    public function updateCash()
     {
         Validator::make($this->form, $this->cashRules, [], $this->cashValidationAttributes)->validate();
+
+        // draw back amount from cash transaction
+        DB::update(
+            "UPDATE cash_transactions
+            SET balance = balance - ?, user_balance = if(owner = ? , user_balance - ? , user_balance)
+            -- WHERE currency_id = ? AND (id > ? OR tr_date > ? )
+            WHERE currency_id = ? AND ((id > ? and tr_date = ?) OR tr_date > ? )
+
+            ",
+            [
+                $this->transaction->amount,
+                $this->transaction->owner,
+                $this->transaction->amount,
+                $this->transaction->currency_id,
+                $this->transaction->id,
+                $this->transaction->tr_date
+
+            ]
+        );
+
+        // draw back amount from balance
+        DB::update(
+            "UPDATE balances
+            SET current_balance = current_balance - ?
+            WHERE currency_id = ? AND (user_id = 0 OR user_id  = ? )
+            ",
+            [
+                $this->transaction->amount,
+                $this->transaction->currency_id,
+                $this->transaction->owner
+
+            ]
+        );
+        //=================================================================
 
         $lastBalance = CashTransaction::where('status', '=', 'DONE')
             ->where('tr_date', '<=', date('Y-m-d', strtotime($this->form['tr_date'])))
             ->where('currency_id', '=', $this->form['currency_id'])
+            ->where('id', '<', $this->transaction->id)
             ->sum('amount'); //require function
 
         $userLastBalance = CashTransaction::where('status', '=', 'DONE')
             ->where('tr_date', '<=', date('Y-m-d', strtotime($this->form['tr_date'])))
             ->where('currency_id', '=', $this->form['currency_id'])
-            ->where('owner', '=', auth()->user()->id)
+            ->where('id', '<', $this->transaction->id)
+            ->where('owner', '=', $this->transaction->owner)
             ->sum('amount'); //require function
 
-        $dataRecord = $this->form;
+        $dataRecord = [];
         $dataRecord['tr_date'] = date('Y-m-d', strtotime($this->form['tr_date']));
-        $dataRecord['item_id'] = $this->item->id;
-        $dataRecord['item_name'] = $this->item->name;
         $dataRecord['amount'] = $this->form['amount'];
         $dataRecord['bk_amount'] = $this->form['amount'];
         $dataRecord['balance'] = $lastBalance + $this->form['amount'];
         $dataRecord['user_balance'] = $userLastBalance + $this->form['amount'];
-        // $dataRecord['currency_id'] = $this->form['currency_id'];
-        $dataRecord['to_from'] = auth()->user()->id;
-        $dataRecord['use_on'] = auth()->user()->name;
+        $dataRecord['currency_id'] = $this->form['currency_id'];
         $dataRecord['month'] = date('M-Y', strtotime($this->form['tr_date']));
-        // $dataRecord['description'] = $this->form['description'];
-        $dataRecord['owner'] = auth()->user()->id;
-        $dataRecord['owner_name'] = auth()->user()->name;
-        $dataRecord['type'] = "INCOME";
-        $dataRecord['status'] = "DONE";
-        $dataRecord['input_type'] = "MENUL";
-        // $dataRecord['uuid']= Str::uuid()->toString();
-        // $dataRecord['tr_id'] = "";
+        $dataRecord['description'] = $this->form['description'];
 
-        $this->newTranaction = CashTransaction::create($dataRecord);
+        $this->transaction->update($dataRecord);
 
-        $this->reset(['form', 'selectedCurrency']);
+        // $this->reset(['form', 'selectedCurrency']);
 
-        $this->form['tr_date'] = date('d-M-Y', strtotime(now()));
+        // $this->form['tr_date'] = date('d-M-Y', strtotime(now()));
 
         DB::update(
             "UPDATE cash_transactions
             SET balance = balance + ?, user_balance = if(owner = ? , user_balance + ? , user_balance)
-            WHERE currency_id = ? AND (id > ? OR tr_date > ? )
+            WHERE currency_id = ? AND ((id > ? and tr_date = ?) OR tr_date > ? )
             ",
             [
-                $this->newTranaction->amount,
-                auth()->user()->id,
-                $this->newTranaction->amount,
-                $this->newTranaction->currency_id,
-                $this->newTranaction->id,
-                $this->newTranaction->tr_date,
+                $this->transaction->amount,
+                $this->transaction->owner,
+                $this->transaction->amount,
+                $this->transaction->currency_id,
+                $this->transaction->id,
+                $this->transaction->tr_date,
+                $this->transaction->tr_date
 
             ]
         );
 
-        $lastBalance = CashTransaction::where('status', '=', 'DONE')            
-            ->where('currency_id', '=', $this->newTranaction->currency_id)
-            ->sum('amount'); 
+        
 
-        $userLastBalance = CashTransaction::where('status', '=', 'DONE')            
+        $userLastBalance = CashTransaction::where('status', '=', 'DONE')
             ->where('currency_id', '=', $this->newTranaction->currency_id)
-            ->where('owner', '=', auth()->user()->id)
+            ->where('owner', '=', $this->transaction->owner)
             ->sum('amount'); //require function
 
         Balance::upsert(
@@ -147,9 +169,9 @@ class EditCash extends Component
             ['current_balance']
         );
 
-        $lastBalance = CashTransaction::where('status', '=', 'DONE')            
+        $lastBalance = CashTransaction::where('status', '=', 'DONE')
             ->where('currency_id', '=', $this->newTranaction->currency_id)
-            ->sum('amount'); 
+            ->sum('amount');
 
         Balance::upsert(
             [
@@ -161,13 +183,13 @@ class EditCash extends Component
             ['current_balance']
         );
 
-        $this->dispatchBrowserEvent('alert-success', ['message' => 'Cash added succeffully!']);
+        $this->dispatchBrowserEvent('alert-success', ['message' => 'Cash updated succeffully!']);
     }
     // end add new cash
 
-    
+
     public function render()
     {
-        return view('livewire.cash.edit-cash',['currencies' => $this->currencies]);
+        return view('livewire.cash.edit-cash', ['currencies' => $this->currencies]);
     }
 }

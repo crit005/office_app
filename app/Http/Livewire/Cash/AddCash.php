@@ -110,7 +110,8 @@ class AddCash extends Component
         DB::update(
             "UPDATE cash_transactions
             SET balance = balance + ?, user_balance = if(owner = ? , user_balance + ? , user_balance)
-            WHERE currency_id = ? AND (id > ? OR tr_date > ? )
+            -- WHERE currency_id = ? AND (id > ? OR tr_date > ? )
+            WHERE currency_id = ? AND ((id > ? and tr_date = ?) OR tr_date > ? )
             ",
             [
                 $this->newTranaction->amount,
@@ -122,11 +123,7 @@ class AddCash extends Component
 
             ]
         );
-
-        $lastBalance = CashTransaction::where('status', '=', 'DONE')            
-            ->where('currency_id', '=', $this->newTranaction->currency_id)
-            ->sum('amount'); 
-
+        
         $userLastBalance = CashTransaction::where('status', '=', 'DONE')            
             ->where('currency_id', '=', $this->newTranaction->currency_id)
             ->where('owner', '=', auth()->user()->id)
