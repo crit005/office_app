@@ -17,7 +17,7 @@ class EditCash extends Component
     public $currencies;
     public $arrCurrencies;
     public $currencyIds;
-    
+
     public $newTranaction;
 
 
@@ -36,7 +36,7 @@ class EditCash extends Component
             $this->arrCurrencies[$currency->id] = $currency->toArray();
         }
         // intit rule for currency id
-        $this->cashRules['currency_id'] .= "|in:" . $this->currencyIds;        
+        $this->cashRules['currency_id'] .= "|in:" . $this->currencyIds;
     }
 
     public $cashRules = [
@@ -78,7 +78,6 @@ class EditCash extends Component
             SET balance = balance - ?, user_balance = if(owner = ? , user_balance - ? , user_balance)
             -- WHERE currency_id = ? AND (id > ? OR tr_date > ? )
             WHERE currency_id = ? AND ((id > ? and tr_date = ?) OR tr_date > ? )
-
             ",
             [
                 $this->transaction->amount,
@@ -87,7 +86,6 @@ class EditCash extends Component
                 $this->transaction->currency_id,
                 $this->transaction->id,
                 $this->transaction->tr_date
-
             ]
         );
 
@@ -101,7 +99,6 @@ class EditCash extends Component
                 $this->transaction->amount,
                 $this->transaction->currency_id,
                 $this->transaction->owner
-
             ]
         );
         //=================================================================
@@ -152,7 +149,7 @@ class EditCash extends Component
             ]
         );
 
-        
+
 
         $userLastBalance = CashTransaction::where('status', '=', 'DONE')
             ->where('currency_id', '=', $this->newTranaction->currency_id)
