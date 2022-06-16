@@ -17,16 +17,12 @@ class EditCash extends Component
     public $currencies;
     public $arrCurrencies;
     public $currencyIds;
-    
-    public $newTranaction;
-
-
-
 
     public function mount(CashTransaction $transaction)
     {
         $this->transaction = $transaction;
         $this->form = $transaction->toArray();
+        $this->form['tr_date'] = date('d-M-Y', strtotime($this->form['tr_date']));
         $this->currencies = Currency::where('status', '=', 'ENABLED')->orWhere('id', '=', $transaction->currency_id)->orderBy('position', 'asc')->get();
         foreach ($this->currencies as $index => $currency) {
             $this->currencyIds .= $currency->id;
@@ -72,11 +68,10 @@ class EditCash extends Component
     {
         Validator::make($this->form, $this->cashRules, [], $this->cashValidationAttributes)->validate();
 
-        // draw back amount from cash transaction
+        //draw back amount from cash transaction
         DB::update(
             "UPDATE cash_transactions
-            SET balance = balance - ?, user_balance = if(owner = ? , user_balance - ? , user_balance)
-            -- WHERE currency_id = ? AND (id > ? OR tr_date > ? )
+            SET balance = balance - ?, user_balance = if(owner = ? , user_balance - ? , user_balance)            
             WHERE currency_id = ? AND ((id > ? and tr_date = ?) OR tr_date > ? )
 
             ",
@@ -86,6 +81,7 @@ class EditCash extends Component
                 $this->transaction->amount,
                 $this->transaction->currency_id,
                 $this->transaction->id,
+                $this->transaction->tr_date,
                 $this->transaction->tr_date
 
             ]
@@ -128,7 +124,7 @@ class EditCash extends Component
         $dataRecord['currency_id'] = $this->form['currency_id'];
         $dataRecord['month'] = date('M-Y', strtotime($this->form['tr_date']));
         $dataRecord['description'] = $this->form['description'];
-
+            
         $this->transaction->update($dataRecord);
 
         // $this->reset(['form', 'selectedCurrency']);
@@ -155,14 +151,14 @@ class EditCash extends Component
         
 
         $userLastBalance = CashTransaction::where('status', '=', 'DONE')
-            ->where('currency_id', '=', $this->newTranaction->currency_id)
+            ->where('currency_id', '=', $this->transaction->currency_id)
             ->where('owner', '=', $this->transaction->owner)
             ->sum('amount'); //require function
 
         Balance::upsert(
             [
                 'user_id' => auth()->user()->id,
-                'currency_id' => $this->newTranaction->currency_id,
+                'currency_id' => $this->transaction->currency_id,
                 'current_balance' => $userLastBalance
             ],
             ['user_id', 'currency_id'],
@@ -170,13 +166,13 @@ class EditCash extends Component
         );
 
         $lastBalance = CashTransaction::where('status', '=', 'DONE')
-            ->where('currency_id', '=', $this->newTranaction->currency_id)
+            ->where('currency_id', '=', $this->transaction->currency_id)
             ->sum('amount');
 
         Balance::upsert(
             [
                 'user_id' => 0,
-                'currency_id' => $this->newTranaction->currency_id,
+                'currency_id' => $this->transaction->currency_id,
                 'current_balance' => $lastBalance
             ],
             ['user_id', 'currency_id'],

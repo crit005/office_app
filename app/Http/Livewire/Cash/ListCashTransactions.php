@@ -16,7 +16,8 @@ class ListCashTransactions extends Component
 
     // Component variable //
     protected $paginationTheme = 'bootstrap';
-
+    public $globleBalance = false;
+    
     public $search = null;
     public $searchUserIds = [];
     public $searchCurrencyIds = [];
@@ -34,7 +35,7 @@ class ListCashTransactions extends Component
         'month' => 'month',
         'created by' => 'owner_name',
         'type' => 'type'
-    ];
+    ];    
 
     public function mount()
     {
@@ -43,10 +44,17 @@ class ListCashTransactions extends Component
         }
     }
 
-    protected $listeners =[
-        'searchListener'=>'searchListener'
+    protected $listeners = [
+        'searchListener' => 'searchListener'
     ];
-    
+
+    public function updatedGlobleBalance($var)
+    {
+        if (auth()->user()->group_id > 2) {
+            $this->globleBalance = false;
+        }
+    }
+
     public function updatedSearch($var)
     {
         $this->specificColumn = null;
@@ -80,7 +88,7 @@ class ListCashTransactions extends Component
         }
 
 
-        $this->resetPage();
+        //$this->resetPage();
     }
 
     public function getUserIdsFromeSearch($search)
@@ -110,7 +118,7 @@ class ListCashTransactions extends Component
 
     public function render()
     {
-        if (auth()->user()->group_id <= 2) {
+        if ($this->globleBalance) {
             $transactions = CashTransaction::where('status', '!=', 'DELETED')
                 ->when($this->specificColumn, function ($query) {
                     $query->where($this->searchFields[$this->specificColumn], $this->specificOperator ?? 'like', $this->specificOperator ? $this->specificSearch : '%' . $this->specificSearch . '%')

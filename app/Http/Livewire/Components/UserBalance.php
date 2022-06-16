@@ -31,7 +31,11 @@ class UserBalance extends Component
 
     public function switchGloble()
     {
-        $this->isGloble = !$this->isGloble;    
+        if (auth()->user()->group_id > 2) {
+            return;
+        }
+        $this->isGloble = !$this->isGloble;
+        $this->dispatchBrowserEvent('changeCashTransactionMode', ['globleMode' => $this->isGloble]);
     }
 
     public function render()
