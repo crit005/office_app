@@ -79,17 +79,17 @@
                                                 <div class="d-flex justify-content-center">
                                                     <button class="btn btn-xs btn-primary mr-2" wire:click.prevent="edit({{$user}})"><i class="fa fa-edit"></i>
                                                     </button>
-                                                
+
                                                     <button class="btn btn-xs btn-danger mr-2" wire:click.prevent="confirmTrash({{$user}})">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
-                                                
+
                                                     @if (Auth()->user()->isAdmin())
                                                     <button class="btn btn-xs btn-danger" wire:click.prevent="confirmUserRemoval({{$user->id}})">
                                                         <i class="fas fa-eraser"></i>
                                                     </button>
                                                     @endif
-                                                </div> 
+                                                </div>
                                             </td>
                                         </tr>
                                         @empty
@@ -182,7 +182,7 @@
                                             <label for="password">Password:</label>
                                             <input wire:model.debounce='form.password' type="password"
                                                 class="form-control @error('password') is-invalid @else {{$this->getValidClass('password')}} @enderror"
-                                                name="password" id="password" placeholder="Password">
+                                                name="password" id="password" placeholder="Password" autocomplete= "off">
                                             @error('password')
                                             <div class="invalid-feedback">{{$message}}</div>
                                             @enderror
@@ -193,7 +193,7 @@
                                             <input wire:model.debounce='form.password_confirmation' type="password"
                                                 class="form-control @error('password_confirmation') is-invalid @else {{$this->getValidClass('password_confirmation')}} @enderror"
                                                 name="password_confirmation" id="password_confirmation"
-                                                placeholder="Confirm password">
+                                                placeholder="Confirm password"  autocomplete= "off">
                                             @error('password_confirmation')
                                             <div class="invalid-feedback">{{$message}}</div>
                                             @enderror
@@ -263,13 +263,13 @@
 
                                                 <div style="position: relative;"
                                                     class="img-thumbnail text-center  @error('photo') is-invalid @enderror">
-                                                    <img x-on:click="$refs.image.click()" x-bind:src="imagePreview ? imagePreview : 
+                                                    <img x-on:click="$refs.image.click()" x-bind:src="imagePreview ? imagePreview :
                                                         '{{asset("images/no_profile.jpg")}}'" alt=""
                                                         style="height: 100%; width: 100%; cursor: pointer;">
-                                                    
+
                                                     @if ($photo || (!in_array(asset("images/no_profile.jpg"),$form) &&
                                                     array_key_exists('photo_url',$form)))
-                                                    
+
                                                     <button wire:click.prevent='clearPhoto()'
                                                         class="btn btn-sm btn-danger m-2"
                                                         style="position: absolute; bottom: 0; right:0;"
@@ -335,7 +335,7 @@
                                     </div>
                                     <div>
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times mr-2"></i>Cancel</button>
-                                    
+
                                         <button type="submit" class="btn btn-primary" wire:loading.attr="disabled"><i
                                                 class="fa fa-save mr-2"></i>Save</button>
                                     </div>

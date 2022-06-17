@@ -35,8 +35,8 @@
 
                             <div class="card-tools">
                                 <div class="input-group input-group-sm" style="width: 150px;">
-                                    <input wire:model.debounce='search' type="text"
-                                        name="table_search" class="form-control float-right" placeholder="Search" >
+                                    <input wire:model.debounce='search' type="text" name="table_search"
+                                        class="form-control float-right" placeholder="Search">
 
                                     <div class="input-group-append">
                                         <button type="submit" class="btn btn-default">
@@ -48,8 +48,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body p-0">
-                            <div class="table-responsive rounded" style="background:none; border: none;">
-                                
+                            <div class="table-responsive rounded" style="background:none; border: none;">                                
                                 <table class="table table-hover">
                                     <thead class="thead-dark">
                                         <tr>
@@ -76,40 +75,40 @@
                                             <td>{{date(env('DATE_FORMAT'),strtotime($transaction->tr_date))}}</td>
                                             <td class="text-center">{{$transaction->item_name}}</td>
 
-                                                <td class="text-center">{{$transaction->amount ."
-                                                    ".$transaction->currency->symbol}}</td>
+                                            <td class="text-center">{{$transaction->amount ."
+                                                ".$transaction->currency->symbol}}</td>
 
-                                                @if (auth()->user()->group_id <=2) <td class="text-center">
-                                                    {{$transaction->balance ." ".$transaction->currency->symbol}}</td>
-                                                    @else
-                                                    <td class="text-center">{{$transaction->user_balance ."
-                                                        ".$transaction->currency->symbol}}</td>
+                                            @if ($globleBalance) <td class="text-center">
+                                                {{$transaction->balance ." ".$transaction->currency->symbol}}</td>
+                                            @else
+                                            <td class="text-center">{{$transaction->user_balance ."
+                                                ".$transaction->currency->symbol}}</td>
+                                            @endif
+
+                                            <td class="text-center">{{$transaction->use_on}}</td>
+
+                                            <td class="text-center">{{$transaction->month}}</td>
+                                            <td class="text-center">{{$transaction->owner_name}}</td>
+                                            <td class="text-center">{{$transaction->type}}</td>
+
+                                            <td class="text-center">
+                                                <div class="d-flex justify-content-center">
+                                                    <a href="{{route('cash.editcash',$transaction)}}"
+                                                        class="btn btn-xs btn-primary mr-2">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+
+                                                    <button class="btn btn-xs btn-danger mr-2">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+
+                                                    @if (Auth()->user()->isAdmin())
+                                                    <button class="btn btn-xs btn-danger">
+                                                        <i class="fas fa-eraser"></i>
+                                                    </button>
                                                     @endif
-
-                                                    <td class="text-center">{{$transaction->use_on}}</td>
-
-
-                                                    <td class="text-center">{{$transaction->month}}</td>
-                                                    <td class="text-center">{{$transaction->owner_name}}</td>
-                                                    <td class="text-center">{{$transaction->type}}</td>
-
-                                                    <td class="text-center">
-                                                        <div class="d-flex justify-content-center">
-                                                            <a href="{{route('cash.editcash',$transaction)}}" class="btn btn-xs btn-primary mr-2">
-                                                                <i class="fa fa-edit"></i>
-                                                            </a>
-
-                                                            <button class="btn btn-xs btn-danger mr-2">
-                                                                <i class="fa fa-trash"></i>
-                                                            </button>
-
-                                                            @if (Auth()->user()->isAdmin())
-                                                            <button class="btn btn-xs btn-danger">
-                                                                <i class="fas fa-eraser"></i>
-                                                            </button>
-                                                            @endif
-                                                        </div>
-                                                    </td>
+                                                </div>
+                                            </td>
                                         </tr>
                                         @empty
                                         <tr>
@@ -142,11 +141,17 @@
         <!-- /.container-fluid -->
     </div>
     <!-- /.content -->
+
 </div>
 @push('js')
 <script>
+    window.addEventListener('changeCashTransactionMode',e =>{
+        @this.globleBalance = e.detail.globleMode;
+    });
+
+
     function globleSearch(val){ 
             @this.search = val;
-        }
+        }   
 </script>
 @endpush
