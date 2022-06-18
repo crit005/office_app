@@ -28,7 +28,9 @@ class CashTransaction extends Model
         'status',
         'input_type',
         'tr_id',
-        'uuid'
+        'uuid',
+        'updated_by',
+        'logs'
     ];
 
     public function currency()

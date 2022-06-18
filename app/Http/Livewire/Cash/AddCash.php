@@ -94,6 +94,7 @@ class AddCash extends Component
         $dataRecord['month'] = date('M-Y', strtotime($this->form['tr_date']));
         // $dataRecord['description'] = $this->form['description'];
         $dataRecord['owner'] = auth()->user()->id;
+        // $dataRecord['updated_by'] = auth()->user()->id;
         $dataRecord['owner_name'] = auth()->user()->name;
         $dataRecord['type'] = "INCOME";
         $dataRecord['status'] = "DONE";

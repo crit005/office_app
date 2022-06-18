@@ -34,6 +34,8 @@ return new class extends Migration
             $table->string('input_type')->default('MENUL'); // MENUL, IMPORT
             $table->bigInteger('tr_id')->nullable();
             $table->string('uuid')->nullable();
+            $table->json('logs')->nullable();
+            $table->foreignId('updated_by')->nullable()->references('id')->on('users')->nullOnDelete();
             $table->timestamps();
         });
     }

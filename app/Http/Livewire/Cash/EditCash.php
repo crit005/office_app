@@ -17,11 +17,20 @@ class EditCash extends Component
     public $currencies;
     public $arrCurrencies;
     public $currencyIds;
+    public $logs;
 
     public function mount(CashTransaction $transaction)
     {
         $this->transaction = $transaction;
         $this->form = $transaction->toArray();
+
+        $this->logs = json_decode($transaction->logs)?? [];
+        
+        array_push($this->logs, array_filter($this->form, function($k) {
+            return $k != 'logs';
+        }, ARRAY_FILTER_USE_KEY));
+
+
         $this->form['tr_date'] = date('d-M-Y', strtotime($this->form['tr_date']));
         $this->currencies = Currency::where('status', '=', 'ENABLED')->orWhere('id', '=', $transaction->currency_id)->orderBy('position', 'asc')->get();
         foreach ($this->currencies as $index => $currency) {
@@ -68,6 +77,8 @@ class EditCash extends Component
     {
         Validator::make($this->form, $this->cashRules, [], $this->cashValidationAttributes)->validate();
 
+        // $log = array_push()
+
         //draw back amount from cash transaction
         DB::update(
             "UPDATE cash_transactions
@@ -99,6 +110,8 @@ class EditCash extends Component
         );
         //=================================================================
 
+        
+
         $lastBalance = CashTransaction::where('status', '=', 'DONE')
             ->where('tr_date', '<=', date('Y-m-d', strtotime($this->form['tr_date'])))
             ->where('currency_id', '=', $this->form['currency_id'])
@@ -121,7 +134,8 @@ class EditCash extends Component
         $dataRecord['currency_id'] = $this->form['currency_id'];
         $dataRecord['month'] = date('M-Y', strtotime($this->form['tr_date']));
         $dataRecord['description'] = $this->form['description'];
-
+        $dataRecord['updated_by'] = auth()->user()->id;
+        $dataRecord['logs'] = json_encode($this->logs);
         $this->transaction->update($dataRecord);
 
         // $this->reset(['form', 'selectedCurrency']);
