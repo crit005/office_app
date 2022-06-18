@@ -79,7 +79,7 @@ class EditCash extends Component
 
         // $log = array_push()
 
-        //draw back amount from cash transaction
+        // draw back amount from cash transaction
         DB::update(
             "UPDATE cash_transactions
             SET balance = balance - ?, user_balance = if(owner = ? , user_balance - ? , user_balance)
@@ -113,18 +113,30 @@ class EditCash extends Component
         
 
         $lastBalance = CashTransaction::where('status', '=', 'DONE')
-            ->where('tr_date', '<=', date('Y-m-d', strtotime($this->form['tr_date'])))
-            ->where('currency_id', '=', $this->form['currency_id'])
-            ->where('id', '<', $this->transaction->id)
+            ->where('id','!=',$this->transaction->id)
+            ->where('currency_id', '=', $this->form['currency_id'])            
+            ->where(function($q){
+                $q->where('tr_date', '<', date('Y-m-d', strtotime($this->form['tr_date'])))
+                ->orWhere(function($q){
+                    $q->where('id', '<', $this->transaction->id)
+                    ->where('tr_date','=',date('Y-m-d', strtotime($this->form['tr_date'])));
+                });
+            })            
             ->sum('amount'); //require function
 
-        $userLastBalance = CashTransaction::where('status', '=', 'DONE')
-            ->where('tr_date', '<=', date('Y-m-d', strtotime($this->form['tr_date'])))
-            ->where('currency_id', '=', $this->form['currency_id'])
-            ->where('id', '<', $this->transaction->id)
+        $userLastBalance = CashTransaction::where('status', '=', 'DONE')  
+            ->where('id','!=',$this->transaction->id)          
+            ->where('currency_id', '=', $this->form['currency_id'])            
             ->where('owner', '=', $this->transaction->owner)
+            ->where(function($q){
+                $q->where('tr_date', '<', date('Y-m-d', strtotime($this->form['tr_date'])))
+                ->orWhere(function($q){
+                    $q->where('id', '<', $this->transaction->id)
+                    ->where('tr_date','=',date('Y-m-d', strtotime($this->form['tr_date'])));
+                });
+            })
             ->sum('amount'); //require function
-
+        // dd($lastBalance);
         $dataRecord = [];
         $dataRecord['tr_date'] = date('Y-m-d', strtotime($this->form['tr_date']));
         $dataRecord['amount'] = $this->form['amount'];
@@ -190,10 +202,10 @@ class EditCash extends Component
             ['current_balance']
         );
 
-        $this->dispatchBrowserEvent('alert-success', ['message' => 'Cash updated succeffully!']);
+        $this->dispatchBrowserEvent('alert-updated-success', ['message' => 'Cash updated succeffully!']);
     }
     // end add new cash
-
+    
 
     public function render()
     {

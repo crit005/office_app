@@ -28,8 +28,7 @@
                                 <h1 class="m-0">UPDATE CASH</h1>
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body">
-                                @dump($logs)
+                            <div class="card-body">                                
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
@@ -124,5 +123,16 @@
         function goBack(){
             history.back();
         }
+
+        window.addEventListener('alert-updated-success', e =>{
+            Swal.fire({
+                title: 'Success!',
+                text: e.detail.message,
+                icon: 'success',
+                confirmButtonText: 'OK',                
+            }).then(()=>{
+                goBack();
+            });            
+        });
     </script>
 @endpush
