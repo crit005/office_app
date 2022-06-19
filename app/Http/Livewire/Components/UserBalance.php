@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Components;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 
 class UserBalance extends Component
@@ -29,18 +30,24 @@ class UserBalance extends Component
     ORDER BY currencies.position            
     ";
 
+    public function mount()
+    {        
+        $this->isGloble = Session::get('isGlobleCash')?? false;
+    }
+
     public function switchGloble()
     {
         if (auth()->user()->group_id > 2) {
-            return;
+            $this->isGloble = false;                       
+        }else{
+            $this->isGloble = !$this->isGloble;
         }
-        $this->isGloble = !$this->isGloble;
+        session(['isGlobleCash' => $this->isGloble]);
         $this->dispatchBrowserEvent('changeCashTransactionMode', ['globleMode' => $this->isGloble]);
     }
 
     public function render()
     {
-
 
         $balances = DB::select(
             $this->isGloble ? $this->globleQuery : $this->userQuery,

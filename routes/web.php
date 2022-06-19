@@ -3,6 +3,7 @@
 use App\Http\Controllers\Dashboard;
 use App\Http\Livewire\Admin\User\ListUsers;
 use App\Http\Livewire\Cash\AddCash;
+use App\Http\Livewire\Cash\AddPayment;
 use App\Http\Livewire\Cash\EditCash;
 use App\Http\Livewire\Cash\ListCashdrawer;
 use App\Http\Livewire\Cash\ListCashTransactions;
@@ -38,5 +39,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('cash/cashtransactions', ListCashTransactions::class)->name('cash.cashtransactions');
     Route::get('cash/addcash', AddCash::class)->name('cash.addcash');
     Route::get('cash/{transaction}/editcash', EditCash::class)->name('cash.editcash');
+
+    Route::get('cash/newexpand', AddPayment::class)->name('cash.newexpand');
 });
 

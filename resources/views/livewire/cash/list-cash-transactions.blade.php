@@ -48,7 +48,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body p-0">
-                            <div class="table-responsive rounded" style="background:none; border: none;">                                
+                            <div class="table-responsive rounded" style="background:none; border: none;">
                                 <table class="table table-hover">
                                     <thead class="thead-dark">
                                         <tr>
@@ -93,20 +93,18 @@
 
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center">
+                                                    @if (auth()->user()->id == $transaction->owner)
                                                     <a href="{{route('cash.editcash',$transaction)}}"
                                                         class="btn btn-xs btn-primary mr-2">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
 
-                                                    <button class="btn btn-xs btn-danger mr-2">
+                                                    <button wire:click.prevent='confirmTrash({{$transaction}})'
+                                                        class="btn btn-xs btn-danger mr-2">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
-
-                                                    @if (Auth()->user()->isAdmin())
-                                                    <button class="btn btn-xs btn-danger">
-                                                        <i class="fas fa-eraser"></i>
-                                                    </button>
                                                     @endif
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -152,6 +150,22 @@
 
     function globleSearch(val){ 
             @this.search = val;
-        }   
+        }
+        
+    window.addEventListener('show-confirm-trash',e=>{
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                @this.putItemToTrash();
+            }
+        });
+    })
 </script>
 @endpush

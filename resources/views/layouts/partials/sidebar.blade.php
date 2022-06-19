@@ -103,8 +103,8 @@
 
                         {{-- Expand Menu --}}
                         <li class="nav-item">
-                            <a href="{{ route('dashboard') }}"
-                                class="nav-link {{ request()->is('expand') ? 'active' : '' }}">
+                            <a href="{{ route('cash.newexpand') }}"
+                                class="nav-link {{ request()->is('cash/newexpand') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-cart-plus  ml-4"></i>
                                 <p>
                                     Expand
@@ -146,18 +146,7 @@
                                     Transfer
                                 </p>
                             </a>
-                        </li>
-
-                        {{-- Cashdrawer --}}
-                        <li class="nav-item">
-                            <a href="{{ route('cash.cashdrawers') }}"
-                                class="nav-link {{ request()->is('cash/cashdrawers') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-inbox  ml-4"></i>
-                                <p>
-                                    Cashdrawer
-                                </p>
-                            </a>
-                        </li>
+                        </li>                        
 
                         {{-- CashTransaction --}}
                         <li class="nav-item">
