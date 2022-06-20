@@ -42,6 +42,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
+
                                                 <div class="form-group">
                                                     <label for="currency_id">Currency:</label>
                                                     <select wire:model.debounce='form.currency_id'
@@ -57,8 +58,10 @@
                                                     <div class="invalid-feedback">{{$message}}</div>
                                                     @enderror
                                                 </div>
+
                                             </div>
                                             <div class="col-md-6">
+
                                                 <div class="form-group">
                                                     <label for="amount">Amount:</label>
                                                     <div class="input-group mb-3">
@@ -92,7 +95,7 @@
                                                 name="item_id" id="item_id">
                                                 <option value="">Select Expand</option>
                                                 @foreach ($items as $item)
-                                                <option value={{$item}}>{{$item->name}}</option>
+                                                <option value={{$item->id}}>{{$item->name}}</option>
                                                 @endforeach
                                             </select>
                                             @error('item_id')
@@ -107,7 +110,7 @@
                                                 name="depatment_id" id="depatment_id">
                                                 <option value="">Select Depatment</option>
                                                 @foreach ($depatments as $depatment)
-                                                <option value={{$depatment}}>{{$depatment->name}}</option>
+                                                <option value={{$depatment->id}}>{{$depatment->name}}</option>
                                                 @endforeach
                                             </select>
                                             @error('depatment_id')
