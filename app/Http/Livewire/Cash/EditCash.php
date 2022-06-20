@@ -83,7 +83,7 @@ class EditCash extends Component
         DB::update(
             "UPDATE cash_transactions
             SET balance = balance - ?, user_balance = if(owner = ? , user_balance - ? , user_balance)
-            WHERE currency_id = ? AND ((id > ? and tr_date = ?) OR tr_date > ? )
+            WHERE currency_id = ? AND status != 'DELETED' AND ((id > ? and tr_date = ?) OR tr_date > ? )
             ",
             [
                 $this->transaction->amount,

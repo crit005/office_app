@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0 text-white">Add New Expand</h1>
+                    <h1 class="m-0 text-white">Edit Expand</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -25,7 +25,7 @@
                     <div class="card">
                         <form wire:submit.prevent='addExpand'>
                             <div class="card-header text-white text-center">
-                                <h1 class="m-0">ADD EXPAND</h1>
+                                <h1 class="m-0">EDIT EXPAND</h1>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
@@ -103,21 +103,6 @@
                                             @enderror
                                         </div>
 
-                                        @if($showOtherOption)
-                                        <div class="form-group">                                            
-                                            <div class="input-group mb-3">
-                                                <input type="text"
-                                                    class="form-control   @error('item_name') is-invalid @else {{$this->getValidClass('item_name')}} @enderror"
-                                                    wire:model.debounce='form.item_name' name="item_name" id="item_name"
-                                                    placeholder="Other Name" aria-label="Username"
-                                                    aria-describedby="basic-addon1">                                                
-                                                @error('item_name')
-                                                <div class="invalid-feedback">{{$message}}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        @endif
-
                                         <div class="form-group">
                                             <label for="depatment_id">Expand On:</label>
                                             <select wire:model.debounce='form.to_from'
@@ -185,5 +170,16 @@
     function goBack(){
             history.back();
         }
+
+    window.addEventListener('alert-updated-success', e =>{
+        Swal.fire({
+            title: 'Success!',
+            text: e.detail.message,
+            icon: 'success',
+            confirmButtonText: 'OK',                
+        }).then(()=>{
+            goBack();
+        });            
+    });
 </script>
 @endpush

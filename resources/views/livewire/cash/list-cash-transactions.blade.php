@@ -94,15 +94,31 @@
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center">
                                                     @if (auth()->user()->id == $transaction->owner)
-                                                    <a href="{{route('cash.editcash',$transaction)}}"
-                                                        class="btn btn-xs btn-primary mr-2">
-                                                        <i class="fa fa-edit"></i>
-                                                    </a>
+                                                        @if($transaction->item_name == 'Add Cash' && $transaction->item->status == 'SYSTEM')
+                                                        <a href="{{route('cash.editcash',$transaction)}}"
+                                                            class="btn btn-xs btn-primary mr-2">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
 
-                                                    <button wire:click.prevent='confirmTrash({{$transaction}})'
-                                                        class="btn btn-xs btn-danger mr-2">
-                                                        <i class="fa fa-trash"></i>
-                                                    </button>
+                                                        <button wire:click.prevent='confirmTrash({{$transaction}})'
+                                                            class="btn btn-xs btn-danger mr-2">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+
+                                                        @else
+
+                                                        <a href="{{route('cash.editexpand',$transaction)}}"
+                                                            class="btn btn-xs btn-primary mr-2">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+
+                                                        <button wire:click.prevent='confirmTrash({{$transaction}})'
+                                                            class="btn btn-xs btn-danger mr-2">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+
+                                                        @endif
+
                                                     @endif
 
                                                 </div>
