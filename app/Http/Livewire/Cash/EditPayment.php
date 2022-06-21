@@ -14,6 +14,8 @@ use Livewire\Component;
 class EditPayment extends Component
 {
     public $form = [];
+    public $selectedCurrency = null;
+    public $showOtherOption = false;
 
     public $currencies;
     public $arrCurrencies;
@@ -70,12 +72,26 @@ class EditPayment extends Component
     ];
 
     public function updatedForm($value)
-    {
+    {        
         $rules = array_filter($this->cashRules, function ($key) {
             return in_array($key, array_keys($this->form));
         }, ARRAY_FILTER_USE_KEY);
 
+        if (array_key_exists('item_id', $this->form)) {
+            if ($this->form['item_id'] == 13) {
+                $this->showOtherOption = true;
+                $this->cashRules['item_name'] = 'required';
+            } else {
+                $this->showOtherOption = false;
+                $this->cashRules['item_name'] = 'sometimes';
+            }
+        }
+        
         Validator::make($this->form, $rules, [], $this->cashValidationAttributes)->validate();
+
+        if (array_key_exists('currency_id', $this->form)) {
+            $this->selectedCurrency = $this->arrCurrencies[$this->form['currency_id']]['symbol'];
+        }
     }
 
     public function getValidClass(String $fieldName)
@@ -134,7 +150,7 @@ class EditPayment extends Component
         $dataRecord = [];
         $dataRecord['tr_date'] = date('Y-m-d', strtotime($this->form['tr_date']));
         $dataRecord['item_id'] = $this->form['item_id'];
-        $dataRecord['item_name'] = Items::where('id', '=', $this->form['item_id'])->first()->name;
+        $dataRecord['item_name'] = $this->form['item_id'] == 13 ? $this->form['item_name'] : Items::where('id', '=', $this->form['item_id'])->first()->name;
         $dataRecord['amount'] = -$this->form['amount'];
         $dataRecord['bk_amount'] = -$this->form['amount'];
         $dataRecord['balance'] = $lastBalance - $this->form['amount'];

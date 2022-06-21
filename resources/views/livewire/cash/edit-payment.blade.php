@@ -103,6 +103,21 @@
                                             @enderror
                                         </div>
 
+                                        @if($showOtherOption)
+                                        <div class="form-group">                                            
+                                            <div class="input-group mb-3">
+                                                <input type="text"
+                                                    class="form-control   @error('item_name') is-invalid @else {{$this->getValidClass('item_name')}} @enderror"
+                                                    wire:model.debounce='form.item_name' name="item_name" id="item_name"
+                                                    placeholder="Other Name" aria-label="Username"
+                                                    aria-describedby="basic-addon1">                                                
+                                                @error('item_name')
+                                                <div class="invalid-feedback">{{$message}}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        @endif
+
                                         <div class="form-group">
                                             <label for="depatment_id">Expand On:</label>
                                             <select wire:model.debounce='form.to_from'
