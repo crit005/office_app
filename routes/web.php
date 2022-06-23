@@ -6,6 +6,7 @@ use App\Http\Livewire\Cash\AddCash;
 use App\Http\Livewire\Cash\AddPayment;
 use App\Http\Livewire\Cash\EditCash;
 use App\Http\Livewire\Cash\EditPayment;
+use App\Http\Livewire\Cash\Exchange;
 use App\Http\Livewire\Cash\ListCashdrawer;
 use App\Http\Livewire\Cash\ListCashTransactions;
 use App\Http\Livewire\Setting\ListCurrency;
@@ -43,5 +44,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('cash/newexpand', AddPayment::class)->name('cash.newexpand');
     Route::get('cash/{transaction}editexpand', EditPayment::class)->name('cash.editexpand');
+
+    Route::get('cash/exchange', Exchange::class)->name('cash.exchange');
+
+
 });
 

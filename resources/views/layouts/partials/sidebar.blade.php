@@ -127,8 +127,8 @@
 
                         {{-- Exchange Menu --}}
                         <li class="nav-item">
-                            <a href="{{ route('dashboard') }}"
-                                class="nav-link {{ request()->is('expand') ? 'active' : '' }}">
+                            <a href="{{ route('cash.exchange') }}"
+                                class="nav-link {{ request()->is('exchange') ? 'active' : '' }}">
                                 {{-- <i class="nav-icon fas fa-exchange-alt  ml-4"></i> --}}
                                 <i class="nav-icon fas fa-sync ml-4"></i>
                                 <p>
