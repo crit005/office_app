@@ -25,7 +25,7 @@
                     <div class="card">
                         <div class="card-header">
                             {{-- <h3 class="card-title text-white">List Users</h3> --}}
-                            <a href="{{route('cash.addcash')}}">
+                            <a href="{{ route('cash.addcash') }}">
                                 <button type="button" class="btn btn-primary" {{-- data-toggle="modal"
                                     data-target="#depatmentModal" --}}>
                                     <i class="fa fa-plus-circle mr-2"></i>
@@ -67,67 +67,87 @@
                                     </thead>
                                     <tbody id="sortable">
                                         @forelse ($transactions as $indext => $transaction)
-                                        <tr wire:key="depatment-{{ $transaction->id }}" id="{{ $transaction->id }}">
-                                            <th scope="row">
-                                                {{$transactions->firstItem() + $indext}}
-                                            </th>
+                                            <tr wire:key="depatment-{{ $transaction->id }}"
+                                                id="{{ $transaction->id }}">
+                                                <th scope="row">
+                                                    {{ $transactions->firstItem() + $indext }}
+                                                </th>
 
-                                            <td>{{date(env('DATE_FORMAT'),strtotime($transaction->tr_date))}}</td>
-                                            <td class="text-center">{{$transaction->item_name}}</td>
+                                                <td>{{ date(env('DATE_FORMAT'), strtotime($transaction->tr_date)) }}</td>
+                                                <td class="text-center">{{ $transaction->item_name }}</td>
 
-                                            <td class="text-center">{{$transaction->amount ."
-                                                ".$transaction->currency->symbol}}</td>
+                                                <td class="text-center">
+                                                    {{ $transaction->amount .
+                                                        "
+                                                                                                    " .
+                                                        $transaction->currency->symbol }}
+                                                </td>
 
-                                            @if ($globleBalance) <td class="text-center">
-                                                {{$transaction->balance ." ".$transaction->currency->symbol}}</td>
-                                            @else
-                                            <td class="text-center">{{$transaction->user_balance ."
-                                                ".$transaction->currency->symbol}}</td>
-                                            @endif
+                                                @if ($globleBalance)
+                                                    <td class="text-center">
+                                                        {{ $transaction->balance . ' ' . $transaction->currency->symbol }}
+                                                    </td>
+                                                @else
+                                                    <td class="text-center">
+                                                        {{ $transaction->user_balance .
+                                                            "
+                                                                                                        " .
+                                                            $transaction->currency->symbol }}
+                                                    </td>
+                                                @endif
 
-                                            <td class="text-center">{{$transaction->use_on}}</td>
+                                                <td class="text-center">{{ $transaction->use_on }}</td>
 
-                                            <td class="text-center">{{$transaction->month}}</td>
-                                            <td class="text-center">{{$transaction->owner_name}}</td>
-                                            <td class="text-center">{{$transaction->type}}</td>
+                                                <td class="text-center">{{ $transaction->month }}</td>
+                                                <td class="text-center">{{ $transaction->owner_name }}</td>
+                                                <td class="text-center">{{ $transaction->type }}</td>
 
-                                            <td class="text-center">
-                                                <div class="d-flex justify-content-center">
-                                                    @if (auth()->user()->id == $transaction->owner)
-                                                        @if($transaction->item_name == 'Add Cash' && $transaction->item->status == 'SYSTEM')
-                                                        <a href="{{route('cash.editcash',$transaction)}}"
-                                                            class="btn btn-xs btn-primary mr-2">
-                                                            <i class="fa fa-edit"></i>
-                                                        </a>
+                                                <td class="text-center">
+                                                    <div class="d-flex justify-content-center">
+                                                        @if (auth()->user()->id == $transaction->owner)
+                                                            @if ($transaction->item_name == 'Exchange' && $transaction->item->status == 'SYSTEM')
+                                                                <a href="{{ route('cash.editexchange', $transaction) }}"
+                                                                    class="btn btn-xs btn-primary mr-2">
+                                                                    <i class="fa fa-edit"></i>
+                                                                </a>
 
-                                                        <button wire:click.prevent='confirmTrash({{$transaction}})'
-                                                            class="btn btn-xs btn-danger mr-2">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
+                                                                <button
+                                                                    wire:click.prevent='confirmTrash({{ $transaction }})'
+                                                                    class="btn btn-xs btn-danger mr-2">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            @elseif($transaction->item_name == 'Add Cash' && $transaction->item->status == 'SYSTEM')
+                                                                <a href="{{ route('cash.editcash', $transaction) }}"
+                                                                    class="btn btn-xs btn-primary mr-2">
+                                                                    <i class="fa fa-edit"></i>
+                                                                </a>
 
-                                                        @else
+                                                                <button
+                                                                    wire:click.prevent='confirmTrash({{ $transaction }})'
+                                                                    class="btn btn-xs btn-danger mr-2">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            @else
+                                                                <a href="{{ route('cash.editexpand', $transaction) }}"
+                                                                    class="btn btn-xs btn-primary mr-2">
+                                                                    <i class="fa fa-edit"></i>
+                                                                </a>
 
-                                                        <a href="{{route('cash.editexpand',$transaction)}}"
-                                                            class="btn btn-xs btn-primary mr-2">
-                                                            <i class="fa fa-edit"></i>
-                                                        </a>
-
-                                                        <button wire:click.prevent='confirmTrash({{$transaction}})'
-                                                            class="btn btn-xs btn-danger mr-2">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-
+                                                                <button
+                                                                    wire:click.prevent='confirmTrash({{ $transaction }})'
+                                                                    class="btn btn-xs btn-danger mr-2">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            @endif
                                                         @endif
 
-                                                    @endif
-
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         @empty
-                                        <tr>
-                                            <td colspan="10" class="text-center"> No record found...</td>
-                                        </tr>
+                                            <tr>
+                                                <td colspan="10" class="text-center"> No record found...</td>
+                                            </tr>
                                         @endforelse
 
 
@@ -158,30 +178,30 @@
 
 </div>
 @push('js')
-<script>
-    window.addEventListener('changeCashTransactionMode',e =>{
-        @this.globleBalance = e.detail.globleMode;
-    });
+    <script>
+        window.addEventListener('changeCashTransactionMode', e => {
+            @this.globleBalance = e.detail.globleMode;
+        });
 
 
-    function globleSearch(val){ 
+        function globleSearch(val) {
             @this.search = val;
         }
-        
-    window.addEventListener('show-confirm-trash',e=>{
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                @this.putItemToTrash();
-            }
-        });
-    })
-</script>
+
+        window.addEventListener('show-confirm-trash', e => {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    @this.putItemToTrash();
+                }
+            });
+        })
+    </script>
 @endpush
