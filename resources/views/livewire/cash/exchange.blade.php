@@ -23,7 +23,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <form wire:submit.prevent='addExpand'>
+                        <form wire:submit.prevent='addExchange'>
                             <div class="card-header text-white text-center">
                                 <h1 class="m-0">EXCHANGE</h1>
                             </div>
@@ -115,7 +115,7 @@
                                                     <span class="input-group-text" id="basic-addon1">{{$toSelectedCurrency
                                                         ?? "?"}}</span>
                                                 </div>
-                                                @error('amount')
+                                                @error('to_amount')
                                                 <div class="invalid-feedback">{{$message}}</div>
                                                 @enderror
                                             </div>
