@@ -39,7 +39,7 @@ class Exchange extends Component
         $this->cashRules['currency_id'] .= "|in:" . $this->currencyIds;
         // $this->cashRules['to_currency_id'] .= "|in:" . $this->currencyIds;
 
-        $this->item = Items::where('status','=','SYSTEM')->where('name','=','Exchange')->first()->id;        
+        $this->item = Items::where('status', '=', 'SYSTEM')->where('name', '=', 'Exchange')->first()->id;
 
         $this->items = Items::where('status', '=', 'ENABLED')->orderBy('position', 'asc')->get();
 
@@ -86,14 +86,14 @@ class Exchange extends Component
         Validator::make($this->form, $rules, [], $this->cashValidationAttributes)->validate();
         if (array_key_exists('currency_id', $this->form)) {
             $this->selectedCurrency = $this->arrCurrencies[$this->form['currency_id']]['symbol'];
-            if (array_key_exists('to_currency_id', $this->form)) {  
-                if($this->form['currency_id'] == $this->form['to_currency_id']){
+            if (array_key_exists('to_currency_id', $this->form)) {
+                if ($this->form['currency_id'] == $this->form['to_currency_id']) {
                     $this->toSelectedCurrency = null;
                     unset($this->form['to_currency_id']);
-                }     
+                }
             }
         }
-        if (array_key_exists('to_currency_id', $this->form)) {            
+        if (array_key_exists('to_currency_id', $this->form)) {
             $this->toSelectedCurrency = $this->arrCurrencies[$this->form['to_currency_id']]['symbol'];
         }
     }
@@ -105,7 +105,7 @@ class Exchange extends Component
 
     public function addExchange()
     {
-        
+
         Validator::make($this->form, $this->cashRules, [], $this->cashValidationAttributes)->validate();
         // $v = Validator::make($this->form, $this->cashRules, [], $this->cashValidationAttributes);
 
@@ -114,7 +114,7 @@ class Exchange extends Component
         //     $messages = $v->messages();
         //     dd($messages);
         // }
-        
+
         $lastBalance = CashTransaction::where('status', '=', 'DONE')
             ->where('tr_date', '<=', date('Y-m-d', strtotime($this->form['tr_date'])))
             ->where('currency_id', '=', $this->form['currency_id'])
@@ -125,7 +125,7 @@ class Exchange extends Component
             ->where('currency_id', '=', $this->form['currency_id'])
             ->where('owner', '=', auth()->user()->id)
             ->sum('amount'); //require function
-       
+
         $dataRecord = [];
         $dataRecord['tr_date'] = date('Y-m-d', strtotime($this->form['tr_date']));
         $dataRecord['item_id'] = $this->item;
@@ -150,11 +150,11 @@ class Exchange extends Component
 
         // dd($dataRecord);
 
-        $fromTranaction = CashTransaction::create($dataRecord);       
+        $fromTranaction = CashTransaction::create($dataRecord);
 
         DB::update(
             "UPDATE cash_transactions
-            SET balance = balance + ?, user_balance = if(owner = ? , user_balance + ? , user_balance)            
+            SET balance = balance + ?, user_balance = if(owner = ? , user_balance + ? , user_balance)
             WHERE currency_id = ? AND ((id > ? and tr_date = ?) OR tr_date > ? )
             ",
             [
@@ -166,7 +166,7 @@ class Exchange extends Component
                 $fromTranaction->tr_date,
                 $fromTranaction->tr_date
             ]
-        );        
+        );
 
         //==================================================
 
@@ -205,11 +205,11 @@ class Exchange extends Component
 
         // dd($dataRecord);
 
-        $toTranaction = CashTransaction::create($dataRecord);       
+        $toTranaction = CashTransaction::create($dataRecord);
 
         DB::update(
             "UPDATE cash_transactions
-            SET balance = balance + ?, user_balance = if(owner = ? , user_balance + ? , user_balance)            
+            SET balance = balance + ?, user_balance = if(owner = ? , user_balance + ? , user_balance)
             WHERE currency_id = ? AND ((id > ? and tr_date = ?) OR tr_date > ? )
             ",
             [
@@ -225,7 +225,7 @@ class Exchange extends Component
 
         //===============================================
 
-        $fromTranaction->update(['tr_id'=> $toTranaction->id, 'status'=> 'DONE']);
+        $fromTranaction->update(['tr_id' => $toTranaction->id, 'status' => 'DONE']);
         // CashTransaction::findOrFail('id','=',$fromTranaction->id)->update(['tr_id'=> $toTranaction->id, 'status'=> 'DONE']);
 
         $userLastBalance = CashTransaction::where('status', '=', 'DONE')
@@ -290,11 +290,11 @@ class Exchange extends Component
 
 
 
-        //================================================================        
+        //================================================================
 
         $this->dispatchBrowserEvent('alert-success', ['message' => 'Exchange added succeffully!']);
     }
-    
+
     public function render()
     {
         return view('livewire.cash.exchange');
