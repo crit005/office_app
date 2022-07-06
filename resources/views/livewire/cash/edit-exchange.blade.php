@@ -23,7 +23,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <form wire:submit.prevent='addExchange'>
+                        <form wire:submit.prevent='updateExchange'>
                             <div class="card-header text-white text-center">
                                 <h1 class="m-0">EXCHANGE</h1>
                             </div>
@@ -178,9 +178,20 @@
 </div>
 
 @push('js')
-    <script>
-        function goBack() {
+<script>
+    function goBack(){
             history.back();
         }
-    </script>
+
+    window.addEventListener('alert-updated-success', e =>{
+        Swal.fire({
+            title: 'Success!',
+            text: e.detail.message,
+            icon: 'success',
+            confirmButtonText: 'OK',
+        }).then(()=>{
+            goBack();
+        });
+    });
+</script>
 @endpush

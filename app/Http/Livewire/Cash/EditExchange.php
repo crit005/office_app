@@ -26,7 +26,8 @@ class EditExchange extends Component
     public $items;
     public $depatments;
     public $item = null;
-
+    public $fromLogs = null;
+    public $toLogs = null;
 
     public function mount(CashTransaction $transaction)
     {
@@ -47,7 +48,19 @@ class EditExchange extends Component
             $this->fromTransaction = CashTransaction::findOrFail($transaction->tr_id);
         }
 
-        $this->form['tr_date'] = $this->fromTransaction->tr_date;
+        $this->fromLogs = json_decode($this->fromTransaction->logs) ?? [];
+
+        array_push($this->fromLogs, array_filter($this->fromTransaction->toArray(), function ($k) {
+            return $k != 'logs';
+        }, ARRAY_FILTER_USE_KEY));
+
+        $this->toLogs = json_decode($this->toTransaction->logs) ?? [];
+
+        array_push($this->toLogs, array_filter($this->toTransaction->toArray(), function ($k) {
+            return $k != 'logs';
+        }, ARRAY_FILTER_USE_KEY));
+
+        $this->form['tr_date'] = date('d-M-Y',strtotime($this->fromTransaction->tr_date));
         $this->form['currency_id'] = $this->fromTransaction->currency_id;
         $this->form['amount'] = -$this->fromTransaction->amount;
         $this->form['to_currency_id'] = $this->toTransaction->currency_id;
@@ -120,10 +133,11 @@ class EditExchange extends Component
     {
         Validator::make($this->form, $this->cashRules, [], $this->cashValidationAttributes)->validate();
 
-        $this->deleteOldExchange();
+        $this->drawBackExchange();
+        $this->saveExchage();
     }
 
-    public function deleteOldExchange()
+    public function drawBackExchange()
     {
         // update related fromTransaction Balance
         // draw back amount from cash transaction
@@ -190,21 +204,21 @@ class EditExchange extends Component
 
 
         // delete fromTransaction
-        $this->fromTransaction->delete();
+       // $this->fromTransaction->delete();
         // delete toTransaction
-        $this->toTransaction->delete();
+       // $this->toTransaction->delete();
     }
 
     public function saveExchage()
     {
         $lastBalance = CashTransaction::where('status', '=', 'DONE')
-            ->where('id','!=',$this->transaction->id)
+            ->where('id','!=',$this->fromTransaction->id)
             ->where('tr_date', '<=', date('Y-m-d', strtotime($this->form['tr_date'])))
             ->where('currency_id', '=', $this->form['currency_id'])
             ->sum('amount'); //require function
 
         $userLastBalance = CashTransaction::where('status', '=', 'DONE')
-            ->where('id','!=',$this->transaction->id)
+            ->where('id','!=',$this->fromTransaction->id)
             ->where('tr_date', '<=', date('Y-m-d', strtotime($this->form['tr_date'])))
             ->where('currency_id', '=', $this->form['currency_id'])
             ->where('owner', '=', auth()->user()->id)
@@ -212,8 +226,8 @@ class EditExchange extends Component
 
         $dataRecord = [];
         $dataRecord['tr_date'] = date('Y-m-d', strtotime($this->form['tr_date']));
-        $dataRecord['item_id'] = $this->item;
-        $dataRecord['item_name'] = 'Exchange';
+        // $dataRecord['item_id'] = $this->item;
+        // $dataRecord['item_name'] = 'Exchange';
         $dataRecord['amount'] = -$this->form['amount'];
         $dataRecord['bk_amount'] = -$this->form['amount'];
         $dataRecord['balance'] = $lastBalance - $this->form['amount'];
@@ -226,15 +240,17 @@ class EditExchange extends Component
         $dataRecord['owner'] = auth()->user()->id;
         // $dataRecord['updated_by'] = auth()->user()->id;
         $dataRecord['owner_name'] = auth()->user()->name;
-        $dataRecord['type'] = "EXPAND";
-        $dataRecord['status'] = "WAIT";
-        $dataRecord['input_type'] = "MENUL";
+        // $dataRecord['type'] = "EXPAND";
+        // $dataRecord['status'] = "WAIT";
+        // $dataRecord['input_type'] = "MENUL";
         // $dataRecord['uuid']= Str::uuid()->toString();
         // $dataRecord['tr_id'] = "";
+        $dataRecord['logs'] = json_encode($this->fromLogs);
 
         // dd($dataRecord);
 
-        $fromTranaction = CashTransaction::create($dataRecord);
+        $this->fromTransaction->update($dataRecord);
+        $fromTranaction = $this->fromTransaction;
 
         DB::update(
             "UPDATE cash_transactions
@@ -255,13 +271,13 @@ class EditExchange extends Component
         //==================================================
 
         $lastBalance = CashTransaction::where('status', '=', 'DONE')
-            ->where('id','!=',$this->transaction->id)
+            ->where('id','!=',$this->toTransaction->id)
             ->where('tr_date', '<=', date('Y-m-d', strtotime($this->form['tr_date'])))
             ->where('currency_id', '=', $this->form['currency_id'])
             ->sum('amount'); //require function
 
         $userLastBalance = CashTransaction::where('status', '=', 'DONE')
-            ->where('id','!=',$this->transaction->id)
+            ->where('id','!=',$this->toTransaction->id)
             ->where('tr_date', '<=', date('Y-m-d', strtotime($this->form['tr_date'])))
             ->where('currency_id', '=', $this->form['currency_id'])
             ->where('owner', '=', auth()->user()->id)
@@ -269,8 +285,8 @@ class EditExchange extends Component
 
         $dataRecord = [];
         $dataRecord['tr_date'] = date('Y-m-d', strtotime($this->form['tr_date']));
-        $dataRecord['item_id'] = $this->item;
-        $dataRecord['item_name'] = 'Exchange';
+        // $dataRecord['item_id'] = $this->item;
+        // $dataRecord['item_name'] = 'Exchange';
         $dataRecord['amount'] = $this->form['to_amount'];
         $dataRecord['bk_amount'] = $this->form['to_amount'];
         $dataRecord['balance'] = $lastBalance + $this->form['to_amount'];
@@ -283,15 +299,17 @@ class EditExchange extends Component
         $dataRecord['owner'] = auth()->user()->id;
         // $dataRecord['updated_by'] = auth()->user()->id;
         $dataRecord['owner_name'] = auth()->user()->name;
-        $dataRecord['type'] = "INCOME";
-        $dataRecord['status'] = "DONE";
-        $dataRecord['input_type'] = "MENUL";
+        // $dataRecord['type'] = "INCOME";
+        // $dataRecord['status'] = "DONE";
+        // $dataRecord['input_type'] = "MENUL";
         // $dataRecord['uuid']= Str::uuid()->toString();
-        $dataRecord['tr_id'] = $fromTranaction->id;
+        // $dataRecord['tr_id'] = $this->fromTranaction->id;
+        $dataRecord['logs'] = json_encode($this->toLogs);
 
         // dd($dataRecord);
 
-        $toTranaction = CashTransaction::create($dataRecord);
+        $this->toTransaction->update($dataRecord);
+        $toTranaction = $this->toTransaction;
 
         DB::update(
             "UPDATE cash_transactions
@@ -311,7 +329,7 @@ class EditExchange extends Component
 
         //===============================================
 
-        $fromTranaction->update(['tr_id' => $toTranaction->id, 'status' => 'DONE']);
+        // $fromTranaction->update(['tr_id' => $toTranaction->id, 'status' => 'DONE']);
         // CashTransaction::findOrFail('id','=',$fromTranaction->id)->update(['tr_id'=> $toTranaction->id, 'status'=> 'DONE']);
 
         $userLastBalance = CashTransaction::where('status', '=', 'DONE')
@@ -373,6 +391,8 @@ class EditExchange extends Component
             ['user_id', 'currency_id'],
             ['current_balance']
         );
+
+        $this->dispatchBrowserEvent('alert-updated-success', ['message' => 'Exchange updated succeffully!']);
     }
 
     public function render()
