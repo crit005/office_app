@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0 text-white">Add Exchange</h1>
+                    <h1 class="m-0 text-white">Update Exchange</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -25,7 +25,7 @@
                     <div class="card">
                         <form wire:submit.prevent='updateExchange'>
                             <div class="card-header text-white text-center">
-                                <h1 class="m-0">EXCHANGE</h1>
+                                <h1 class="m-0">UPDATE EXCHANGE</h1>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
