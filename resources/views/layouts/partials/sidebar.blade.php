@@ -146,7 +146,7 @@
                                     Transfer
                                 </p>
                             </a>
-                        </li>                        
+                        </li>
 
                         {{-- CashTransaction --}}
                         <li class="nav-item">
@@ -233,6 +233,74 @@
 
                     </ul>
                 </li>
+
+                {{-- Customer menu --}}
+                <li class="nav-item {{ Request::segment(1)=='customers'? 'menu-open' : 'menu-close'}}">
+                    {{-- <li class="nav-item menu-open"> --}}
+                        <a href="#" class="nav-link {{ Request::segment(1)=='customers'? 'active' : ''}}">
+                            <i class="nav-icon fas fa-address-book"></i>
+                            <p class="red">
+                                Customers
+                                <i class="right fas fa-angle-down"></i>
+                            </p>
+                        </a>
+
+                        <ul class="nav nav-treeview">
+
+                            {{-- Depatment Menu --}}
+                            <li class="nav-item">
+                                <a href="{{route('setting.depatments')}}"
+                                    class="nav-link {{ request()->is('setting/depatments') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-address-card ml-4"></i>
+                                    <p>
+                                        List Customer
+                                    </p>
+                                </a>
+                            </li>
+
+                            {{-- Currency Menu --}}
+                            <li class="nav-item">
+                                <a href="{{route('setting.currencies')}}"
+                                    class="nav-link {{ request()->is('setting/currencies') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-user-clock ml-4"></i>
+                                    <p>
+                                        Customer Detail
+                                    </p>
+                                </a>
+                            </li>
+                             {{-- Customer active Menu --}}
+                             <li class="nav-item">
+                                <a href="{{ route('setting.users') }}"
+                                    class="nav-link {{ request()->is('setting/profile') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-user-tag ml-4"></i>
+                                    <p>
+                                        New Customers
+                                    </p>
+                                </a>
+                            </li>
+                            {{-- Customer active Menu --}}
+                            <li class="nav-item">
+                                <a href="{{ route('setting.users') }}"
+                                    class="nav-link {{ request()->is('setting/profile') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-user-check ml-4"></i>
+                                    <p>
+                                        Active Customers
+                                    </p>
+                                </a>
+                            </li>
+                             {{-- Customer active Menu --}}
+                             <li class="nav-item">
+                                <a href="{{ route('setting.users') }}"
+                                    class="nav-link {{ request()->is('setting/profile') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-user-injured ml-4"></i>
+                                    <p>
+                                        Inactive Customers
+                                    </p>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
 
 
                 {{-- Logout mentu --}}
