@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Dashboard;
+// use App\Http\Controllers\Dashboard;
 use App\Http\Livewire\Admin\User\ListUsers;
 use App\Http\Livewire\Cash\AddCash;
 use App\Http\Livewire\Cash\AddPayment;
@@ -10,6 +10,7 @@ use App\Http\Livewire\Cash\EditPayment;
 use App\Http\Livewire\Cash\Exchange;
 use App\Http\Livewire\Cash\ListCashdrawer;
 use App\Http\Livewire\Cash\ListCashTransactions;
+use App\Http\Livewire\Dashboard;
 use App\Http\Livewire\Setting\ListCurrency;
 use App\Http\Livewire\Setting\ListDepatment;
 use App\Http\Livewire\Setting\ListItems;
@@ -31,7 +32,8 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('dashboard', [Dashboard::class, 'index'])->name('dashboard');
+    // Route::get('dashboard', [Dashboard::class, 'index'])->name('dashboard');
+    Route::get('dashboard', Dashboard::class)->name('dashboard');
     Route::get('setting/users', ListUsers::class)->name('setting.users');
     Route::get('setting/currencies', ListCurrency::class)->name('setting.currencies');
     Route::get('setting/depatments', ListDepatment::class)->name('setting.depatments');

@@ -221,3 +221,7 @@ input:checked + .slider:before {
     border-radius: 2px;
     cursor: pointer;
 }
+
+.system-panel{
+    min-width: 19%;
+}

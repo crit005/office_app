@@ -1,4 +1,4 @@
-<x-admin-layout>
+<div>
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -21,10 +21,11 @@
     <div class="content">
         <div class="container-fluid">
             <div class="d-flex flex-row justify-content-between flex-wrap">
-                @livewire('components.system-panel',['system'=>'bandarvip'])
-
+                @foreach ($connections as $connection)
+                    @livewire('components.system-panel',['connection'=>$connection], key($connection->id))
+                @endforeach
             </div>
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
-</x-admin-layout>
+</div>
