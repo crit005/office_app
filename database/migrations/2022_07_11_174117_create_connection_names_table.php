@@ -44,12 +44,12 @@ return new class extends Migration
                 ['system_name' => 'QQGAMING', 'connection_name' => 'qqgamingdb', 'server_name' => 'SERVER', 'status' => 'ENABLED', 'created_at' => now(), 'updated_at' => now()],
                 ['system_name' => 'RAJAGAMING', 'connection_name' => 'rajagamingdb', 'server_name' => 'SERVER', 'status' => 'ENABLED', 'created_at' => now(), 'updated_at' => now()],
                 // Serverth
-                ['system_name' => 'CBOCLUB', 'connection_name' => 'cboclubdb', 'server_name' => 'SERVERTH', 'status' => 'ENABLED', 'created_at' => now(), 'updated_at' => now()],
+                ['system_name' => 'HENGHENGCLUB', 'connection_name' => 'henghengclubdb', 'server_name' => 'SERVERTH', 'status' => 'ENABLED', 'created_at' => now(), 'updated_at' => now()],
                 ['system_name' => 'CHOKDEECLUB', 'connection_name' => 'chokdeeclubdb', 'server_name' => 'SERVERTH', 'status' => 'ENABLED', 'created_at' => now(), 'updated_at' => now()],
                 ['system_name' => 'DEEDEECLUB', 'connection_name' => 'deedeeclubdb', 'server_name' => 'SERVERTH', 'status' => 'ENABLED', 'created_at' => now(), 'updated_at' => now()],
                 ['system_name' => 'LUCKYCLUB88', 'connection_name' => 'luckyclub88', 'server_name' => 'SERVERTH', 'status' => 'ENABLED', 'created_at' => now(), 'updated_at' => now()],
                 ['system_name' => 'POKERPAN', 'connection_name' => 'pokerpandb', 'server_name' => 'SERVERTH', 'status' => 'ENABLED', 'created_at' => now(), 'updated_at' => now()],
-                ['system_name' => 'QQGAMING', 'connection_name' => 'qqgamingdb', 'server_name' => 'SERVERTH', 'status' => 'ENABLED', 'created_at' => now(), 'updated_at' => now()],
+                ['system_name' => 'QQGAMINGTHAI', 'connection_name' => 'qqgamingdbth', 'server_name' => 'SERVERTH', 'status' => 'ENABLED', 'created_at' => now(), 'updated_at' => now()],
                 ['system_name' => 'SAWADEEPOKER', 'connection_name' => 'sawadeepokerdb', 'server_name' => 'SERVERTH', 'status' => 'ENABLED', 'created_at' => now(), 'updated_at' => now()],
                 ['system_name' => 'WECHATPOKER', 'connection_name' => 'wechatpokerdb', 'server_name' => 'SERVERTH', 'status' => 'ENABLED', 'created_at' => now(), 'updated_at' => now()],
                 // Serverj

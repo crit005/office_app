@@ -12,9 +12,15 @@ use Livewire\Component;
 class SystemPanel extends Component
 {
     public $connection = null;
+    public $totalNewMember = 0;
+    public $totalActiveMember = 0;
+    public $totalInactiveMember = 0;
+    public $totalAllMember = 0;
+    public $isOutOfDate = false;
+    public $lastUpdate = '...';
 
     public $sqlMemberInfo = "
-        SELECT
+    SELECT
         cw.CustomerID AS id,
         cw.Name AS name,
         cw.Email AS email,
@@ -29,41 +35,42 @@ class SystemPanel extends Component
         cw.TotalWD AS total_wd,
         sum(cw.Turnover) AS total_turnover,
         sum(cw.Winlose) AS totall_winlose
-        FROM
-            (
-                SELECT
-                    cf.id AS CustomerID,
-                    cf.name AS Name,
-                    cf.email AS Email,
-                    CONCAT('\'',cf.mobile) AS Mobile,
-                    cf.FirstJoin,
-                    cf.LastDP,
-                    cf.LastWD,
-                    cf.TotalDP,
-                    cf.TotalWD,
-                    winlose.loginid AS LoginID,
-                    webaccount.clubName AS ClubName,
-                    winlose.GroupFor AS `WinloseDate`,
-                    winlose.trunover AS Turnover,
-                    winlose.wlamt AS `winlose`
-                FROM
-                    winlose
-                    INNER JOIN webaccount ON winlose.accountId = webaccount.id
-                    INNER JOIN
+    FROM
+        (
+            SELECT
+                cf.id AS CustomerID,
+                cf.name AS Name,
+                cf.email AS Email,
+                CONCAT('\'',cf.mobile) AS Mobile,
+                cf.FirstJoin,
+                cf.LastDP,
+                cf.LastWD,
+                cf.TotalDP,
+                cf.TotalWD,
+                winlose.loginid AS LoginID,
+                webaccount.clubName AS ClubName,
+                winlose.GroupFor AS `WinloseDate`,
+                winlose.trunover AS Turnover,
+                winlose.wlamt AS `winlose`
+            FROM
+                winlose
+                INNER JOIN webaccount ON winlose.accountId = webaccount.id
+                INNER JOIN
 
-                    (SELECT customer.id, CONCAT(customer.firstName,' ',customer.lastName) AS Name, customer.mobile AS Mobile, customer.email AS Email,
-                    MIN(if(`transaction`.`type`=3,`transaction`.groupfor,if(`transaction`.`type`=1,`transaction`.groupfor,NULL)))AS FirstJoin,
-                    MAX(if(`transaction`.`type`IN(1,3),`transaction`.groupfor,NULL))AS LastDP,
-                    MAX(if(`transaction`.`type`=2,`transaction`.groupfor,NULL))AS LastWD,
-                    SUM(if(`transaction`.`type`IN(1,3),`transaction`.inputAmount,0))AS TotalDP,
-                    SUM(if(`transaction`.`type`=2,`transaction`.inputAmount,0))AS TotalWD
-                    FROM customer INNER JOIN `transaction` ON customer.Id = `transaction`.customerid
-                    GROUP BY customer.id) AS cf
+                (SELECT customer.id, CONCAT(customer.firstName,' ',customer.lastName) AS Name, customer.mobile AS Mobile, customer.email AS Email,
+                MIN(if(`transaction`.`type`=3,if(`transaction`.groupfor!='0000-00-00',`transaction`.groupfor,NULL),if(`transaction`.`type`=1,if(`transaction`.groupfor!='0000-00-00',`transaction`.groupfor,NULL),NULL)))AS FirstJoin,
+                MAX(if(`transaction`.`type`IN(1,3),if(`transaction`.groupfor!='0000-00-00',`transaction`.groupfor,NULL),NULL))AS LastDP,
+                MAX(if(`transaction`.`type`=2,if(`transaction`.groupfor!='0000-00-00',`transaction`.groupfor,NULL),NULL))AS LastWD,
+                SUM(if(`transaction`.`type`IN(1,3),`transaction`.inputAmount,0))AS TotalDP,
+                SUM(if(`transaction`.`type`=2,`transaction`.inputAmount,0))AS TotalWD
+                FROM customer INNER JOIN `transaction` ON customer.Id = `transaction`.customerid
+                GROUP BY customer.id) AS cf
 
-                    ON webaccount.customerId = cf.Id
-            )as cw
-        GROUP BY
-            id
+                ON webaccount.customerId = cf.Id
+        )as cw
+    GROUP BY
+        cw.CustomerID
+    ORDER BY last_active desc
         ";
     public $listCustomer = null;
 
@@ -86,28 +93,61 @@ class SystemPanel extends Component
             $this->createSystemTable('tbl_' . $this->connection->connection_name);
         }
 
+        // $this->initSumary();
+
+    }
+
+    public function initOutOfDate()
+    {
         $customer = new Customer();
         $customer->setTable('tbl_' . $this->connection->connection_name);
         $firstRecord = $customer->first();
         if (!$firstRecord) {
-            // dd('norecord');
-            //inseart record
-            $this->inseartRecordFromServer();
-            // dd('has inserted');
-        } else {
-            // dd($firstRecord);
+            $this->isOutOfDate = true;
+            return;
+        }
+        $this->lastUpdate = $firstRecord->created_at;
+        if (date('Y-m-d', strtotime($firstRecord->created_at)) < date('Y-m-d', strtotime(now()))) {
+            $this->isOutOfDate = true;
+            return;
+        }
+        $this->isOutOfDate = false;
+    }
+
+    public function reloadMemberFromserver()
+    {
+        Schema::dropIfExists('tbl_' . $this->connection->connection_name);
+
+        if (!Schema::hasTable('tbl_' . $this->connection->connection_name)) {
+            $this->createSystemTable('tbl_' . $this->connection->connection_name);
         }
 
-        // Schema::dropIfExists('connection_names');
-        // $this->listCustomer = DB::connection($this->connection->connection_name)->select($this->sqlMemberInfo);
-        // dd(count($this->listCustomer));
+        $this->inseartRecordFromServer();
 
+        $this->initSumary();
+    }
+
+    public function initSumary()
+    {
+        $customer = new Customer();
+        $customer->setTable('tbl_' . $this->connection->connection_name);
+        $this->totalAllMember = $customer->count();
+        $this->totalNewMember = $customer->where('first_join', '>', date('Y-m-d', strtotime("last Month")))->count();
+        $this->totalActiveMember = $customer->where('last_active', '>', date('Y-m-d', strtotime("-30 days")))->count();
+        $this->totalInactiveMember = $this->totalAllMember - $this->totalActiveMember;
+
+        $this->initOutOfDate();
     }
 
     public function inseartRecordFromServer()
     {
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', 1800);
+        ini_set('max_input_time', 1200);
+        // ini_set('memory_limit','5120M');
         $listCustomerOnServer = DB::connection($this->connection->connection_name)->select($this->sqlMemberInfo);
         $totalRecord = count($listCustomerOnServer);
+        // dd($totalRecord);
         $j = 0;
         $i = 0;
         $recordPerInsert = [];
@@ -118,12 +158,19 @@ class SystemPanel extends Component
             array_push($recordPerInsert, $arrRecord);
             $j += 1;
             $i += 1;
-            if($j==100 || $i == $totalRecord){
+            if ($j == 100 || $i == $totalRecord) {
                 DB::table('tbl_' . $this->connection->connection_name)->insert($recordPerInsert);
-                $j=0;
+                $j = 0;
                 $recordPerInsert = [];
             }
         }
+        $listCustomerOnServer = null;
+    }
+
+    public function gotoCustomerList()
+    {
+        session(['selectedSystem' => $this->connection]);
+        return redirect()->to(route('customer.list'));
     }
 
     public function createSystemTable($tableName)

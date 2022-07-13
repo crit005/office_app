@@ -11,7 +11,9 @@ class Dashboard extends Component
 
     public function mount()
     {
-        $this->connections = ConnectionName::where('id','=','1')->get();
+        // $this->connections = ConnectionName::where('id','=','1')->get();
+        $this->connections = ConnectionName::where('status','=','ENABLED')->get();
+
     }
     public function render()
     {

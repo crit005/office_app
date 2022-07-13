@@ -223,5 +223,26 @@ input:checked + .slider:before {
 }
 
 .system-panel{
-    min-width: 19%;
+    width: 19%;
+    min-width: 230px;
 }
+
+/* bounce animation */
+@-webkit-keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {-webkit-transform: translateY(0);}
+    40% {-webkit-transform: translateY(-15px);}
+    60% {-webkit-transform: translateY(-7px);}
+ }
+
+ @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-9px);}
+    60% {transform: translateY(-3px);}
+ }
+
+ .bounce {
+    -webkit-animation-name: bounce;
+    /* animation-name: bounce; */
+    animation: bounce 1s infinite;
+ }
+ /* ===================== */

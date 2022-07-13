@@ -405,7 +405,7 @@ return [
         ],
 
         # SERVERTH DATABASES
-        'cboclubdb' => [
+        'henghengclubdb' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST_SERVERTH', '127.0.0.1'),

@@ -1,4 +1,3 @@
-
 <nav class="main-header navbar navbar-expand navbar-white navbar-light blur-light">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
@@ -13,9 +12,11 @@
         </li> --}}
     </ul>
     <div>
-        {{-- <span class="d-block text-white">Your Cashdrawer</span>
-        <span class="text-small text-white">Anen-May-2022: </span><span class="text-black">861285 ฿ / 6538 $</span> --}}
         <livewire:components.user-balance />
+    </div>
+    <div class="m-auto">
+        <h3 class="text-white">
+            {{ Session::get('selectedSystem') ? Session::get('selectedSystem')->system_name : 'No System Selected' }}</h3>
     </div>
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
@@ -27,7 +28,8 @@
             <div class="navbar-search-block">
                 <form class="form-inline">
                     <div class="input-group input-group-sm">
-                        <input onkeyup="if(typeof globleSearch == 'function'){globleSearch($(this).val())}" class="form-control form-control-navbar" type="search" placeholder="Search"
+                        <input onkeyup="if(typeof globleSearch == 'function'){globleSearch($(this).val())}"
+                            class="form-control form-control-navbar" type="search" placeholder="Search"
                             aria-label="Search">
                         <div class="input-group-append">
                             <button class="btn btn-navbar" type="submit">
@@ -52,7 +54,7 @@
                 <a href="#" class="dropdown-item">
                     <!-- Message Start -->
                     <div class="media">
-                        <img src="{{asset('backend/dist/img/user1-128x128.jpg')}}" alt="User Avatar"
+                        <img src="{{ asset('backend/dist/img/user1-128x128.jpg') }}" alt="User Avatar"
                             class="img-size-50 mr-3 img-circle">
                         <div class="media-body">
                             <h3 class="dropdown-item-title">
@@ -69,7 +71,7 @@
                 <a href="#" class="dropdown-item">
                     <!-- Message Start -->
                     <div class="media">
-                        <img src="{{asset('backend/dist/img/user8-128x128.jpg')}}" alt="User Avatar"
+                        <img src="{{ asset('backend/dist/img/user8-128x128.jpg') }}" alt="User Avatar"
                             class="img-size-50 img-circle mr-3">
                         <div class="media-body">
                             <h3 class="dropdown-item-title">
@@ -86,7 +88,7 @@
                 <a href="#" class="dropdown-item">
                     <!-- Message Start -->
                     <div class="media">
-                        <img src="{{asset('backend/dist/img/user3-128x128.jpg')}}" alt="User Avatar"
+                        <img src="{{ asset('backend/dist/img/user3-128x128.jpg') }}" alt="User Avatar"
                             class="img-size-50 img-circle mr-3">
                         <div class="media-body">
                             <h3 class="dropdown-item-title">
