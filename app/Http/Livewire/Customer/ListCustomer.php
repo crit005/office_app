@@ -38,12 +38,15 @@ class ListCustomer extends Component
 
     public function getSortIcon($field)
     {
+        $icon = '';
         if ($this->orderField['field'] == $field) {
-            if($this->orderField['order'] == 'desc'){
-                return '<i class="fas fa-sort-alpha-down-alt align-self-center"></i>';
+            if ($this->orderField['order'] == 'desc') {
+                $icon = '<i class="fas fa-sort-alpha-down-alt align-self-center"></i>';
+            }else{
+                $icon = '<i class="fas fa-sort-alpha-down align-self-center"></i>';
             }
-            return '<i class="fas fa-sort-alpha-down align-self-center"></i>';
         }
+        return $icon;
     }
     public function render()
     {

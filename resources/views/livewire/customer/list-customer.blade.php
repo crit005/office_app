@@ -56,78 +56,131 @@
                                             <th scope="col" class="text-center"><a
                                                     class="d-flex justify-content-between" href=""
                                                     wire:click.prevent="setOrderField('id')">ID
-                                                    <span wire:loading.class="d-none" wire:target="setOrderField('id')">{!! $this->getSortIcon('id') !!}</span>
-                                                    <i class="fas fa-spinner fa-spin align-self-center" wire:loading wire:target="setOrderField('id')"></i>
+                                                    <span wire:loading.class="d-none" wire:target="setOrderField('id')">
+                                                        {!! $this->getSortIcon('id') !!}
+                                                    </span>
+                                                    <i class="fas fa-spinner fa-spin align-self-center" wire:loading
+                                                        wire:target="setOrderField('id')"></i>
                                                 </a>
                                             </th>
                                             <th scope="col" class="text-center"><a
                                                     class="d-flex justify-content-between" href=""
                                                     wire:click.prevent="setOrderField('login_id')">Login
-                                                    {!! $this->getSortIcon('login_id') !!}</a></th>
+                                                    <span wire:loading.class="d-none" wire:target="setOrderField('login_id')">
+                                                        {!! $this->getSortIcon('login_id') !!}
+                                                    </span>
+                                                    <i class="fas fa-spinner fa-spin align-self-center" wire:loading
+                                                        wire:target="setOrderField('login_id')"></i>
+                                                </a></th>
                                             <th scope="col" class="text-center"><a
                                                     class="d-flex justify-content-between" href=""
                                                     wire:click.prevent="setOrderField('mobile')">Phone
-                                                    {!! $this->getSortIcon('mobile') !!}</a></th>
+                                                    <span wire:loading.class="d-none"
+                                                        wire:target="setOrderField('mobile')">{!!
+                                                        $this->getSortIcon('mobile') !!}</span>
+                                                    <i class="fas fa-spinner fa-spin align-self-center" wire:loading
+                                                        wire:target="setOrderField('mobile')"></i>
+                                                </a></th>
                                             <th scope="col" class="text-center"><a
                                                     class="d-flex justify-content-between" href=""
                                                     wire:click.prevent="setOrderField('email')">Email
-                                                    {!! $this->getSortIcon('email') !!}</a></th>
+                                                    <span wire:loading.class="d-none"
+                                                        wire:target="setOrderField('email')">{!!
+                                                        $this->getSortIcon('email') !!}</span>
+                                                    <i class="fas fa-spinner fa-spin align-self-center" wire:loading
+                                                        wire:target="setOrderField('email')"></i>
+                                                </a></th>
                                             <th scope="col" class="text-center"><a
                                                     class="d-flex justify-content-between" href=""
                                                     wire:click.prevent="setOrderField('club_name')">Club
-                                                    {!! $this->getSortIcon('club_name') !!}</a></th>
+                                                    <span wire:loading.class="d-none"
+                                                        wire:target="setOrderField('club_name')">{!!
+                                                        $this->getSortIcon('club_name') !!}</span>
+                                                    <i class="fas fa-spinner fa-spin align-self-center" wire:loading
+                                                        wire:target="setOrderField('club_name')"></i>
+                                                </a></th>
                                             <th scope="col" class="text-center"><a
                                                     class="d-flex justify-content-between" href=""
                                                     wire:click.prevent="setOrderField('first_join')">First Join
-                                                    {!! $this->getSortIcon('first_join') !!}</a></th>
+                                                    <span wire:loading.class="d-none"
+                                                        wire:target="setOrderField('first_join')">{!!
+                                                        $this->getSortIcon('first_join') !!}</span>
+                                                    <i class="fas fa-spinner fa-spin align-self-center" wire:loading
+                                                        wire:target="setOrderField('first_join')"></i>
+                                                </a></th>
                                             <th scope="col" class="text-center"><a
                                                     class="d-flex justify-content-between" href=""
                                                     wire:click.prevent="setOrderField('last_active')">Last Active
-                                                    {!! $this->getSortIcon('last_active') !!}</a>
+                                                    <span wire:loading.class="d-none"
+                                                        wire:target="setOrderField('last_active')">{!!
+                                                        $this->getSortIcon('last_active') !!}</span>
+                                                    <i class="fas fa-spinner fa-spin align-self-center" wire:loading
+                                                        wire:target="setOrderField('last_active')"></i>
+                                                </a>
                                             </th>
                                             <th scope="col" class="text-center"><a
                                                     class="d-flex justify-content-between" href=""
                                                     wire:click.prevent="setOrderField('total_dp')">Total_DP
-                                                    {!! $this->getSortIcon('total_dp') !!}</a></th>
+                                                    <span wire:loading.class="d-none"
+                                                        wire:target="setOrderField('total_dp')">{!!
+                                                        $this->getSortIcon('total_dp') !!}</span>
+                                                    <i class="fas fa-spinner fa-spin align-self-center" wire:loading
+                                                        wire:target="setOrderField('total_dp')"></i>
+                                                </a></th>
                                             <th scope="col" class="text-center"><a
                                                     class="d-flex justify-content-between" href=""
                                                     wire:click.prevent="setOrderField('total_wd')">Total_WD
-                                                    {!! $this->getSortIcon('total_wd') !!}</a></th>
+                                                    <span wire:loading.class="d-none"
+                                                        wire:target="setOrderField('total_wd')">{!!
+                                                        $this->getSortIcon('total_wd') !!}</span>
+                                                    <i class="fas fa-spinner fa-spin align-self-center" wire:loading
+                                                        wire:target="setOrderField('total_wd')"></i>
+                                                </a></th>
                                             <th scope="col" class="text-center"><a
                                                     class="d-flex justify-content-between" href=""
                                                     wire:click.prevent="setOrderField('total_turnover')">Turnover
-                                                    {!! $this->getSortIcon('total_turnover') !!}</a>
+                                                    <span wire:loading.class="d-none"
+                                                        wire:target="setOrderField('total_turnover')">{!!
+                                                        $this->getSortIcon('total_turnover') !!}</span>
+                                                    <i class="fas fa-spinner fa-spin align-self-center" wire:loading
+                                                        wire:target="setOrderField('total_turnover')"></i>
+                                                </a>
                                             </th>
                                             <th scope="col" class="text-center"><a
                                                     class="d-flex justify-content-between" href=""
                                                     wire:click.prevent="setOrderField('totall_winlose')">Winlose
-                                                    {!! $this->getSortIcon('totall_winlose') !!}</a>
+                                                    <span wire:loading.class="d-none"
+                                                        wire:target="setOrderField('totall_winlose')">{!!
+                                                        $this->getSortIcon('totall_winlose') !!}</span>
+                                                    <i class="fas fa-spinner fa-spin align-self-center" wire:loading
+                                                        wire:target="setOrderField('totall_winlose')"></i>
+                                                </a>
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody id="sortable">
                                         @forelse ($customers as $indext => $customer)
-                                            <tr wire:key="depatment-{{ $customer->id }}" id="{{ $customer->id }}">
-                                                <th scope="row">
-                                                    {{ $customers->firstItem() + $indext }}
-                                                </th>
-                                                <td scope="row">{{ $customer->id }}</td>
-                                                <td>{{ $customer->login_id }}</td>
-                                                <td>{{ str_replace("'", '', $customer->mobile) }}</td>
-                                                <td>{{ $customer->email }}</td>
-                                                <td>{{ $customer->club_name }}</td>
-                                                <td>{{ $customer->first_join }}</td>
-                                                <td>{{ $customer->last_active }}</td>
-                                                <td class="text-right">{{ $customer->total_dp }}</td>
-                                                <td class="text-right">{{ $customer->total_wd }}</td>
-                                                <td class="text-right">{{ $customer->total_turnover }}</td>
-                                                <td class="text-right">{{ $customer->totall_winlose }}</td>
+                                        <tr wire:key="depatment-{{ $customer->id }}" id="{{ $customer->id }}">
+                                            <th scope="row">
+                                                {{ $customers->firstItem() + $indext }}
+                                            </th>
+                                            <td scope="row">{{ $customer->id }}</td>
+                                            <td>{{ $customer->login_id }}</td>
+                                            <td>{{ str_replace("'", '', $customer->mobile) }}</td>
+                                            <td>{{ $customer->email }}</td>
+                                            <td>{{ $customer->club_name }}</td>
+                                            <td>{{ $customer->first_join }}</td>
+                                            <td>{{ $customer->last_active }}</td>
+                                            <td class="text-right">{{ $customer->total_dp }}</td>
+                                            <td class="text-right">{{ $customer->total_wd }}</td>
+                                            <td class="text-right">{{ $customer->total_turnover }}</td>
+                                            <td class="text-right">{{ $customer->totall_winlose }}</td>
 
-                                            </tr>
+                                        </tr>
                                         @empty
-                                            <tr>
-                                                <td colspan="12" class="text-center"> No record found...</td>
-                                            </tr>
+                                        <tr>
+                                            <td colspan="12" class="text-center"> No record found...</td>
+                                        </tr>
                                         @endforelse
 
 
@@ -158,9 +211,9 @@
 
 </div>
 @push('js')
-    <script>
-        function globleSearch(val) {
+<script>
+    function globleSearch(val) {
             @this.search = val;
         }
-    </script>
+</script>
 @endpush
