@@ -49,41 +49,79 @@
                         <!-- /.card-header -->
                         <div class="card-body p-0">
                             <div class="table-responsive rounded" style="background:none; border: none;">
-                                <table class="table table-hover">
+                                <table class="table table-hover customer-table">
                                     <thead class="thead-dark">
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col" class="text-center">ID</th>
-                                            <th scope="col" class="text-center">Login</th>
-                                            <th scope="col" class="text-center">Phone</th>
-                                            <th scope="col" class="text-center">Email</th>
-                                            <th scope="col" class="text-center">Club</th>
-                                            <th scope="col" class="text-center">First Join</th>
-                                            <th scope="col" class="text-center">Last Active</th>
-                                            <th scope="col" class="text-center">Total_DP</th>
-                                            <th scope="col" class="text-center">Total_WD</th>
-                                            <th scope="col" class="text-center">Turnover</th>
-                                            <th scope="col" class="text-center">Winlose</th>
+                                            <th scope="col" class="text-center"><a
+                                                    class="d-flex justify-content-between" href=""
+                                                    wire:click.prevent="setOrderField('id')">ID
+                                                    <span wire:loading.class="d-none" wire:target="setOrderField('id')">{!! $this->getSortIcon('id') !!}</span>
+                                                    <i class="fas fa-spinner fa-spin align-self-center" wire:loading wire:target="setOrderField('id')"></i>
+                                                </a>
+                                            </th>
+                                            <th scope="col" class="text-center"><a
+                                                    class="d-flex justify-content-between" href=""
+                                                    wire:click.prevent="setOrderField('login_id')">Login
+                                                    {!! $this->getSortIcon('login_id') !!}</a></th>
+                                            <th scope="col" class="text-center"><a
+                                                    class="d-flex justify-content-between" href=""
+                                                    wire:click.prevent="setOrderField('mobile')">Phone
+                                                    {!! $this->getSortIcon('mobile') !!}</a></th>
+                                            <th scope="col" class="text-center"><a
+                                                    class="d-flex justify-content-between" href=""
+                                                    wire:click.prevent="setOrderField('email')">Email
+                                                    {!! $this->getSortIcon('email') !!}</a></th>
+                                            <th scope="col" class="text-center"><a
+                                                    class="d-flex justify-content-between" href=""
+                                                    wire:click.prevent="setOrderField('club_name')">Club
+                                                    {!! $this->getSortIcon('club_name') !!}</a></th>
+                                            <th scope="col" class="text-center"><a
+                                                    class="d-flex justify-content-between" href=""
+                                                    wire:click.prevent="setOrderField('first_join')">First Join
+                                                    {!! $this->getSortIcon('first_join') !!}</a></th>
+                                            <th scope="col" class="text-center"><a
+                                                    class="d-flex justify-content-between" href=""
+                                                    wire:click.prevent="setOrderField('last_active')">Last Active
+                                                    {!! $this->getSortIcon('last_active') !!}</a>
+                                            </th>
+                                            <th scope="col" class="text-center"><a
+                                                    class="d-flex justify-content-between" href=""
+                                                    wire:click.prevent="setOrderField('total_dp')">Total_DP
+                                                    {!! $this->getSortIcon('total_dp') !!}</a></th>
+                                            <th scope="col" class="text-center"><a
+                                                    class="d-flex justify-content-between" href=""
+                                                    wire:click.prevent="setOrderField('total_wd')">Total_WD
+                                                    {!! $this->getSortIcon('total_wd') !!}</a></th>
+                                            <th scope="col" class="text-center"><a
+                                                    class="d-flex justify-content-between" href=""
+                                                    wire:click.prevent="setOrderField('total_turnover')">Turnover
+                                                    {!! $this->getSortIcon('total_turnover') !!}</a>
+                                            </th>
+                                            <th scope="col" class="text-center"><a
+                                                    class="d-flex justify-content-between" href=""
+                                                    wire:click.prevent="setOrderField('totall_winlose')">Winlose
+                                                    {!! $this->getSortIcon('totall_winlose') !!}</a>
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody id="sortable">
                                         @forelse ($customers as $indext => $customer)
-                                            <tr wire:key="depatment-{{ $customer->id }}"
-                                                id="{{ $customer->id }}">
+                                            <tr wire:key="depatment-{{ $customer->id }}" id="{{ $customer->id }}">
                                                 <th scope="row">
                                                     {{ $customers->firstItem() + $indext }}
                                                 </th>
-                                                <td scope="row">{{ $customer->id}}</td>
-                                                <td>{{$customer->login_id}}</td>
-                                                <td>{{str_replace("'","",$customer->mobile)}}</td>
-                                                <td>{{$customer->email}}</td>
-                                                <td>{{$customer->club_name}}</td>
-                                                <td>{{$customer->first_join}}</td>
-                                                <td>{{$customer->last_active}}</td>
-                                                <td class="text-right">{{$customer->total_dp}}</td>
-                                                <td class="text-right">{{$customer->total_wd}}</td>
-                                                <td class="text-right">{{$customer->total_turnover}}</td>
-                                                <td class="text-right">{{$customer->totall_winlose}}</td>
+                                                <td scope="row">{{ $customer->id }}</td>
+                                                <td>{{ $customer->login_id }}</td>
+                                                <td>{{ str_replace("'", '', $customer->mobile) }}</td>
+                                                <td>{{ $customer->email }}</td>
+                                                <td>{{ $customer->club_name }}</td>
+                                                <td>{{ $customer->first_join }}</td>
+                                                <td>{{ $customer->last_active }}</td>
+                                                <td class="text-right">{{ $customer->total_dp }}</td>
+                                                <td class="text-right">{{ $customer->total_wd }}</td>
+                                                <td class="text-right">{{ $customer->total_turnover }}</td>
+                                                <td class="text-right">{{ $customer->totall_winlose }}</td>
 
                                             </tr>
                                         @empty

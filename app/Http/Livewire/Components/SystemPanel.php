@@ -70,7 +70,6 @@ class SystemPanel extends Component
         )as cw
     GROUP BY
         cw.CustomerID
-    ORDER BY last_active desc
         ";
     public $listCustomer = null;
 

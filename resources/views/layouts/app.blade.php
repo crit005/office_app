@@ -26,7 +26,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     @livewireStyles
 </head>
 
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini sidebar-collapse">
     <div class="wrapper">
 
         <!-- Navbar -->
@@ -76,7 +76,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <link rel="stylesheet" href="{{ asset('backend/plugins/toastr/toastr.min.css' )}}">
 
-    
+
     {{-- icheck box --}}
     <link rel="stylesheet" href="{{ asset('backend/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
 
@@ -97,8 +97,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 title: 'Success!',
                 text: e.detail.message,
                 icon: 'success',
-                confirmButtonText: 'OK',                
-            });            
+                confirmButtonText: 'OK',
+            });
         });
 
         window.addEventListener('alert-warning', e =>{
@@ -166,7 +166,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         // function globleSearch(val){
         //     console.log(val);
         //     $('#table_search').val(val);
-        //    
+        //
         // }
 
     </script>

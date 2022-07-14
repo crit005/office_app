@@ -105,7 +105,7 @@
                         <li class="nav-item">
                             <a href="{{ route('cash.newexpand') }}"
                                 class="nav-link {{ request()->is('cash/newexpand') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-cart-plus  ml-4"></i>
+                                <i class="nav-icon fas fa-cart-plus  ml-3"></i>
                                 <p>
                                     Expand
                                 </p>
@@ -116,9 +116,9 @@
                         <li class="nav-item">
                             <a href="{{route('cash.addcash')}}"
                                 class="nav-link {{ request()->is('cash/addcash') ? 'active' : '' }}">
-                                {{-- <sup><i class="fas fa-plus-circle ml-4" style="font-size: .5rem"></i></sup>
+                                {{-- <sup><i class="fas fa-plus-circle ml-3" style="font-size: .5rem"></i></sup>
                                 <i class="fas fa-dollar-sign mr-2"></i> --}}
-                                <i class="nav-icon fas fa-donate ml-4"></i>
+                                <i class="nav-icon fas fa-donate ml-3"></i>
                                 <p>
                                     Add Cash
                                 </p>
@@ -129,8 +129,8 @@
                         <li class="nav-item">
                             <a href="{{ route('cash.exchange') }}"
                                 class="nav-link {{ request()->is('exchange') ? 'active' : '' }}">
-                                {{-- <i class="nav-icon fas fa-exchange-alt  ml-4"></i> --}}
-                                <i class="nav-icon fas fa-sync ml-4"></i>
+                                {{-- <i class="nav-icon fas fa-exchange-alt  ml-3"></i> --}}
+                                <i class="nav-icon fas fa-sync ml-3"></i>
                                 <p>
                                     Exchange
                                 </p>
@@ -141,7 +141,7 @@
                         <li class="nav-item">
                             <a href="{{ route('dashboard') }}"
                                 class="nav-link {{ request()->is('expand') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-random  ml-4"></i>
+                                <i class="nav-icon fas fa-random  ml-3"></i>
                                 <p>
                                     Transfer
                                 </p>
@@ -152,7 +152,7 @@
                         <li class="nav-item">
                             <a href="{{ route('cash.cashtransactions') }}"
                                 class="nav-link {{ request()->is('cash/cashtransactions') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-inbox  ml-4"></i>
+                                <i class="nav-icon fas fa-inbox  ml-3"></i>
                                 <p>
                                     Cash Transactions
                                 </p>
@@ -180,7 +180,7 @@
                         <li class="nav-item">
                             <a href="{{route('setting.depatments')}}"
                                 class="nav-link {{ request()->is('setting/depatments') ? 'active' : '' }}">
-                                <i class="vav-icon fas fa-sitemap ml-4"></i>
+                                <i class="vav-icon fas fa-sitemap ml-3"></i>
                                 <p>
                                     Depatment
                                 </p>
@@ -191,7 +191,7 @@
                         <li class="nav-item">
                             <a href="{{route('setting.currencies')}}"
                                 class="nav-link {{ request()->is('setting/currencies') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-hand-holding-usd ml-4"></i>
+                                <i class="nav-icon fas fa-hand-holding-usd ml-3"></i>
                                 <p>
                                     Currencies
                                 </p>
@@ -202,7 +202,7 @@
                         <li class="nav-item">
                             <a href="{{route('setting.items')}}"
                                 class="nav-link {{ request()->is('setting/items') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-dice-d6 ml-4"></i>
+                                <i class="nav-icon fas fa-dice-d6 ml-3"></i>
                                 <p>
                                     Items
                                 </p>
@@ -213,7 +213,7 @@
                         <li class="nav-item">
                             <a href="{{ route('setting.users') }}"
                                 class="nav-link {{ request()->is('setting/users') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-users ml-4"></i>
+                                <i class="nav-icon fas fa-users ml-3"></i>
                                 <p>
                                     Users
                                 </p>
@@ -224,7 +224,7 @@
                         <li class="nav-item">
                             <a href="{{ route('setting.users') }}"
                                 class="nav-link {{ request()->is('setting/profile') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-user ml-4"></i>
+                                <i class="nav-icon fas fa-user ml-3"></i>
                                 <p>
                                     Profile
                                 </p>
@@ -235,9 +235,9 @@
                 </li>
 
                 {{-- Customer menu --}}
-                <li class="nav-item {{ Request::segment(1)=='customers'? 'menu-open' : 'menu-close'}}">
+                <li class="nav-item {{ Request::segment(1)=='customer'? 'menu-open' : 'menu-close'}}">
                     {{-- <li class="nav-item menu-open"> --}}
-                        <a href="#" class="nav-link {{ Request::segment(1)=='customers'? 'active' : ''}}">
+                        <a href="#" class="nav-link {{ Request::segment(1)=='customer'? 'active' : ''}}">
                             <i class="nav-icon fas fa-address-book"></i>
                             <p class="red">
                                 Customers
@@ -249,9 +249,9 @@
 
                             {{-- Depatment Menu --}}
                             <li class="nav-item">
-                                <a href="{{route('setting.depatments')}}"
-                                    class="nav-link {{ request()->is('setting/depatments') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-address-card ml-4"></i>
+                                <a href="{{route('customer.list')}}"
+                                    class="nav-link {{ request()->is('customer/list') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-address-card ml-3"></i>
                                     <p>
                                         List Customer
                                     </p>
@@ -262,7 +262,7 @@
                             <li class="nav-item">
                                 <a href="{{route('setting.currencies')}}"
                                     class="nav-link {{ request()->is('setting/currencies') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-user-clock ml-4"></i>
+                                    <i class="nav-icon fas fa-user-clock ml-3"></i>
                                     <p>
                                         Customer Detail
                                     </p>
@@ -272,7 +272,7 @@
                              <li class="nav-item">
                                 <a href="{{ route('setting.users') }}"
                                     class="nav-link {{ request()->is('setting/profile') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-user-tag ml-4"></i>
+                                    <i class="nav-icon fas fa-user-tag ml-3"></i>
                                     <p>
                                         New Customers
                                     </p>
@@ -282,7 +282,7 @@
                             <li class="nav-item">
                                 <a href="{{ route('setting.users') }}"
                                     class="nav-link {{ request()->is('setting/profile') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-user-check ml-4"></i>
+                                    <i class="nav-icon fas fa-user-check ml-3"></i>
                                     <p>
                                         Active Customers
                                     </p>
@@ -292,7 +292,7 @@
                              <li class="nav-item">
                                 <a href="{{ route('setting.users') }}"
                                     class="nav-link {{ request()->is('setting/profile') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-user-injured ml-4"></i>
+                                    <i class="nav-icon fas fa-user-injured ml-3"></i>
                                     <p>
                                         Inactive Customers
                                     </p>
