@@ -15,7 +15,7 @@
         <div class="d-flex flex-row justify-content-between">
             <div class="text-warning"><i class="fas fa-user mr-2"></i>NEW</div>
             <div class="text-warning">
-                <i class="fas fa-spinner fa-spin" wire:loading wire:target="initSumary"></i>
+                <i class="fas fa-spinner fa-spin" wire:loading wire:target="reloadMemberFromserver"></i>
                 {{ $totalNewMember }}<sup>{{date('M',strtotime(now()))}}</sup>
             </div>
         </div>
@@ -23,7 +23,7 @@
         <div class="d-flex flex-row justify-content-between">
             <div class="text-success"><i class="fas fa-user mr-2"></i>ACTIVE</div>
             <div class="text-success">
-                <i class="fas fa-spinner fa-spin" wire:loading wire:target="initSumary"></i>
+                <i class="fas fa-spinner fa-spin" wire:loading wire:target="reloadMemberFromserver"></i>
                 {{ $totalActiveMember }}<sup>30d</sup>
             </div>
         </div>
@@ -31,7 +31,7 @@
         <div class="d-flex flex-row justify-content-between">
             <div class="text-danger"><i class="fas fa-user mr-2"></i>INACTIVE</div>
             <div class="text-danger">
-                <i class="fas fa-spinner fa-spin" wire:loading wire:target="initSumary"></i>
+                <i class="fas fa-spinner fa-spin" wire:loading wire:target="reloadMemberFromserver"></i>
                 {{ $totalInactiveMember }}<sup><i class="fas fa-user-injured"></i></sup>
             </div>
         </div>
@@ -41,16 +41,11 @@
                 <i class="fas fa-users  text-lg mr-2"></i>
                 All( <span>{{ $totalAllMember }}</span> )
             </div>
-            <a wire:click.prvent='gotoCustomerList' class="btn btn-sm btn-primary  align-self-center"><i class="fas fa-sign-in-alt"></i></a>
+            <button wire:click.prvent='gotoCustomerList' wire:loading.attr="disabled" wire:target="reloadMemberFromserver"
+            class="btn btn-sm btn-primary  align-self-center">
+                <i class="fas fa-sign-in-alt"></i>
+            </button>
         </div>
 
     </div>
 </div>
-
-@push('js')
-    <script>
-        $(function() {
-            @this.initSumary()
-        })
-    </script>
-@endpush

@@ -78,99 +78,13 @@ class SystemPanel extends Component
     {
         $this->connection = $connection;
 
-        // check system table exist
-        /**
-         * if not exist create
-         * if exist selecte max date
-         * compare maxdate and today
-         * if today = maxdate do nothing
-         * if today > maxdate => delete table and recreate
-         * ** select customerinfor from server
-         * ** insert to locall table 100 by 100
-         */
-
+        // create system table it not exist
         if (!Schema::hasTable('tbl_' . $this->connection->connection_name)) {
             $this->createSystemTable('tbl_' . $this->connection->connection_name);
         }
-
-        // $this->initSumary();
-
-    }
-
-    public function initOutOfDate()
-    {
-        $customer = new Customer();
-        $customer->setTable('tbl_' . $this->connection->connection_name);
-        $firstRecord = $customer->first();
-        if (!$firstRecord) {
-            $this->isOutOfDate = true;
-            return;
-        }
-        $this->lastUpdate = $firstRecord->created_at;
-        if (date('Y-m-d', strtotime($firstRecord->created_at)) < date('Y-m-d', strtotime(now()))) {
-            $this->isOutOfDate = true;
-            return;
-        }
-        $this->isOutOfDate = false;
-    }
-
-    public function reloadMemberFromserver()
-    {
-        Schema::dropIfExists('tbl_' . $this->connection->connection_name);
-
-        if (!Schema::hasTable('tbl_' . $this->connection->connection_name)) {
-            $this->createSystemTable('tbl_' . $this->connection->connection_name);
-        }
-
-        $this->inseartRecordFromServer();
 
         $this->initSumary();
-    }
 
-    public function initSumary()
-    {
-        $customer = new Customer();
-        $customer->setTable('tbl_' . $this->connection->connection_name);
-        $this->totalAllMember = $customer->count();
-        $this->totalNewMember = $customer->where('first_join', '>', date('Y-m-d', strtotime("last Month")))->count();
-        $this->totalActiveMember = $customer->where('last_active', '>', date('Y-m-d', strtotime("-30 days")))->count();
-        $this->totalInactiveMember = $this->totalAllMember - $this->totalActiveMember;
-
-        $this->initOutOfDate();
-    }
-
-    public function inseartRecordFromServer()
-    {
-        ini_set('memory_limit', -1);
-        ini_set('max_execution_time', 1800);
-        ini_set('max_input_time', 1200);
-        // ini_set('memory_limit','5120M');
-        $listCustomerOnServer = DB::connection($this->connection->connection_name)->select($this->sqlMemberInfo);
-        $totalRecord = count($listCustomerOnServer);
-        // dd($totalRecord);
-        $j = 0;
-        $i = 0;
-        $recordPerInsert = [];
-        foreach ($listCustomerOnServer as $customer) {
-            $arrRecord = json_decode(json_encode($customer), true);
-            $arrRecord['created_at'] = now();
-            $arrRecord['updated_at'] = now();
-            array_push($recordPerInsert, $arrRecord);
-            $j += 1;
-            $i += 1;
-            if ($j == 100 || $i == $totalRecord) {
-                DB::table('tbl_' . $this->connection->connection_name)->insert($recordPerInsert);
-                $j = 0;
-                $recordPerInsert = [];
-            }
-        }
-        $listCustomerOnServer = null;
-    }
-
-    public function gotoCustomerList()
-    {
-        session(['selectedSystem' => $this->connection]);
-        return redirect()->to(route('customer.list'));
     }
 
     public function createSystemTable($tableName)
@@ -193,6 +107,85 @@ class SystemPanel extends Component
             $table->double('totall_winlose')->nullable();
             $table->timestamps();
         });
+    }
+
+    public function initSumary()
+    {
+        $this->totalNewMember = $this->connection->new_member;
+        $this->totalActiveMember = $this->connection->active_member;
+        $this->totalAllMember = $this->connection->total_member;
+        $this->totalInactiveMember = $this->totalAllMember - $this->totalActiveMember;
+        $this->lastUpdate = $this->connection->updated_at;
+
+        $this->initOutOfDate();
+    }
+
+    public function initOutOfDate()
+    {
+        if(date('Y-m-d', strtotime($this->connection->updated_at)) < date('Y-m-d', strtotime(now()))){
+            $this->isOutOfDate = true;
+        }else{
+            $this->isOutOfDate = false;
+        }
+    }
+
+    public function reloadMemberFromserver()
+    {
+        Schema::dropIfExists('tbl_' . $this->connection->connection_name);
+
+        if (!Schema::hasTable('tbl_' . $this->connection->connection_name)) {
+            $this->createSystemTable('tbl_' . $this->connection->connection_name);
+        }
+
+        $this->inseartRecordFromServer();
+
+        $this->initSumary();
+    }
+
+
+    public function inseartRecordFromServer()
+    {
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', 1800);
+        ini_set('max_input_time', 1200);
+        // ini_set('memory_limit','5120M');
+        $listCustomerOnServer = DB::connection($this->connection->connection_name)->select($this->sqlMemberInfo);
+        $totalRecord = count($listCustomerOnServer);
+        $j = 0;
+        $i = 0;
+        $recordPerInsert = [];
+        foreach ($listCustomerOnServer as $customer) {
+            $arrRecord = json_decode(json_encode($customer), true);
+            $arrRecord['created_at'] = now();
+            $arrRecord['updated_at'] = now();
+            array_push($recordPerInsert, $arrRecord);
+            $j += 1;
+            $i += 1;
+            if ($j == 100 || $i == $totalRecord) {
+                DB::table('tbl_' . $this->connection->connection_name)->insert($recordPerInsert);
+                $j = 0;
+                $recordPerInsert = [];
+            }
+        }
+        $listCustomerOnServer = null;
+        $this->updateConnectionInfo();
+    }
+
+    public function updateConnectionInfo()
+    {
+        $customer = new Customer();
+        $customer->setTable('tbl_' . $this->connection->connection_name);
+
+        $this->connection->new_member = $customer->where('first_join', '>', date('Y-m-d', strtotime("last Month")))->count();
+        $this->connection->active_member = $customer->where('last_active', '>', date('Y-m-d', strtotime("-30 days")))->count();
+        $this->connection->total_member =  $customer->count();
+        $this->connection->update();
+    }
+
+    public function gotoCustomerList()
+    {
+        session(['selectedSystem' => $this->connection]);
+        return redirect()->to(route('customer.list'));
     }
 
     public function render()

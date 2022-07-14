@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('system_name');
             $table->string('connection_name');
             $table->string('server_name');
+            $table->bigInteger('new_member')->default(0);
+            $table->bigInteger('active_member')->default(0);
+            $table->bigInteger('total_member')->default(0);
             $table->string('status');
             $table->timestamps();
         });

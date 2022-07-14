@@ -70,22 +70,25 @@
                                         @forelse ($customers as $indext => $customer)
                                             <tr wire:key="depatment-{{ $customer->id }}"
                                                 id="{{ $customer->id }}">
-                                                <th scope="row">{{ $customer->id}}</th>
+                                                <th scope="row">
+                                                    {{ $customers->firstItem() + $indext }}
+                                                </th>
+                                                <td scope="row">{{ $customer->id}}</td>
                                                 <td>{{$customer->login_id}}</td>
-                                                <td>{{$customer->mobile}}</td>
+                                                <td>{{str_replace("'","",$customer->mobile)}}</td>
                                                 <td>{{$customer->email}}</td>
                                                 <td>{{$customer->club_name}}</td>
                                                 <td>{{$customer->first_join}}</td>
                                                 <td>{{$customer->last_active}}</td>
-                                                <td>{{$customer->total_dp}}</td>
-                                                <td>{{$customer->total_wd}}</td>
-                                                <td>{{$customer->total_turnover}}</td>
-                                                <td>{{$customer->total_winlose}}</td>
+                                                <td class="text-right">{{$customer->total_dp}}</td>
+                                                <td class="text-right">{{$customer->total_wd}}</td>
+                                                <td class="text-right">{{$customer->total_turnover}}</td>
+                                                <td class="text-right">{{$customer->totall_winlose}}</td>
 
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="11" class="text-center"> No record found...</td>
+                                                <td colspan="12" class="text-center"> No record found...</td>
                                             </tr>
                                         @endforelse
 
@@ -98,7 +101,7 @@
                         <div class="card-footer">
                             <div class="d-flex flex-row justify-content-center">
                                 <div>
-                                    {{-- {{ $customers->links() }} --}}
+                                    {{ $customers->links() }}
                                 </div>
 
                             </div>

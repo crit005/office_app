@@ -5,9 +5,14 @@ namespace App\Http\Livewire\Customer;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class ListCustomer extends Component
 {
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
+
     public $connection = null;
     public function mount()
     {
@@ -17,7 +22,7 @@ class ListCustomer extends Component
     {
         $customer = new Customer();
         $customer->setTable('tbl_' . $this->connection->connection_name);
-        $customers = $customer->where('id','>',1)->get();
+        $customers = $customer->paginate(env('PAGINATE'));
         return view('livewire.customer.list-customer',['customers'=>$customers]);
     }
 }
