@@ -280,8 +280,8 @@
                             </li>
                             {{-- Customer active Menu --}}
                             <li class="nav-item">
-                                <a href="{{ route('setting.users') }}"
-                                    class="nav-link {{ request()->is('setting/profile') ? 'active' : '' }}">
+                                <a href="{{ route('customer.active') }}"
+                                    class="nav-link {{ request()->is('customer/active') ? 'active' : '' }}">
                                     <i class="nav-icon fas fa-user-check ml-3"></i>
                                     <p>
                                         Active Customers

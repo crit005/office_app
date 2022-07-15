@@ -10,6 +10,7 @@ use App\Http\Livewire\Cash\EditPayment;
 use App\Http\Livewire\Cash\Exchange;
 use App\Http\Livewire\Cash\ListCashdrawer;
 use App\Http\Livewire\Cash\ListCashTransactions;
+use App\Http\Livewire\Customer\ActiveCustomer;
 use App\Http\Livewire\Customer\ListCustomer;
 use App\Http\Livewire\Dashboard;
 use App\Http\Livewire\Setting\ListCurrency;
@@ -54,6 +55,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Customers
     Route::get('customer/list', ListCustomer::class)->name('customer.list');
+    Route::get('customer/active', ActiveCustomer::class)->name('customer.active');
 
 
 });

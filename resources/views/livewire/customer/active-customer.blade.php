@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0 text-white">List Customer</h1>
+                    <h1 class="m-0 text-white">Active Customer</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -24,7 +24,21 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
+                            <div class="d-flex flex-row justify-content-start float-left">
+                                <div class="form-group input-group-sm mr-2">
+                                    <label for="tr_date">From Date:</label>
+                                    <x-datepicker-normal wire:model="fromDate" id="from_date" :format="'DD-MMM-Y'" />
+                                </div>
+                                <div class="form-group input-group-sm">
+                                    <label for="tr_date">To Date:</label>
+                                    <x-datepicker-normal wire:model="toDate" id="to_date" :format="'DD-MMM-Y'" />
+                                </div>
+
+                                <h3>{{$customers->total()}} Customer Active</h3>
+                            </div>
+
                             <div class="card-tools">
+
                                 <div class="input-group input-group-sm" style="width: 150px;">
                                     <input wire:model.debounce='search' type="text" name="table_search"
                                         class="form-control float-right" placeholder="Search">
@@ -57,7 +71,8 @@
                                             <th scope="col" class="text-center"><a
                                                     class="d-flex justify-content-between" href=""
                                                     wire:click.prevent="setOrderField('login_id')">Login
-                                                    <span wire:loading.class="d-none" wire:target="setOrderField('login_id')">
+                                                    <span wire:loading.class="d-none"
+                                                        wire:target="setOrderField('login_id')">
                                                         {!! $this->getSortIcon('login_id') !!}
                                                     </span>
                                                     <i class="fas fa-spinner fa-spin align-self-center" wire:loading
