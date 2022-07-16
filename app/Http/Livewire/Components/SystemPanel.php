@@ -175,9 +175,10 @@ class SystemPanel extends Component
         $customer = new Customer();
         $customer->setTable('tbl_' . $this->connection->connection_name);
 
-        $this->connection->new_member = $customer->where('first_join', '>', date('Y-m-d', strtotime("last Month")))->count();
-        $this->connection->active_member = $customer->where('last_active', '>', date('Y-m-d', strtotime("-30 days")))->count();
+        $this->connection->new_member = $customer->where('first_join', '>', date('Y-m-t', strtotime("last Month")))->count();
+        $this->connection->active_member = $customer->where('last_active', '>=', date('Y-m-d', strtotime("-30 days")))->count();
         $this->connection->total_member =  $customer->count();
+        $this->connection->updated_at = now();
         $this->connection->update();
     }
 

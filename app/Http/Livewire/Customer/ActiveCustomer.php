@@ -21,6 +21,9 @@ class ActiveCustomer extends Component
     public $connection = null;
     public function mount()
     {
+        if(!Session::get('selectedSystem')){
+            return redirect(route('dashboard'));
+        }
         $this->connection = Session::get('selectedSystem');
 
         $this->fromDate = date('d-M-Y', strtotime('-30 days'));
@@ -30,6 +33,20 @@ class ActiveCustomer extends Component
     public function updatedSearch($var)
     {
         $this->resetPage();
+    }
+    public function updatedFromDate($var)
+    {
+        $this->resetPage();
+    }
+    public function updatedToDate($var)
+    {
+        $this->resetPage();
+    }
+
+    public function setToDate($strDate)
+    {
+        $this->fromDate =  date('d-M-Y',strtotime($strDate));
+        $this->toDate = date('d-M-Y', strtotime(now()));
     }
 
     public function setOrderField($fieldName)

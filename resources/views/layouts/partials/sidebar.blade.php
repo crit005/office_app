@@ -270,8 +270,8 @@
                             </li>
                              {{-- Customer active Menu --}}
                              <li class="nav-item">
-                                <a href="{{ route('setting.users') }}"
-                                    class="nav-link {{ request()->is('setting/profile') ? 'active' : '' }}">
+                                <a href="{{ route('customer.newmember') }}"
+                                    class="nav-link {{ request()->is('customer/newmember') ? 'active' : '' }}">
                                     <i class="nav-icon fas fa-user-tag ml-3"></i>
                                     <p>
                                         New Customers
@@ -290,8 +290,8 @@
                             </li>
                              {{-- Customer active Menu --}}
                              <li class="nav-item">
-                                <a href="{{ route('setting.users') }}"
-                                    class="nav-link {{ request()->is('setting/profile') ? 'active' : '' }}">
+                                <a href="{{ route('customer.inactive') }}"
+                                    class="nav-link {{ request()->is('customer/inactive') ? 'active' : '' }}">
                                     <i class="nav-icon fas fa-user-injured ml-3"></i>
                                     <p>
                                         Inactive Customers

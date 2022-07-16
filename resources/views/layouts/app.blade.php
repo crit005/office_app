@@ -8,25 +8,27 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{env('APP_NAME')}}</title>
+    <title>{{ env('APP_NAME') }}</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="{{asset('backend/plugins/fontawesome-free/css/all.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('backend/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Theme style -->
-    <link rel="stylesheet" href="{{asset('backend/dist/css/adminlte.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('backend/dist/css/adminlte.min.css') }}">
     {{-- <link rel="stylesheet" href="{{asset('css/them1.css')}}"> --}}
     {{-- <link rel="stylesheet" href="{{asset('css/them2.css')}}"> --}}
     {{-- <link rel="stylesheet" href="{{asset('css/them5.css')}}"> --}}
-    <link rel="stylesheet" href="{{asset('css/style.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     {{-- <link rel="stylesheet" href="{{asset('css/them3.css')}}"> --}}
 
     @livewireStyles
 </head>
 
-<body class="hold-transition sidebar-mini sidebar-collapse">
+{{-- <body class="hold-transition sidebar-mini sidebar-collapse"> --}}
+
+<body class="hold-transition sidebar-mini">
     <div class="wrapper">
 
         <!-- Navbar -->
@@ -40,7 +42,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
-            {{$slot}}
+            {{ $slot }}
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->
@@ -68,13 +70,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
     <!-- Bootstrap 4 -->
-    <script src="{{asset('backend/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{ asset('backend/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- AdminLTE App -->
-    <script src="{{asset('backend/dist/js/adminlte.min.js')}}"></script>
+    <script src="{{ asset('backend/dist/js/adminlte.min.js') }}"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
 
-    <link rel="stylesheet" href="{{ asset('backend/plugins/toastr/toastr.min.css' )}}">
+    <link rel="stylesheet" href="{{ asset('backend/plugins/toastr/toastr.min.css') }}">
 
 
     {{-- icheck box --}}
@@ -85,14 +87,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{ asset('backend/plugins/moment/moment.min.js') }}"></script>
 
     <link rel="stylesheet"
-        href="{{ asset('backend/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' )}}">
+        href="{{ asset('backend/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
     <script src="{{ asset('backend/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 
     <script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/ckeditor.js"></script>
 
     @stack('js')
     <script>
-        window.addEventListener('alert-success', e =>{
+        window.addEventListener('alert-success', e => {
             Swal.fire({
                 title: 'Success!',
                 text: e.detail.message,
@@ -101,7 +103,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             });
         });
 
-        window.addEventListener('alert-warning', e =>{
+        window.addEventListener('alert-warning', e => {
             Swal.fire({
                 title: 'Warning!',
                 text: e.detail.message,
@@ -110,7 +112,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             });
         });
 
-        window.addEventListener('alert-info', e =>{
+        window.addEventListener('alert-info', e => {
             Swal.fire({
                 title: 'Info!',
                 text: e.detail.message,
@@ -119,7 +121,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             });
         });
 
-        window.addEventListener('alert-error', e =>{
+        window.addEventListener('alert-error', e => {
             Swal.fire({
                 title: 'Error!',
                 text: e.detail.message,
@@ -128,7 +130,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             });
         });
 
-        window.addEventListener('alert', e =>{
+        window.addEventListener('alert', e => {
             Swal.fire({
                 title: e.detail.title ?? 'Success!',
                 text: e.detail.message ?? '',
@@ -141,7 +143,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             });
         });
 
-        window.addEventListener('toast',e =>{
+        window.addEventListener('toast', e => {
             const Toast = Swal.mixin({
                 toast: true,
                 position: 'top-end',
@@ -149,9 +151,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 timer: 3000,
                 timerProgressBar: true,
                 didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer)
-                toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
             })
             Toast.fire({
                 icon: e.detail.icon ?? 'success',
@@ -168,7 +170,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
         //     $('#table_search').val(val);
         //
         // }
-
     </script>
     @livewireScripts
 </body>

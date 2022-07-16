@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0 text-white">Active Customer: {{ $customers->total() }}</h1>
+                    <h1 class="m-0 text-white">Inactive Customer: {{ $customers->total() }}</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -25,15 +25,15 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex flex-row justify-content-start float-left">
-                                <div class="input-group input-group-sm mr-2">
+                                {{-- <div class="input-group input-group-sm mr-2">
                                     <div class="input-group-prepend">
                                         <div class="input-group-text">From:</div>
                                     </div>
                                     <x-datepicker-normal wire:model="fromDate" id="from_date" :format="'DD-MMM-Y'" />
-                                </div>
+                                </div> --}}
                                 <div class="input-group input-group-sm">
                                     <div class="input-group-prepend">
-                                        <div class="input-group-text">To:</div>
+                                        <div class="input-group-text">Untill:</div>
                                     </div>
                                     <x-datepicker-normal wire:model="toDate" id="to_date" :format="'DD-MMM-Y'" />
                                 </div>
