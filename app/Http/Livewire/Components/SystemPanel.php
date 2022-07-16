@@ -188,6 +188,26 @@ class SystemPanel extends Component
         return redirect()->to(route('customer.list'));
     }
 
+    public function gotoNewCustomerList()
+    {
+        session(['selectedSystem' => $this->connection]);
+        return redirect()->to(route('customer.newmember'));
+    }
+
+    public function gotoActiveCustomer()
+    {
+        session(['selectedSystem' => $this->connection]);
+        return redirect()->to(route('customer.active'));
+    }
+
+    public function gotoInactiveCustomer()
+    {
+        session(['selectedSystem' => $this->connection]);
+        return redirect()->to(route('customer.inactive'));
+    }
+
+
+
     public function render()
     {
         return view('livewire.components.system-panel');

@@ -12,17 +12,17 @@
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
                 @auth
-                <img src="{{ auth()->user()->photoUrl }}" class="img-circle elevation-2"
-                    style="width: 34px; height: 34px;" alt="User Image">
+                    <img src="{{ auth()->user()->photoUrl }}" class="img-circle elevation-2"
+                        style="width: 34px; height: 34px;" alt="User Image">
                 @endauth
                 @guest
-                <img src="{{ asset('backend/dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2"
-                    alt="User Image">
+                    <img src="{{ asset('backend/dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2"
+                        alt="User Image">
                 @endguest
             </div>
             <div class="info">
                 <a href="#" class="d-block">@auth
-                    {{ auth()->user()->name }}
+                        {{ auth()->user()->name }}
                     @endauth
                 </a>
             </div>
@@ -42,7 +42,8 @@
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
                 {{-- Dashboar Menu --}}
                 <li class="nav-item">
@@ -55,43 +56,78 @@
                     </a>
                 </li>
 
-                {{-- Passport Menu --}}
-                <li class="nav-item">
-                    <a href="{{ route('dashboard') }}"
-                        class="nav-link {{ request()->is('cashdrawer') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-passport"></i>
-                        <p>
-                            Passport
+                {{-- Customer menu --}}
+                <li class="nav-item {{ Request::segment(1) == 'customer' ? 'menu-open' : 'menu-close' }}">
+                    {{-- <li class="nav-item menu-open"> --}}
+                    <a href="#" class="nav-link {{ Request::segment(1) == 'customer' ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-address-book"></i>
+                        <p class="red">
+                            Customers
+                            <i class="right fas fa-angle-down"></i>
                         </p>
                     </a>
-                </li>
 
-                {{-- Longleav Menu --}}
-                <li class="nav-item">
-                    <a href="{{ route('dashboard') }}"
-                        class="nav-link {{ request()->is('cashdrawer') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-plane-departure"></i>
-                        <p>
-                            Longleav
-                        </p>
-                    </a>
-                </li>
+                    <ul class="nav nav-treeview">
 
-                {{-- MOto Menu --}}
-                <li class="nav-item">
-                    <a href="{{ route('dashboard') }}"
-                        class="nav-link {{ request()->is('cashdrawer') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-motorcycle"></i>
-                        <p>
-                            Moto
-                        </p>
-                    </a>
+                        {{-- Depatment Menu --}}
+                        <li class="nav-item">
+                            <a href="{{ route('customer.list') }}"
+                                class="nav-link {{ request()->is('customer/list') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-address-card ml-3"></i>
+                                <p>
+                                    List Customer
+                                </p>
+                            </a>
+                        </li>
+
+                        {{-- Currency Menu --}}
+                        {{-- <li class="nav-item">
+                                <a href="{{route('setting.currencies')}}"
+                                    class="nav-link {{ request()->is('setting/currencies') ? 'active' : '' }}">
+                                    <i class="nav-icon fas fa-user-clock ml-3"></i>
+                                    <p>
+                                        Customer Detail
+                                    </p>
+                                </a>
+                            </li> --}}
+                        {{-- Customer active Menu --}}
+                        <li class="nav-item">
+                            <a href="{{ route('customer.newmember') }}"
+                                class="nav-link {{ request()->is('customer/newmember') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-user-tag ml-3"></i>
+                                <p>
+                                    New Customers
+                                </p>
+                            </a>
+                        </li>
+                        {{-- Customer active Menu --}}
+                        <li class="nav-item">
+                            <a href="{{ route('customer.active') }}"
+                                class="nav-link {{ request()->is('customer/active') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-user-check ml-3"></i>
+                                <p>
+                                    Active Customers
+                                </p>
+                            </a>
+                        </li>
+                        {{-- Customer active Menu --}}
+                        <li class="nav-item">
+                            <a href="{{ route('customer.inactive') }}"
+                                class="nav-link {{ request()->is('customer/inactive') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-user-injured ml-3"></i>
+                                <p>
+                                    Inactive Customers
+                                </p>
+                            </a>
+                        </li>
+
+                    </ul>
                 </li>
 
                 {{-- Paynebt menu --}}
-                <li class="nav-item {{ Request::segment(1)=='cash'? 'menu-open' : 'menu-close'}}">
-                {{-- <li class="nav-item menu-open"> --}}
-                    <a href="#" class="nav-link {{ Request::segment(1)=='cash'? 'active' : ''}}">
+                <li class="nav-item {{ Request::segment(1) == 'cash' ? 'menu-open' : 'menu-close' }}">
+                    {{-- <li class="nav-item menu-open"> --}}
+                    <a href="#" class="nav-link {{ Request::segment(1) == 'cash' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-shopping-cart"></i>
                         <p class="red">
                             Cash
@@ -114,7 +150,7 @@
 
                         {{-- Add Cash Menu --}}
                         <li class="nav-item">
-                            <a href="{{route('cash.addcash')}}"
+                            <a href="{{ route('cash.addcash') }}"
                                 class="nav-link {{ request()->is('cash/addcash') ? 'active' : '' }}">
                                 {{-- <sup><i class="fas fa-plus-circle ml-3" style="font-size: .5rem"></i></sup>
                                 <i class="fas fa-dollar-sign mr-2"></i> --}}
@@ -138,7 +174,7 @@
                         </li>
 
                         {{-- Transfer Menu --}}
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a href="{{ route('dashboard') }}"
                                 class="nav-link {{ request()->is('expand') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-random  ml-3"></i>
@@ -146,7 +182,7 @@
                                     Transfer
                                 </p>
                             </a>
-                        </li>
+                        </li> --}}
 
                         {{-- CashTransaction --}}
                         <li class="nav-item">
@@ -162,11 +198,44 @@
                     </ul>
                 </li>
 
+                {{-- Passport Menu --}}
+                <li class="nav-item">
+                    <a href="#"
+                        class="nav-link {{ request()->is('cashdrawer') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-passport"></i>
+                        <p>
+                            Passport
+                        </p>
+                    </a>
+                </li>
+
+                {{-- Longleav Menu --}}
+                <li class="nav-item">
+                    <a href="#"
+                        class="nav-link {{ request()->is('cashdrawer') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-plane-departure"></i>
+                        <p>
+                            Longleav
+                        </p>
+                    </a>
+                </li>
+
+                {{-- MOto Menu --}}
+                <li class="nav-item">
+                    <a href="#"
+                        class="nav-link {{ request()->is('cashdrawer') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-motorcycle"></i>
+                        <p>
+                            Moto
+                        </p>
+                    </a>
+                </li>
+
 
                 {{-- Setting menu --}}
-                <li class="nav-item {{ Request::segment(1)=='setting'? 'menu-open' : 'menu-close'}}">
-                {{-- <li class="nav-item menu-open"> --}}
-                    <a href="#" class="nav-link {{ Request::segment(1)=='setting'? 'active' : ''}}">
+                <li class="nav-item {{ Request::segment(1) == 'setting' ? 'menu-open' : 'menu-close' }}">
+                    {{-- <li class="nav-item menu-open"> --}}
+                    <a href="#" class="nav-link {{ Request::segment(1) == 'setting' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-cog"></i>
                         <p class="red">
                             Setting
@@ -178,7 +247,7 @@
 
                         {{-- Depatment Menu --}}
                         <li class="nav-item">
-                            <a href="{{route('setting.depatments')}}"
+                            <a href="{{ route('setting.depatments') }}"
                                 class="nav-link {{ request()->is('setting/depatments') ? 'active' : '' }}">
                                 <i class="vav-icon fas fa-sitemap ml-3"></i>
                                 <p>
@@ -189,7 +258,7 @@
 
                         {{-- Currency Menu --}}
                         <li class="nav-item">
-                            <a href="{{route('setting.currencies')}}"
+                            <a href="{{ route('setting.currencies') }}"
                                 class="nav-link {{ request()->is('setting/currencies') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-hand-holding-usd ml-3"></i>
                                 <p>
@@ -200,7 +269,7 @@
 
                         {{-- Item Menu --}}
                         <li class="nav-item">
-                            <a href="{{route('setting.items')}}"
+                            <a href="{{ route('setting.items') }}"
                                 class="nav-link {{ request()->is('setting/items') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-dice-d6 ml-3"></i>
                                 <p>
@@ -234,81 +303,14 @@
                     </ul>
                 </li>
 
-                {{-- Customer menu --}}
-                <li class="nav-item {{ Request::segment(1)=='customer'? 'menu-open' : 'menu-close'}}">
-                    {{-- <li class="nav-item menu-open"> --}}
-                        <a href="#" class="nav-link {{ Request::segment(1)=='customer'? 'active' : ''}}">
-                            <i class="nav-icon fas fa-address-book"></i>
-                            <p class="red">
-                                Customers
-                                <i class="right fas fa-angle-down"></i>
-                            </p>
-                        </a>
-
-                        <ul class="nav nav-treeview">
-
-                            {{-- Depatment Menu --}}
-                            <li class="nav-item">
-                                <a href="{{route('customer.list')}}"
-                                    class="nav-link {{ request()->is('customer/list') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-address-card ml-3"></i>
-                                    <p>
-                                        List Customer
-                                    </p>
-                                </a>
-                            </li>
-
-                            {{-- Currency Menu --}}
-                            <li class="nav-item">
-                                <a href="{{route('setting.currencies')}}"
-                                    class="nav-link {{ request()->is('setting/currencies') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-user-clock ml-3"></i>
-                                    <p>
-                                        Customer Detail
-                                    </p>
-                                </a>
-                            </li>
-                             {{-- Customer active Menu --}}
-                             <li class="nav-item">
-                                <a href="{{ route('customer.newmember') }}"
-                                    class="nav-link {{ request()->is('customer/newmember') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-user-tag ml-3"></i>
-                                    <p>
-                                        New Customers
-                                    </p>
-                                </a>
-                            </li>
-                            {{-- Customer active Menu --}}
-                            <li class="nav-item">
-                                <a href="{{ route('customer.active') }}"
-                                    class="nav-link {{ request()->is('customer/active') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-user-check ml-3"></i>
-                                    <p>
-                                        Active Customers
-                                    </p>
-                                </a>
-                            </li>
-                             {{-- Customer active Menu --}}
-                             <li class="nav-item">
-                                <a href="{{ route('customer.inactive') }}"
-                                    class="nav-link {{ request()->is('customer/inactive') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-user-injured ml-3"></i>
-                                    <p>
-                                        Inactive Customers
-                                    </p>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </li>
 
 
                 {{-- Logout mentu --}}
                 <li class="nav-item">
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
-                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();"
-                            class="nav-link">
+                        <a href="{{ route('logout') }}"
+                            onclick="event.preventDefault(); this.closest('form').submit();" class="nav-link">
                             <i class="nav-icon fas fa-sign-out-alt"></i>
                             <p>
                                 Logout

@@ -18,31 +18,46 @@
                 <i class="fas fa-spinner fa-spin" wire:loading wire:target="reloadMemberFromserver"></i>
                 {{ $totalNewMember }}<sup>{{date('M',strtotime(now()))}}</sup>
             </div>
+            <button wire:click.prvent='gotoNewCustomerList' wire:loading.attr="disabled" wire:target="reloadMemberFromserver"
+            class="btn btn-xs btn-warning  align-self-center">
+                <i class="fas fa-sign-in-alt"></i>
+            </button>
         </div>
         <hr class="mt-1">
+
         <div class="d-flex flex-row justify-content-between">
             <div class="text-success"><i class="fas fa-user mr-2"></i>ACTIVE</div>
             <div class="text-success">
                 <i class="fas fa-spinner fa-spin" wire:loading wire:target="reloadMemberFromserver"></i>
                 {{ $totalActiveMember }}<sup>30d</sup>
             </div>
+            <button wire:click.prvent='gotoActiveCustomer' wire:loading.attr="disabled" wire:target="reloadMemberFromserver"
+            class="btn btn-xs btn-success  align-self-center">
+                <i class="fas fa-sign-in-alt"></i>
+            </button>
         </div>
         <hr class="mt-1">
+
         <div class="d-flex flex-row justify-content-between">
             <div class="text-danger"><i class="fas fa-user mr-2"></i>INACTIVE</div>
             <div class="text-danger">
                 <i class="fas fa-spinner fa-spin" wire:loading wire:target="reloadMemberFromserver"></i>
                 {{ $totalInactiveMember }}<sup><i class="fas fa-user-injured"></i></sup>
             </div>
+            <button wire:click.prvent='gotoInactiveCustomer' wire:loading.attr="disabled" wire:target="reloadMemberFromserver"
+            class="btn btn-xs btn-danger  align-self-center">
+                <i class="fas fa-sign-in-alt"></i>
+            </button>
         </div>
         <hr class="mt-1">
+
         <div class="d-flex flex-row justify-content-between align-content-between">
             <div class="text-primary align-self-center">
                 <i class="fas fa-users  text-lg mr-2"></i>
                 All( <span>{{ $totalAllMember }}</span> )
             </div>
             <button wire:click.prvent='gotoCustomerList' wire:loading.attr="disabled" wire:target="reloadMemberFromserver"
-            class="btn btn-sm btn-primary  align-self-center">
+            class="btn btn-xs btn-primary  align-self-center">
                 <i class="fas fa-sign-in-alt"></i>
             </button>
         </div>

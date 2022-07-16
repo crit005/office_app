@@ -182,7 +182,11 @@
                                                 <th scope="row">
                                                     {{ $customers->firstItem() + $indext }}
                                                 </th>
-                                                <td scope="row">{{ $customer->id }}</td>
+                                                <td scope="row">
+                                                    <a href="{{ route('customer.detail', $customer->id) }}" >
+                                                        {{ $customer->id }}
+                                                    </a>
+                                                </td>
                                                 <td>{{ $customer->login_id }}</td>
                                                 <td>{{ str_replace("'", '', $customer->mobile) }}</td>
                                                 <td>{{ $customer->email }}</td>

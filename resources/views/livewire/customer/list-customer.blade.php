@@ -163,15 +163,23 @@
                                                 <th scope="row">
                                                     {{ $customers->firstItem() + $indext }}
                                                 </th>
-                                                <td scope="row">{{ $customer->id }}</td>
+                                                <td scope="row">
+                                                    <a href="{{ route('customer.detail', $customer->id) }}" >
+                                                        {{ $customer->id }}
+                                                    </a>
+                                                </td>
                                                 <td>{{ $customer->login_id }}</td>
                                                 <td>{{ str_replace("'", '', $customer->mobile) }}</td>
                                                 <td>{{ $customer->email }}</td>
                                                 <td>{{ $customer->club_name }}</td>
-                                                <td class="@if(strtotime($customer->first_join)>strtotime(now())) text-danger @endif">{{ $customer->first_join }}</td>
-                                                <td class="@if(strtotime($customer->last_dp)>strtotime(now())) text-danger @endif">{{ $customer->last_dp }}</td>
-                                                <td class="@if(strtotime($customer->last_wd)>strtotime(now())) text-danger @endif">{{ $customer->last_wd }}</td>
-                                                <td class="@if(strtotime($customer->last_active)>strtotime(now())) text-danger @endif">{{ $customer->last_active }}</td>
+                                                <td class="@if (strtotime($customer->first_join) > strtotime(now())) text-danger @endif">
+                                                    {{ $customer->first_join }}</td>
+                                                <td class="@if (strtotime($customer->last_dp) > strtotime(now())) text-danger @endif">
+                                                    {{ $customer->last_dp }}</td>
+                                                <td class="@if (strtotime($customer->last_wd) > strtotime(now())) text-danger @endif">
+                                                    {{ $customer->last_wd }}</td>
+                                                <td class="@if (strtotime($customer->last_active) > strtotime(now())) text-danger @endif">
+                                                    {{ $customer->last_active }}</td>
                                                 <td class="text-right">{{ $customer->total_dp }}</td>
                                                 <td class="text-right">{{ $customer->total_wd }}</td>
                                                 <td class="text-right">{{ $customer->total_turnover }}</td>
