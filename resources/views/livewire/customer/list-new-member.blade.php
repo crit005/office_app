@@ -37,9 +37,16 @@
                                     </div>
                                     <x-datepicker-normal wire:model="toDate" id="to_date" :format="'DD-MMM-Y'" />
                                 </div>
-                                <button wire:click.prevent="setToDate('-180 days')" class="btn btn-primary btn-sm ml-2">6M(-180ds)</button>
-                                <button wire:click.prevent="setToDate('-90 days')" class="btn btn-primary btn-sm ml-2">3M(-90ds)</button>
-                                <button wire:click.prevent="setToDate('-30 days')" class="btn btn-primary btn-sm ml-2">1M(-30ds)</button>
+                                <button wire:click.prevent="setToDate('-180 days')"
+                                    class="btn btn-primary btn-sm elevation-1 ml-2">6M(-180ds)</button>
+                                <button wire:click.prevent="setToDate('-90 days')"
+                                    class="btn btn-primary btn-sm elevation-1 ml-2">3M(-90ds)</button>
+                                <button wire:click.prevent="setToDate('-30 days')"
+                                    class="btn btn-primary btn-sm elevation-1 ml-2">1M(-30ds)</button>
+                                <button wire:click.prevent="export"
+                                    class="btn btn-success btn-sm elevation-1 ml-2">
+                                    <i class="far fa-file-excel"></i>
+                                </button>
                             </div>
 
                             <div class="card-tools">
@@ -115,7 +122,7 @@
                                                     <i class="fas fa-spinner fa-spin align-self-center" wire:loading
                                                         wire:target="setOrderField('first_join')"></i>
                                                 </a></th>
-                                                <th scope="col" class="text-center"><a
+                                            <th scope="col" class="text-center"><a
                                                     class="d-flex justify-content-between" href=""
                                                     wire:click.prevent="setOrderField('last_dp')">Last DP
                                                     <span wire:loading.class="d-none"
@@ -183,7 +190,7 @@
                                                     {{ $customers->firstItem() + $indext }}
                                                 </th>
                                                 <td scope="row">
-                                                    <a href="{{ route('customer.detail', $customer->id) }}" >
+                                                    <a href="{{ route('customer.detail', $customer->id) }}">
                                                         {{ $customer->id }}
                                                     </a>
                                                 </td>

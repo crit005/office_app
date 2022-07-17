@@ -72,6 +72,11 @@ class ActiveCustomer extends Component
         return $icon;
     }
 
+    public function export()
+    {
+        dd('Export');
+    }
+
     public function render()
     {
         $customer = new Customer();

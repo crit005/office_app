@@ -24,6 +24,9 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
+                            <button wire:click.prevent="setToDate('-30 days')" class="btn btn-success btn-sm elevation-1 ml-2">
+                                <i class="far fa-file-excel"></i>
+                            </button>
                             <div class="card-tools">
                                 <div class="input-group input-group-sm" style="width: 150px;">
                                     <input wire:model.debounce='search' type="text" name="table_search"
