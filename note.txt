@@ -1,0 +1,2 @@
+install laravel excel 
+composer require maatwebsite/excel --with-all-dependencies -w
