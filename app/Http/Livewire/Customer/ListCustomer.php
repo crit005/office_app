@@ -2,10 +2,15 @@
 
 namespace App\Http\Livewire\Customer;
 
+use App\Exports\MemberExport;
+use App\Jobs\ExportMemberJob;
 use App\Models\Customer;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ListCustomer extends Component
 {
@@ -14,6 +19,8 @@ class ListCustomer extends Component
     protected $paginationTheme = 'bootstrap';
     public $search = null;
     public $orderField = ['field' => 'last_active', 'order' => 'desc'];
+    public $isDownloading = false;
+    public $test = '';
 
     public $connection = null;
     public function mount()
@@ -22,6 +29,8 @@ class ListCustomer extends Component
             return redirect(route('dashboard'));
         }
         $this->connection = Session::get('selectedSystem');
+        // $this->test = Storage::disk('public')->file();
+        $this->test = storage_path('app/public/xlsx/test.zip');
     }
 
     public function updatedSearch($var)
@@ -50,6 +59,15 @@ class ListCustomer extends Component
             }
         }
         return $icon;
+    }
+
+    public function doExport()
+    {
+        $this->isDownloading = true;
+        // return Excel::download(new MemberExport($this->search, $this->orderField), 'ListMember.xlsx');
+        $batch = Bus::batch([])->dispatch();
+        $batch->add(new ExportMemberJob($this->connection->connection_name, $this->search, $this->orderField));
+
     }
     public function render()
     {

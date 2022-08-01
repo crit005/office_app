@@ -5,6 +5,7 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0 text-white">List Customer: {{ $customers->total() }}</h1>
+                    <h1>{{$test}}</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -24,8 +25,13 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <button wire:click.prevent="setToDate('-30 days')" class="btn btn-success btn-sm elevation-1 ml-2">
-                                <i class="far fa-file-excel"></i>
+                            <button wire:click.prevent="doExport()" class="btn btn-success btn-sm elevation-1 ml-2">
+                                @if (!$isDownloading)
+                                    <i class="far fa-file-excel"></i>
+                                @else
+                                <i class="fas fa-spinner fa-spin align-self-center"></i>
+                                @endif
+
                             </button>
                             <div class="card-tools">
                                 <div class="input-group input-group-sm" style="width: 150px;">
@@ -167,7 +173,7 @@
                                                     {{ $customers->firstItem() + $indext }}
                                                 </th>
                                                 <td scope="row">
-                                                    <a href="{{ route('customer.detail', $customer->id) }}" >
+                                                    <a href="{{ route('customer.detail', $customer->id) }}">
                                                         {{ $customer->id }}
                                                     </a>
                                                 </td>
