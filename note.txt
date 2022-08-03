@@ -1,2 +1,4 @@
-install laravel excel 
+install laravel excel
 composer require maatwebsite/excel --with-all-dependencies -w
+
+ត្រូវ run php artisan storage:link ក្រោយពេលធ្វើការជាមួយ filesystem or image cannot view

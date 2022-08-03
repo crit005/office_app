@@ -3,35 +3,28 @@
 namespace App\Jobs;
 
 use App\Exports\MemberExport;
+use App\Models\Notifications;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
 use ZipArchive;
-use File;
 
 class ExportMemberJob implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    public $search;
-    public $orderField;
-    public $tableName;
+    public $data;
     /**
      * Create a new job instance.
      *
      * @return void
+     * data is an aray conten tableName search orderField fileName password and user(Auth::user())
      */
-    public function __construct($tableName, $search, $orderField)
+    public function __construct($data)
     {
-        $this->tableName = $tableName;
-        $this->search = $search;
-        $this->orderField = $orderField;
+        $this->data = $data;
     }
 
     /**
@@ -41,32 +34,20 @@ class ExportMemberJob implements ShouldQueue
      */
     public function handle()
     {
-        // $path = Excel::store(new MemberExport($this->tableName,$this->search, $this->orderField), 'ListMember.xlsx',);
-        (new MemberExport($this->tableName, $this->search, $this->orderField))->store('xlsx/ListMember.xlsx', 'public');
-        // echo('end');
-        // sleep(2);
-        // echo("done");
-        // E:\office_app\storage\app\public\avatars\xlsx\ListMember.zip
+        (new MemberExport($this->data))->store('xlsx/'.$this->data['fileName'].'.xlsx', 'public');
 
-        // $zip = new ZipArchive;
-        // $res = $zip->open(Storage::disk("avatars")->path('xlsx/ListMember.zip'), ZipArchive::CREATE);
-        // if ($res === TRUE) {
-        //     $zip->addFile(Storage::disk("avatars")->path('xlsx/ListMember.xlsx'),'ListMember.xlsx');
-        //     $zip->setEncryptionName('ListMember.xlsx', ZipArchive::EM_AES_256, 'password');
-        //     $zip->close();
-        //     echo 'ok';
-        // } else {
-        //     echo 'failed';
-        // }
         $zip = new ZipArchive;
-        $res = $zip->open(storage_path('app/public/xlsx/test.zip'), ZipArchive::CREATE);
+        $res = $zip->open(storage_path('app/public/xlsx/'.$this->data['fileName'].'.zip'), ZipArchive::CREATE);
         if ($res === TRUE) {
-            $zip->addFile(storage_path('app/public/xlsx/ListMember.xlsx'),'ListMember.xlsx');
-            $zip->setEncryptionName('ListMember.xlsx', ZipArchive::EM_AES_256, 'passw0rd');
+            $zip->addFile(storage_path('app/public/xlsx/'.$this->data['fileName'].'.xlsx'), $this->data['fileName'].'.xlsx');
+            $zip->setEncryptionName($this->data['fileName'].'.xlsx', ZipArchive::EM_AES_256, $this->data['password']);
             $zip->close();
-            echo 'ok';
+            unlink(storage_path('app/public/xlsx/'.$this->data['fileName'].'.xlsx'));
         } else {
             echo 'failed';
         }
+        $notification = Notifications::find($this->data['notification_id']);
+
+        //
     }
 }

@@ -15,6 +15,15 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->references('id')->on('users')->cascadeOnDelete();
+            $table->string('title');
+            $table->string('message');
+            $table->longText('description')->nullable();
+            $table->string('page')->nullable();
+            $table->string('type');
+            $table->string('download_link')->nullable();
+            $table->foreignId('batch_id')->nullable()->job_batches('id')->on('users')->cascadeOnDelete();
+            $table->string('status');
             $table->timestamps();
         });
     }

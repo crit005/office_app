@@ -15,12 +15,13 @@ class MemberExport implements FromCollection, WithHeadings, WithEvents
     public $tableName;
     public $search;
     public $orderField;
+
     use Exportable;
-    public function __construct($tableName,$search, $orderField)
+    public function __construct($condition)
     {
-        $this->tableName = $tableName;
-        $this->search = $search;
-        $this->orderField = $orderField;
+        $this->tableName = $condition["tableName"];
+        $this->search = $condition["search"];
+        $this->orderField = $condition["orderField"];
     }
 
     public function headings(): array

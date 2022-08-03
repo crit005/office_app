@@ -5,7 +5,8 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0 text-white">List Customer: {{ $customers->total() }}</h1>
-                    <h1>{{$test}}</h1>
+                    <a href="" wire:click.prevent="download()">{{$downloadLink}}</a>
+                    <img src="{{$downloadLink}}" alt="" width="50">
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -25,11 +26,12 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <button wire:click.prevent="doExport()" class="btn btn-success btn-sm elevation-1 ml-2">
+                            <button wire:click.prevent="protectDownload()"
+                                class="btn btn-success btn-sm elevation-1 ml-2">
                                 @if (!$isDownloading)
                                     <i class="far fa-file-excel"></i>
                                 @else
-                                <i class="fas fa-spinner fa-spin align-self-center"></i>
+                                    <i class="fas fa-spinner fa-spin align-self-center"></i>
                                 @endif
 
                             </button>
@@ -233,5 +235,46 @@
         function globleSearch(val) {
             @this.search = val;
         }
+
+        window.addEventListener('protectDownload', e => {
+            Swal.fire({
+                title: 'Protect Your File',
+                icon: 'info',
+                html: `<input type="text" id="fileName" class="swal2-input" placeholder="File Name">
+                    <input type="password" id="password" class="swal2-input" placeholder="Password">
+                    <input type="password" id="cpassword" class="swal2-input" placeholder="confirm Password">`,
+                confirmButtonText: 'Submit',
+                focusConfirm: false,
+                preConfirm: () => {
+                    const fileName = Swal.getPopup().querySelector('#fileName').value
+                    const password = Swal.getPopup().querySelector('#password').value
+                    const cpassword = Swal.getPopup().querySelector('#cpassword').value
+                    const rg1 =
+                    /^[^\\/:\*\?"<>\|\.@\$#]+$/; // forbidden characters \ / : * ? " < > | . @.# $
+                    if (!fileName || !password) {
+                        Swal.showValidationMessage(`Please enter fiename and password`)
+                    } else if (!rg1.test(fileName)) {
+                        Swal.showValidationMessage(`Invalid filename`)
+                    } else if (password != cpassword) {
+                        Swal.showValidationMessage(`Password are not match`)
+                    }
+                    return {
+                        fileName: fileName,
+                        password: password
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    @this.doExport({"fileName":result.value.fileName,"password":result.value.password});
+                    // Swal.fire(`
+                //         Filename: ${result.value.fileName + '.xlsx'}
+                //         Password: ${result.value.password}
+                //     `.trim())
+                } else {
+                    console.log("no result");
+                }
+
+            })
+        });
     </script>
 @endpush

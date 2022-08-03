@@ -5,6 +5,8 @@ namespace App\Http\Livewire\Customer;
 use App\Exports\MemberExport;
 use App\Jobs\ExportMemberJob;
 use App\Models\Customer;
+use App\Models\Notifications;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
@@ -20,17 +22,24 @@ class ListCustomer extends Component
     public $search = null;
     public $orderField = ['field' => 'last_active', 'order' => 'desc'];
     public $isDownloading = false;
-    public $test = '';
+    public $downloadLink = '';
 
     public $connection = null;
     public function mount()
     {
-        if(!Session::get('selectedSystem')){
+        $this->downloadLink = storage::disk('avatars')->url("001.jpg");
+        // $this->downloadLink = "http://localhost:8000/storage/public/xlsx/publicLinkcustomer.zip";
+
+        if (!Session::get('selectedSystem')) {
             return redirect(route('dashboard'));
         }
         $this->connection = Session::get('selectedSystem');
-        // $this->test = Storage::disk('public')->file();
-        $this->test = storage_path('app/public/xlsx/test.zip');
+    }
+
+    public function download()
+    {
+        // return storage::disk('avatars')->download("oV9hMeNdtJL6ZpDaaH3CdHsRM2ofCKKR6ijh0aFx.png")->deleteFileAfterSend(true);
+        return response()->download(storage_path("app/public/001.jpg"))->deleteFileAfterSend(true);
     }
 
     public function updatedSearch($var)
@@ -54,19 +63,52 @@ class ListCustomer extends Component
         if ($this->orderField['field'] == $field) {
             if ($this->orderField['order'] == 'desc') {
                 $icon = '<i class="fas fa-sort-alpha-down-alt align-self-center"></i>';
-            }else{
+            } else {
                 $icon = '<i class="fas fa-sort-alpha-down align-self-center"></i>';
             }
         }
         return $icon;
     }
 
-    public function doExport()
+    public function protectDownload()
     {
+        $this->dispatchBrowserEvent('protectDownload');
+    }
+
+    public function doExport($protectData)
+    {
+        $this->test = $protectData['fileName'];
         $this->isDownloading = true;
         // return Excel::download(new MemberExport($this->search, $this->orderField), 'ListMember.xlsx');
+
         $batch = Bus::batch([])->dispatch();
-        $batch->add(new ExportMemberJob($this->connection->connection_name, $this->search, $this->orderField));
+
+        // Create notification type PROCESSING
+        $notificationData = [];
+        $notificationData['user_id'] = Auth::user()->id;
+        $notificationData['title'] = 'Customer Exporting';
+        $notificationData['message'] = $protectData['fileName'].' exporting is in progress please wait';
+        $notificationData['page'] = route('customer.list');
+        $notificationData['type'] = 'DOWNLOAD';
+        $notificationData['batch_id'] = $batch->id;
+        $notificationData['status'] = 'PROCESSING';
+
+        $notification = Notifications::create($notificationData);
+
+        // Exporting data
+        $data = [
+            "tableName" => $this->connection->connection_name,
+            "orderField" =>$this->orderField,
+            "fileName" => $protectData['fileName'],
+            "password" => $protectData['password'],
+            "userId" => Auth::user()->id,
+            "search" => $this->search,
+            "batch_id" => $batch->id,
+            "notification_id" => $notification->id
+        ];
+
+        $batch->add(new ExportMemberJob($data));
+
 
     }
     public function render()
