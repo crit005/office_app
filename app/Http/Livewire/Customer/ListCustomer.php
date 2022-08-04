@@ -6,6 +6,7 @@ use App\Exports\MemberExport;
 use App\Jobs\ExportMemberJob;
 use App\Models\Customer;
 use App\Models\Notifications;
+use ArrayObject;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Session;
@@ -22,24 +23,18 @@ class ListCustomer extends Component
     public $search = null;
     public $orderField = ['field' => 'last_active', 'order' => 'desc'];
     public $isDownloading = false;
-    public $downloadLink = '';
+    public $downloadLink = 'app/public/xlsx/';
+
+    public $exporting = null;
 
     public $connection = null;
     public function mount()
     {
-        $this->downloadLink = storage::disk('avatars')->url("001.jpg");
-        // $this->downloadLink = "http://localhost:8000/storage/public/xlsx/publicLinkcustomer.zip";
-
         if (!Session::get('selectedSystem')) {
             return redirect(route('dashboard'));
         }
         $this->connection = Session::get('selectedSystem');
-    }
-
-    public function download()
-    {
-        // return storage::disk('avatars')->download("oV9hMeNdtJL6ZpDaaH3CdHsRM2ofCKKR6ijh0aFx.png")->deleteFileAfterSend(true);
-        return response()->download(storage_path("app/public/001.jpg"))->deleteFileAfterSend(true);
+        $this->checkExportJob();
     }
 
     public function updatedSearch($var)
@@ -77,28 +72,29 @@ class ListCustomer extends Component
 
     public function doExport($protectData)
     {
-        $this->test = $protectData['fileName'];
         $this->isDownloading = true;
         // return Excel::download(new MemberExport($this->search, $this->orderField), 'ListMember.xlsx');
 
         $batch = Bus::batch([])->dispatch();
-
         // Create notification type PROCESSING
-        $notificationData = [];
+        $notificationData = null;
         $notificationData['user_id'] = Auth::user()->id;
         $notificationData['title'] = 'Customer Exporting';
-        $notificationData['message'] = $protectData['fileName'].' exporting is in progress please wait';
-        $notificationData['page'] = route('customer.list');
+        $notificationData['message'] = 'Exporting ' . $protectData['fileName'] . ' is in progress please wait';
+
+        $protectData['fileName'] = $protectData['fileName'] . strtotime(now());
+
+        $notificationData['page'] = 'customer.list';
         $notificationData['type'] = 'DOWNLOAD';
+        $notificationData['download_link'] = $this->downloadLink . $protectData['fileName'] . '.zip';
         $notificationData['batch_id'] = $batch->id;
         $notificationData['status'] = 'PROCESSING';
-
         $notification = Notifications::create($notificationData);
 
         // Exporting data
         $data = [
             "tableName" => $this->connection->connection_name,
-            "orderField" =>$this->orderField,
+            "orderField" => $this->orderField,
             "fileName" => $protectData['fileName'],
             "password" => $protectData['password'],
             "userId" => Auth::user()->id,
@@ -109,8 +105,56 @@ class ListCustomer extends Component
 
         $batch->add(new ExportMemberJob($data));
 
+        unset($notification);
+    }
+
+    public function checkExportJob()
+    {
+        $notification = Notifications::where('user_id', '=', Auth()->user()->id)
+            ->where('page', '=', 'customer.list')
+            ->whereIn('status', ['NEED_ARLERT', 'PROCESSING'])
+            ->first();
+        if ($notification) {
+            $this->exporting = [
+                "id" => $notification->id,
+                "status" => $notification->status,
+                "downloadLink" => $notification->download_link
+            ];
+        } else {
+            $this->exporting = null;
+        }
+        unset($notification);
+    }
+
+    public function doDownload()
+    {
+        // return storage::disk('avatars')->download("oV9hMeNdtJL6ZpDaaH3CdHsRM2ofCKKR6ijh0aFx.png"); // cannot delete affter download
+        $notification = Notifications::find($this->exporting['id']);
+        $notification->status = "DONE";
+        $notification->description .= "_(DOWNLOADED)_";
+        $notification->save();
+        $file = $this->exporting['downloadLink'];
+        $this->exporting = null;
+        unset($notification);
+        return response()->download(storage_path($file))->deleteFileAfterSend(true);
 
     }
+
+    public function doDeleteExport()
+    {
+        //! cancel batch and delete job later;
+
+        $notification = Notifications::find($this->exporting['id']);
+        $notification->status = "DONE";
+        $notification->description .= "_(CANCELED)_";
+        $notification->save();
+        $file = $this->exporting['downloadLink'];
+        unlink(storage_path($file));
+        $this->exporting = null;
+        unset($notification);
+
+    }
+
     public function render()
     {
         $customer = new Customer();

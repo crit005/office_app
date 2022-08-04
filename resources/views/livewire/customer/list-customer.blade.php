@@ -5,8 +5,7 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0 text-white">List Customer: {{ $customers->total() }}</h1>
-                    <a href="" wire:click.prevent="download()">{{$downloadLink}}</a>
-                    <img src="{{$downloadLink}}" alt="" width="50">
+                    <a href="" wire:click.prevent="download()">{{ $downloadLink }}</a>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -26,20 +25,42 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <button wire:click.prevent="protectDownload()"
-                                class="btn btn-success btn-sm elevation-1 ml-2">
-                                @if (!$isDownloading)
-                                    <i class="far fa-file-excel"></i>
-                                @else
-                                    <i class="fas fa-spinner fa-spin align-self-center"></i>
+                            <div class="d-flex flex-row float-left">
+                                @if (!$exporting)
+                                    <button wire:click.prevent="protectDownload()"
+                                        class="btn btn-success btn-sm elevation-1">
+                                        <i class="far fa-file-excel"></i>
+                                    </button>
                                 @endif
 
-                            </button>
+                                <div wire:poll='checkExportJob()'>
+                                    @if ($exporting)
+                                        <div class="customer-list-exporting text-white ml-2">
+                                            @if ($exporting['status'] == 'PROCESSING')
+                                                <i class="fas fa-spinner fa-spin align-self-center"></i>
+                                                Exporting...
+                                            @else
+                                                Your Export is ready
+                                                <button wire:click.prevent="doDeleteExport()"
+                                                    class="btn btn-danger btn-sm elevation-1">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                                <button wire:click.prevent="doDownload()"
+                                                    class="btn btn-success btn-sm elevation-1">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                            @endif
+                                        </div>
+                                    @endif
+                                </div>
+
+                            </div>
+
+
                             <div class="card-tools">
                                 <div class="input-group input-group-sm" style="width: 150px;">
                                     <input wire:model.debounce='search' type="text" name="table_search"
                                         class="form-control float-right" placeholder="Search">
-
                                     <div class="input-group-append">
                                         <button type="submit" class="btn btn-default">
                                             <i class="fas fa-search"></i>
@@ -250,7 +271,7 @@
                     const password = Swal.getPopup().querySelector('#password').value
                     const cpassword = Swal.getPopup().querySelector('#cpassword').value
                     const rg1 =
-                    /^[^\\/:\*\?"<>\|\.@\$#]+$/; // forbidden characters \ / : * ? " < > | . @.# $
+                        /^[^\\/:\*\?"<>\|\.@\$#]+$/; // forbidden characters \ / : * ? " < > | . @.# $
                     if (!fileName || !password) {
                         Swal.showValidationMessage(`Please enter fiename and password`)
                     } else if (!rg1.test(fileName)) {
@@ -265,7 +286,10 @@
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    @this.doExport({"fileName":result.value.fileName,"password":result.value.password});
+                    @this.doExport({
+                        "fileName": result.value.fileName,
+                        "password": result.value.password
+                    });
                     // Swal.fire(`
                 //         Filename: ${result.value.fileName + '.xlsx'}
                 //         Password: ${result.value.password}

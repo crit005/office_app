@@ -53,7 +53,6 @@ class MemberExport implements FromCollection, WithHeadings, WithEvents
         ini_set('memory_limit', -1);
         ini_set('max_execution_time', 1800);
         ini_set('max_input_time', 1200);
-
         $customer = new Customer();
         $customer->setTable('tbl_' . $this->tableName);
         return $customer->select('id', 'login_id', 'name', 'email', 'mobile', 'club_name', 'first_join', 'last_dp', 'last_wd', 'last_active', 'total_dp', 'total_wd', 'total_turnover', 'totall_winlose')->where('login_id', 'like', '%' . $this->search . '%')

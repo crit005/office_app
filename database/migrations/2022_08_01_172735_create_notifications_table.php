@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('page')->nullable();
             $table->string('type');
             $table->string('download_link')->nullable();
-            $table->foreignId('batch_id')->nullable()->job_batches('id')->on('users')->cascadeOnDelete();
+            $table->foreignUuid('batch_id')->nullable()->job_batches('id')->on('job_batches')->cascadeOnDelete();
             $table->string('status');
             $table->timestamps();
         });
