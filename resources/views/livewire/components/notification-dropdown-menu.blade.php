@@ -1,5 +1,4 @@
-<!-- Notifications Dropdown Menu -->
-<li class="nav-item dropdown">
+<li class="nav-item dropdown" wire:poll wire:ignore.self>
     <a class="nav-link" data-toggle="dropdown" href="#">
         <i class="far fa-bell"></i>
         @if ($totalNotification > 0)
@@ -7,15 +6,26 @@
         @endif
 
     </a>
-    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+    <div  wire:poll wire:ignore.self
+    class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
         <span class="dropdown-header">{{ $totalNotification }} Notifications</span>
+        @if($notifications)
         @foreach ($notifications as $notification)
             <div class="dropdown-divider"></div>
             <a href="#" class="dropdown-item">
+                @if ($notification->type == 'DOWNLOAD')
                 <i class="fas fa-download mr-2"></i> {{$notification->message}}
-                <span class="float-right text-muted text-sm">{{$notification->updated_at->diffForHumans}}</span>
+                @endif()
+
+                <span class="float-right text-muted text-sm">
+                    {{-- {{$carbon->createFromDate($notification->updated_at)->diffForHumans()}} --}}
+                    {{ \Carbon\Carbon::parse($notification->updated_at)->diffForHumans() }}
+                </span>
+
             </a>
         @endforeach
+
+        @endif
         <div class="dropdown-divider"></div>
         <a href="#" class="dropdown-item">
             <i class="fas fa-envelope mr-2"></i> 4 new messages

@@ -105,6 +105,7 @@
                 <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
             </div>
         </li>
+        <!-- Notifications Dropdown Menu -->
         <livewire:components.notification-dropdown-menu />
         <li class="nav-item">
             <a class="nav-link" data-widget="fullscreen" href="#" role="button">

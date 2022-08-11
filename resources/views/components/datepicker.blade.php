@@ -10,7 +10,7 @@
 
 @push('js')
 <script type="text/javascript">
-    $(function(e){ 
+    $(function(e){
     $('#{{$id}}').datetimepicker({
             format:"{{$format ?? 'L'}}",
             defaultDate:moment().toDate(),
