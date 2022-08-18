@@ -167,7 +167,7 @@ class ListCustomer extends Component
 
     public function render()
     {
-        dd(env('PAGINATE'));
+        // dd(env('PAGINATE'));
         $customer = new Customer();
         $customer->setTable('tbl_' . $this->connection->connection_name);
         $customers = $customer->where('login_id', 'like', '%' . $this->search . '%')
@@ -176,7 +176,7 @@ class ListCustomer extends Component
             ->orWhere('email', 'like', '%' . $this->search . '%')
             ->orWhere('club_name', 'like', '%' . $this->search . '%')
             ->orderBY($this->orderField['field'], $this->orderField['order'])
-            ->paginate(config('PAGINATE'));
+            ->paginate(env('PAGINATE'));
         return view('livewire.customer.list-customer', ['customers' => $customers]);
     }
 }

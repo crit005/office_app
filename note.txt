@@ -2,3 +2,6 @@ install laravel excel
 composer require maatwebsite/excel --with-all-dependencies -w
 
 ត្រូវ run php artisan storage:link ក្រោយពេលធ្វើការជាមួយ filesystem or image cannot view
+
+env not read isue
+I had trouble with config:cache, when it is run, the app (Laravel 5.2) doesn't read files from the .env-file. I ran config:clear, and everything works again.
