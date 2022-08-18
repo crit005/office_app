@@ -10,7 +10,8 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Events\BeforeExport;
 
-class MemberExport implements FromCollection, WithHeadings, WithEvents
+class MemberExport implements FromCollection, WithHeadings
+// , WithEvents
 {
     public $tableName;
     public $search;
@@ -34,16 +35,16 @@ class MemberExport implements FromCollection, WithHeadings, WithEvents
     /**
      * @return array
      */
-    public function registerEvents(): array
-    {
-        return [
-            BeforeExport::class  => function(BeforeExport $event) {
-                $event->writer->getDelegate()->getSecurity()->setLockWindows(true);
-                $event->writer->getDelegate()->getSecurity()->setLockStructure(true);
-                $event->writer->getDelegate()->getSecurity()->setWorkbookPassword("Your password");
-            }
-        ];
-    }
+    // public function registerEvents(): array
+    // {
+    //     return [
+    //         BeforeExport::class  => function(BeforeExport $event) {
+    //             $event->writer->getDelegate()->getSecurity()->setLockWindows(true);
+    //             $event->writer->getDelegate()->getSecurity()->setLockStructure(true);
+    //             $event->writer->getDelegate()->getSecurity()->setWorkbookPassword("Your password");
+    //         }
+    //     ];
+    // }
 
     /**
      * @return \Illuminate\Support\Collection

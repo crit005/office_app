@@ -252,6 +252,10 @@
 </div>
 @push('js')
     <script>
+        $("document").ready(function(){
+           console.log(window.location.href);
+        });
+
         function globleSearch(val) {
             @this.search = val;
         }

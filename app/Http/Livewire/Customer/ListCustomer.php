@@ -2,22 +2,26 @@
 
 namespace App\Http\Livewire\Customer;
 
-use App\Exports\MemberExport;
 use App\Jobs\ExportMemberJob;
 use App\Models\Customer;
 use App\Models\Notifications;
-use ArrayObject;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Maatwebsite\Excel\Facades\Excel;
 
 class ListCustomer extends Component
 {
     use WithPagination;
+
+    protected $listeners = ['ListCustomer_SetStatus' => 'setExporting'];
+
+    protected $queryString = [
+        'search' => ['except' => '', 'as' => 's'],
+        'page' => ['except' => 1, 'as' => 'p'],
+        'orderField' => ['except' => '', 'as' => 'o'],
+    ];
 
     protected $paginationTheme = 'bootstrap';
     public $search = null;
@@ -81,12 +85,13 @@ class ListCustomer extends Component
         $notificationData['user_id'] = Auth::user()->id;
         $notificationData['title'] = 'Customer Exporting';
         $notificationData['message'] = 'Exporting ' . $protectData['fileName'] . ' is in progress please wait';
-
-        $protectData['fileName'] = $protectData['fileName'] . strtotime(now());
-
+        $notificationData['file_name'] = $protectData['fileName'];
         $notificationData['page'] = 'customer.list';
         $notificationData['type'] = 'DOWNLOAD';
-        $notificationData['download_link'] = $this->downloadLink . $protectData['fileName'] . '.zip';
+
+        $download_name = $protectData['fileName'] . strtotime(now());
+
+        $notificationData['download_link'] = $this->downloadLink . $download_name . '.zip';
         $notificationData['batch_id'] = $batch->id;
         $notificationData['status'] = 'PROCESSING';
         $notification = Notifications::create($notificationData);
@@ -96,6 +101,7 @@ class ListCustomer extends Component
             "tableName" => $this->connection->connection_name,
             "orderField" => $this->orderField,
             "fileName" => $protectData['fileName'],
+            "download_name" => $download_name,
             "password" => $protectData['password'],
             "userId" => Auth::user()->id,
             "search" => $this->search,
@@ -112,7 +118,7 @@ class ListCustomer extends Component
     {
         $notification = Notifications::where('user_id', '=', Auth()->user()->id)
             ->where('page', '=', 'customer.list')
-            ->whereIn('status', ['NEED_ARLERT', 'PROCESSING'])
+            ->whereIn('status', ['READY_ALERT','SUCCESS_ALERT', 'PROCESSING'])
             ->first();
         if ($notification) {
             $this->exporting = [
@@ -124,6 +130,11 @@ class ListCustomer extends Component
             $this->exporting = null;
         }
         unset($notification);
+    }
+
+    public function setExporting($status)
+    {
+        $this->exporting = $status;
     }
 
     public function doDownload()
@@ -143,7 +154,6 @@ class ListCustomer extends Component
     public function doDeleteExport()
     {
         //! cancel batch and delete job later;
-
         $notification = Notifications::find($this->exporting['id']);
         $notification->status = "DONE";
         $notification->description .= "_(CANCELED)_";
@@ -157,6 +167,7 @@ class ListCustomer extends Component
 
     public function render()
     {
+        dd(env('PAGINATE'));
         $customer = new Customer();
         $customer->setTable('tbl_' . $this->connection->connection_name);
         $customers = $customer->where('login_id', 'like', '%' . $this->search . '%')
@@ -165,7 +176,7 @@ class ListCustomer extends Component
             ->orWhere('email', 'like', '%' . $this->search . '%')
             ->orWhere('club_name', 'like', '%' . $this->search . '%')
             ->orderBY($this->orderField['field'], $this->orderField['order'])
-            ->paginate(env('PAGINATE'));
+            ->paginate(config('PAGINATE'));
         return view('livewire.customer.list-customer', ['customers' => $customers]);
     }
 }

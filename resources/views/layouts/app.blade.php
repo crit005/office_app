@@ -16,7 +16,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="{{ asset('backend/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Theme style -->
+    <link rel="stylesheet" href="{{ asset('backend/plugins/toastr/toastr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('backend/dist/css/adminlte.min.css') }}">
+
     {{-- <link rel="stylesheet" href="{{asset('css/them1.css')}}"> --}}
     {{-- <link rel="stylesheet" href="{{asset('css/them2.css')}}"> --}}
     {{-- <link rel="stylesheet" href="{{asset('css/them5.css')}}"> --}}
@@ -94,6 +96,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     @stack('js')
     <script>
+        const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
         window.addEventListener('alert-success', e => {
             Swal.fire({
                 title: 'Success!',
@@ -144,17 +158,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
         });
 
         window.addEventListener('toast', e => {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            })
             Toast.fire({
                 icon: e.detail.icon ?? 'success',
                 title: e.detail.title ?? 'Signed in successfully',
@@ -164,6 +167,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 iconColor: e.detail.iconColor ?? false
             })
         });
+
+        window.addEventListener('toastr', e => {
+            if(e.detail.type == 'error'){
+                toastr.error(e.detail.message)
+            }
+            else if(e.detail.type == 'info'){
+                toastr.info(e.detail.message)
+            }
+            else if(e.detail.type == 'warning'){
+                toastr.warning(e.detail.message)
+            }else{
+                toastr.success(e.detail.message);
+            }
+
+        });
+
+
 
         // function globleSearch(val){
         //     console.log(val);

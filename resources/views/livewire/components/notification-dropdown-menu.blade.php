@@ -6,15 +6,21 @@
         @endif
 
     </a>
-    <div  wire:poll wire:ignore.self
+    <div  wire:poll='toast()' wire:ignore.self
     class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
         <span class="dropdown-header">{{ $totalNotification }} Notifications</span>
         @if($notifications)
         @foreach ($notifications as $notification)
             <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item">
+            <a href="#"  wire:click.prevent='operator({{$notification}})'class="dropdown-item">
                 @if ($notification->type == 'DOWNLOAD')
-                <i class="fas fa-download mr-2"></i> {{$notification->message}}
+                    @if ($notification->status == 'PROCESSING')
+                    <i class="fas fa-spinner fa-spin mr-2"></i>
+                    @else
+                    <i class="fas fa-download mr-2"></i>
+                    @endif
+
+                {{$notification->file_name}}
                 @endif()
 
                 <span class="float-right text-muted text-sm">

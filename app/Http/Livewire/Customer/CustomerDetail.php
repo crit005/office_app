@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Customer;
 
 use App\Models\Customer;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
@@ -94,7 +95,6 @@ class CustomerDetail extends Component
         $listWinloses = null;
 
         if ($this->selectedTab == 'dp') {
-
             $listDeposit = DB::connection($this->connection->connection_name)
                 ->table('transaction')->select('id', 'webAccountLoginId', 'clubId', 'groupfor', 'inputAmount')
                 ->where('customerid', '=', $selectedCustomer->id)

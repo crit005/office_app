@@ -15,6 +15,7 @@ class Notifications extends Model
         'title',
         'message',
         'description',
+        'file_name',
         'page',
         'type',
         'download_link',
