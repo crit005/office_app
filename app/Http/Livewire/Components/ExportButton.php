@@ -1,43 +1,32 @@
 <?php
 
-namespace App\Http\Livewire\Customer;
+namespace App\Http\Livewire\Components;
 
 use App\Jobs\ExportMemberJob;
-use App\Models\Customer;
 use App\Models\Notifications;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
-use Livewire\WithPagination;
 
-class ListCustomer extends Component
+class ExportButton extends Component
 {
-    use WithPagination;
-
-    protected $listeners = ['ListCustomer_SetStatus' => 'setExporting','ListCustomer_Doexport'=>'doExport'];
-
-    protected $queryString = [
-        'search' => ['except' => '', 'as' => 's'],
-        'page' => ['except' => 1, 'as' => 'p'],
-        'orderField' => ['except' => '', 'as' => 'o'],
-    ];
-
-    protected $paginationTheme = 'bootstrap';
     public $search = null;
     public $orderField = ['field' => 'last_active', 'order' => 'desc'];
     public $isDownloading = false;
     public $downloadLink = 'app/public/xlsx/';
+    public $pageName;
 
     public $exporting = null;
 
     public $connection = null;
-    public function mount()
+    public function mount($pageName)
     {
         if (!Session::get('selectedSystem')) {
             return redirect(route('dashboard'));
         }
         $this->connection = Session::get('selectedSystem');
+        $this->pageName = $pageName;
         $this->checkExportJob();
     }
 
@@ -69,55 +58,15 @@ class ListCustomer extends Component
         return $icon;
     }
 
-    public function protectDownload()
-    {
-        $this->dispatchBrowserEvent('protectDownload');
-    }
-
     public function doExport($protectData)
     {
-        $this->isDownloading = true;
-        // return Excel::download(new MemberExport($this->search, $this->orderField), 'ListMember.xlsx');
 
-        $batch = Bus::batch([])->dispatch();
-        // Create notification type PROCESSING
-        $notificationData = null;
-        $notificationData['user_id'] = Auth::user()->id;
-        $notificationData['title'] = 'Customer Exporting';
-        $notificationData['message'] = 'Exporting ' . $protectData['fileName'] . ' is in progress please wait';
-        $notificationData['file_name'] = $protectData['fileName'];
-        $notificationData['page'] = 'customer.list';
-        $notificationData['type'] = 'DOWNLOAD';
-
-        $download_name = $protectData['fileName'] . strtotime(now());
-
-        $notificationData['download_link'] = $this->downloadLink . $download_name . '.zip';
-        $notificationData['batch_id'] = $batch->id;
-        $notificationData['status'] = 'PROCESSING';
-        $notification = Notifications::create($notificationData);
-
-        // Exporting data
-        $data = [
-            "tableName" => $this->connection->connection_name,
-            "orderField" => $this->orderField,
-            "fileName" => $protectData['fileName'],
-            "download_name" => $download_name,
-            "password" => $protectData['password'],
-            "userId" => Auth::user()->id,
-            "search" => $this->search,
-            "batch_id" => $batch->id,
-            "notification_id" => $notification->id
-        ];
-
-        $batch->add(new ExportMemberJob($data));
-
-        unset($notification);
     }
 
     public function checkExportJob()
     {
         $notification = Notifications::where('user_id', '=', Auth()->user()->id)
-            ->where('page', '=', 'customer.list')
+            ->where('page', '=', $this->pageName)
             ->whereIn('status', ['READY_ALERT','SUCCESS_ALERT', 'PROCESSING'])
             ->first();
         if ($notification) {
@@ -167,16 +116,6 @@ class ListCustomer extends Component
 
     public function render()
     {
-        // dd(env('PAGINATE'));
-        $customer = new Customer();
-        $customer->setTable('tbl_' . $this->connection->connection_name);
-        $customers = $customer->where('login_id', 'like', '%' . $this->search . '%')
-            ->orWhere('mobile', 'like', '%' . $this->search . '%')
-            ->orWhere('id', 'like', '%' . $this->search . '%')
-            ->orWhere('email', 'like', '%' . $this->search . '%')
-            ->orWhere('club_name', 'like', '%' . $this->search . '%')
-            ->orderBY($this->orderField['field'], $this->orderField['order'])
-            ->paginate(env('PAGINATE'));
-        return view('livewire.customer.list-customer', ['customers' => $customers]);
+        return view('livewire.components.export-button');
     }
 }
