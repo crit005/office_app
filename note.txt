@@ -5,3 +5,39 @@ composer require maatwebsite/excel --with-all-dependencies -w
 
 env not read isue
 I had trouble with config:cache, when it is run, the app (Laravel 5.2) doesn't read files from the .env-file. I ran config:clear, and everything works again.
+
+
+Deleting files after download in laravel
+++++++++++++++++++++++++++++++++++++++++
+
+You can use deleteFileAfterSend http://laravel.com/docs/5.0/responses#other-responses
+
+return response()->download($filePath, $fileName, $headers)->deleteFileAfterSend(true);
+
+
+
+protected $listeners = ['eventName'=>'functionNeme',...];
+
+$this->emit(event: 'eventName',['propName'=>$value]);\
+
+protected @queryString = ['valuname'=>['except'=>''],..]; not with empty string
+protected $queryString = [
+
+        'foo',
+
+        'search' => ['except' => ''],
+
+        'page' => ['except' => 1],
+
+    ];
+
+	Query String Aliases
+	protected $queryString = [
+
+        'search' => ['except' => '', 'as' => 's'],
+
+        'page' => ['except' => 1, 'as' => 'p'],
+
+    ];
+
+	https://codingspoint.com/how-to-get-current-url-with-query-string-in-laravel-8/

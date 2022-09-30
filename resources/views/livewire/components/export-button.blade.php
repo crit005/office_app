@@ -1,4 +1,4 @@
-<div class="d-flex flex-row float-left">
+<div class="d-flex flex-row float-left" wire:poll>
     @if (!$exporting)
         <button onclick="protectedDownload()" class="btn btn-success btn-sm elevation-1">
             <i class="far fa-file-excel"></i>
@@ -13,10 +13,16 @@
                     Exporting...
                 @else
                     Your Export is ready
-                    <button wire:click.prevent="doDeleteExport()" class="btn btn-danger btn-sm elevation-1">
+                    {{-- <button wire:click.prevent="$emit('ListCustomer_DoDeleteExport',$exporting)" class="btn btn-danger btn-sm elevation-1">
+                        <i class="fas fa-trash"></i>
+                    </button> --}}
+                    doDeleteExport
+                    <button wire:click.prevent="doDeleteExport_F" class="btn btn-danger btn-sm elevation-1">
                         <i class="fas fa-trash"></i>
                     </button>
-                    <button wire:click.prevent="doDownload()" class="btn btn-success btn-sm elevation-1">
+
+                    {{-- <button wire:click.prevent="$emit('ListCustomer_DoDownload')" class="btn btn-success btn-sm elevation-1"> --}}
+                    <button wire:click.prevent="doDownload_F" class="btn btn-success btn-sm elevation-1">
                         <i class="fas fa-download"></i>
                     </button>
                 @endif
@@ -28,9 +34,9 @@
 
 @push('js')
     <script>
-        window.addEventListener('protectDownload', e => {
-            protectedDownload();
-        });
+        // window.addEventListener('protectDownload', e => {
+        //     protectedDownload();
+        // });
 
         function protectedDownload(){
             Swal.fire({
@@ -61,10 +67,15 @@
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    @this.doExport({
+                    Livewire.emit('ListCustomer_Doexport',
+                    {
                         "fileName": result.value.fileName,
                         "password": result.value.password
                     });
+                    // @this.doExport({
+                    //     "fileName": result.value.fileName,
+                    //     "password": result.value.password
+                    // });
                 } else {
                     console.log("no result");
                 }

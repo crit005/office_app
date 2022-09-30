@@ -16,6 +16,7 @@ class ExportMemberJob implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     public $data;
+    public $timeout = 0;
     /**
      * Create a new job instance.
      *
@@ -34,6 +35,10 @@ class ExportMemberJob implements ShouldQueue
      */
     public function handle()
     {
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', 1800);
+        ini_set('max_input_time', 1200);
+
         (new MemberExport($this->data))->store('xlsx/' . $this->data['download_name'] . '.xlsx', 'public');
 
         $zip = new ZipArchive;

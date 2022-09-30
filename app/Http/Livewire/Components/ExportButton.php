@@ -11,15 +11,22 @@ use Livewire\Component;
 
 class ExportButton extends Component
 {
-    public $search = null;
-    public $orderField = ['field' => 'last_active', 'order' => 'desc'];
     public $isDownloading = false;
     public $downloadLink = 'app/public/xlsx/';
     public $pageName;
 
+    public $search = null;
+    public $orderField = ['field' => 'last_active', 'order' => 'desc'];
+
     public $exporting = null;
 
     public $connection = null;
+
+    protected $listeners = [
+        'ExportButton_SetOrderField'=>'setOrderField',
+        'ExportButton_SetSearch'=>'setSearch',
+    ];
+
     public function mount($pageName)
     {
         if (!Session::get('selectedSystem')) {
@@ -30,44 +37,20 @@ class ExportButton extends Component
         $this->checkExportJob();
     }
 
-    public function updatedSearch($var)
+    public function setOrderField($orderField)
     {
-        $this->resetPage();
+        $this->orderField = $orderField;
     }
-
-    public function setOrderField($fieldName)
+    public function setSearch($search)
     {
-        if ($this->orderField['field'] == $fieldName) {
-            $this->orderField['order'] = $this->orderField['order'] == 'desc' ? 'asc' : 'desc';
-        } else {
-            $this->orderField['field'] = $fieldName;
-            $this->orderField['order'] = 'asc';
-        }
-    }
-
-    public function getSortIcon($field)
-    {
-        $icon = '';
-        if ($this->orderField['field'] == $field) {
-            if ($this->orderField['order'] == 'desc') {
-                $icon = '<i class="fas fa-sort-alpha-down-alt align-self-center"></i>';
-            } else {
-                $icon = '<i class="fas fa-sort-alpha-down align-self-center"></i>';
-            }
-        }
-        return $icon;
-    }
-
-    public function doExport($protectData)
-    {
-
+        $this->search = $search;
     }
 
     public function checkExportJob()
     {
         $notification = Notifications::where('user_id', '=', Auth()->user()->id)
             ->where('page', '=', $this->pageName)
-            ->whereIn('status', ['READY_ALERT','SUCCESS_ALERT', 'PROCESSING'])
+            ->whereIn('status', ['READY_ALERT', 'SUCCESS_ALERT', 'PROCESSING'])
             ->first();
         if ($notification) {
             $this->exporting = [
@@ -81,12 +64,67 @@ class ExportButton extends Component
         unset($notification);
     }
 
-    public function setExporting($status)
-    {
-        $this->exporting = $status;
-    }
+    // public function doExport($protectData)
+    // {
+
+    // }
 
     public function doDownload()
+    {
+        $this->emit('ListCustomer_DoDownload', $this->exporting);
+        $this->exporting = null;
+    }
+
+    public function doDeleteExport()
+    {
+        $this->emit('ListCustomer_DoDeleteExport', $this->exporting);
+        $this->exporting = null;
+    }
+
+
+    // complimize function
+
+    public function doExport($protectData)
+    {
+        $this->isDownloading = true;
+        // return Excel::download(new MemberExport($this->search, $this->orderField), 'ListMember.xlsx');
+
+        $batch = Bus::batch([])->dispatch();
+        // Create notification type PROCESSING
+        $notificationData = null;
+        $notificationData['user_id'] = Auth::user()->id;
+        $notificationData['title'] = 'Customer Exporting';
+        $notificationData['message'] = 'Exporting ' . $protectData['fileName'] . ' is in progress please wait';
+        $notificationData['file_name'] = $protectData['fileName'];
+        $notificationData['page'] = 'customer.list';
+        $notificationData['type'] = 'DOWNLOAD';
+
+        $download_name = $protectData['fileName'] . strtotime(now());
+
+        $notificationData['download_link'] = $this->downloadLink . $download_name . '.zip';
+        $notificationData['batch_id'] = $batch->id;
+        $notificationData['status'] = 'PROCESSING';
+        $notification = Notifications::create($notificationData);
+
+        // Exporting data
+        $data = [
+            "tableName" => $this->connection->connection_name,
+            "orderField" => $this->orderField,
+            "fileName" => $protectData['fileName'],
+            "download_name" => $download_name,
+            "password" => $protectData['password'],
+            "userId" => Auth::user()->id,
+            "search" => $this->search,
+            "batch_id" => $batch->id,
+            "notification_id" => $notification->id
+        ];
+
+        $batch->add(new ExportMemberJob($data));
+
+        unset($notification);
+    }
+
+    public function doDownload_F()
     {
         // return storage::disk('avatars')->download("oV9hMeNdtJL6ZpDaaH3CdHsRM2ofCKKR6ijh0aFx.png"); // cannot delete affter download
         $notification = Notifications::find($this->exporting['id']);
@@ -94,25 +132,29 @@ class ExportButton extends Component
         $notification->description .= "_(DOWNLOADED)_";
         $notification->save();
         $file = $this->exporting['downloadLink'];
-        $this->exporting = null;
+        // $this->exporting = null;
         unset($notification);
         return response()->download(storage_path($file))->deleteFileAfterSend(true);
 
     }
 
-    public function doDeleteExport()
+    public function doDeleteExport_F()
     {
         //! cancel batch and delete job later;
+        // $notification = Notifications::find($this->exporting['id']);
         $notification = Notifications::find($this->exporting['id']);
         $notification->status = "DONE";
         $notification->description .= "_(CANCELED)_";
         $notification->save();
         $file = $this->exporting['downloadLink'];
         unlink(storage_path($file));
-        $this->exporting = null;
+        // $this->exporting = null;
         unset($notification);
 
     }
+
+
+    // end reall function
 
     public function render()
     {

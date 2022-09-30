@@ -12,7 +12,7 @@
         @if($notifications)
         @foreach ($notifications as $notification)
             <div class="dropdown-divider"></div>
-            <a href="#"  wire:click.prevent='operator({{$notification}})'class="dropdown-item">
+            <a href=""  wire:click.prevent='operator({{$notification}})'class="dropdown-item">
                 @if ($notification->type == 'DOWNLOAD')
                     @if ($notification->status == 'PROCESSING')
                     <i class="fas fa-spinner fa-spin mr-2"></i>

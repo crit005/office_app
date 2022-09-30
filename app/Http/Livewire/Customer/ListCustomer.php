@@ -15,7 +15,11 @@ class ListCustomer extends Component
 {
     use WithPagination;
 
-    protected $listeners = ['ListCustomer_SetStatus' => 'setExporting','ListCustomer_Doexport'=>'doExport'];
+    protected $listeners = [
+        'ListCustomer_Doexport'=>'doExport',
+        'ListCustomer_DoDeleteExport'=>'doDeleteExport',
+        'ListCustomer_DoDownload'=>'doDownload',
+    ];
 
     protected $queryString = [
         'search' => ['except' => '', 'as' => 's'],
@@ -32,17 +36,21 @@ class ListCustomer extends Component
     public $exporting = null;
 
     public $connection = null;
+
     public function mount()
     {
         if (!Session::get('selectedSystem')) {
             return redirect(route('dashboard'));
         }
         $this->connection = Session::get('selectedSystem');
-        $this->checkExportJob();
+        // $this->checkExportJob();
+        $this->emit('ExportButton_SetOrderField',$this->orderField);
+        $this->emit('ExportButton_SetSearch',$this->search);
     }
 
     public function updatedSearch($var)
     {
+        $this->emit('ExportButton_SetSearch',$this->search);
         $this->resetPage();
     }
 
@@ -54,6 +62,8 @@ class ListCustomer extends Component
             $this->orderField['field'] = $fieldName;
             $this->orderField['order'] = 'asc';
         }
+
+        $this->emit('ExportButton_SetOrderField',$this->orderField);
     }
 
     public function getSortIcon($field)
@@ -69,11 +79,13 @@ class ListCustomer extends Component
         return $icon;
     }
 
+    // Not use in hear
     public function protectDownload()
     {
         $this->dispatchBrowserEvent('protectDownload');
     }
 
+    // call from export button
     public function doExport($protectData)
     {
         $this->isDownloading = true;
@@ -132,35 +144,31 @@ class ListCustomer extends Component
         unset($notification);
     }
 
-    public function setExporting($status)
-    {
-        $this->exporting = $status;
-    }
-
-    public function doDownload()
+    public function doDownload($exporting)
     {
         // return storage::disk('avatars')->download("oV9hMeNdtJL6ZpDaaH3CdHsRM2ofCKKR6ijh0aFx.png"); // cannot delete affter download
-        $notification = Notifications::find($this->exporting['id']);
+        $notification = Notifications::find($exporting['id']);
         $notification->status = "DONE";
         $notification->description .= "_(DOWNLOADED)_";
         $notification->save();
-        $file = $this->exporting['downloadLink'];
-        $this->exporting = null;
+        $file = $exporting['downloadLink'];
+        // $this->exporting = null;
         unset($notification);
         return response()->download(storage_path($file))->deleteFileAfterSend(true);
 
     }
 
-    public function doDeleteExport()
+    public function doDeleteExport($exporting)
     {
         //! cancel batch and delete job later;
-        $notification = Notifications::find($this->exporting['id']);
+        // $notification = Notifications::find($this->exporting['id']);
+        $notification = Notifications::find($exporting['id']);
         $notification->status = "DONE";
         $notification->description .= "_(CANCELED)_";
         $notification->save();
-        $file = $this->exporting['downloadLink'];
+        $file = $exporting['downloadLink'];
         unlink(storage_path($file));
-        $this->exporting = null;
+        // $this->exporting = null;
         unset($notification);
 
     }
