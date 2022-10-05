@@ -19,21 +19,39 @@ class ExportButton extends Component
     public $orderField = ['field' => 'last_active', 'order' => 'desc'];
 
     public $exporting = null;
+    public $exportType = '';
+    public $fromDate='';
+    public $toDate='';
+    public $firstData=[];
 
     public $connection = null;
 
     protected $listeners = [
         'ExportButton_SetOrderField'=>'setOrderField',
         'ExportButton_SetSearch'=>'setSearch',
+        'ExportButton_SetExportType'=>'setExportType',
+        'ExportButton_SetFromDate'=>'setFromDate',
+        'ExportButton_SetToDate'=>'setToDate',
     ];
 
-    public function mount($pageName)
+    // public function mount($pageName)
+    public function mount($firstData)
     {
         if (!Session::get('selectedSystem')) {
             return redirect(route('dashboard'));
         }
         $this->connection = Session::get('selectedSystem');
-        $this->pageName = $pageName;
+        // $this->pageName = $pageName;
+        $this->firstData = $firstData;
+        $this->pageName = $this->firstData['pageName'];
+        $this->exportType = $this->firstData['exportType'];
+        $this->orderField = $this->firstData['orderField'];
+        if(array_key_exists('fromDate',$firstData)){
+            $this->fromDate = $firstData['fromDate'];
+        }
+        if(array_key_exists('toDate',$firstData)){
+            $this->toDate = $firstData['toDate'];
+        }
         $this->checkExportJob();
     }
 
@@ -44,6 +62,17 @@ class ExportButton extends Component
     public function setSearch($search)
     {
         $this->search = $search;
+    }
+    public function setExportType($exportType)
+    {
+        $this->exportType = $exportType;
+    }
+    public function setFromDate($fromDate)
+    {
+        $this->fromDate = $fromDate;
+    }public function setToDate($toDate)
+    {
+        $this->toDate = $toDate;
     }
 
     public function checkExportJob()
@@ -96,7 +125,7 @@ class ExportButton extends Component
         $notificationData['title'] = 'Customer Exporting';
         $notificationData['message'] = 'Exporting ' . $protectData['fileName'] . ' is in progress please wait';
         $notificationData['file_name'] = $protectData['fileName'];
-        $notificationData['page'] = 'customer.list';
+        $notificationData['page'] = $this->pageName;
         $notificationData['type'] = 'DOWNLOAD';
 
         $download_name = $protectData['fileName'] . strtotime(now());
@@ -108,6 +137,7 @@ class ExportButton extends Component
 
         // Exporting data
         $data = [
+            "exportType" => $this->exportType,
             "tableName" => $this->connection->connection_name,
             "orderField" => $this->orderField,
             "fileName" => $protectData['fileName'],
@@ -116,9 +146,11 @@ class ExportButton extends Component
             "userId" => Auth::user()->id,
             "search" => $this->search,
             "batch_id" => $batch->id,
-            "notification_id" => $notification->id
+            "notification_id" => $notification->id,
+            "fromDate"=>$this->fromDate,
+            "toDate" => $this->toDate
         ];
-
+        // dd($data);
         $batch->add(new ExportMemberJob($data));
 
         unset($notification);

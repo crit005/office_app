@@ -67,15 +67,15 @@
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Livewire.emit('ListCustomer_Doexport',
-                    {
-                        "fileName": result.value.fileName,
-                        "password": result.value.password
-                    });
-                    // @this.doExport({
+                    // Livewire.emit('ListCustomer_Doexport',
+                    // {
                     //     "fileName": result.value.fileName,
                     //     "password": result.value.password
                     // });
+                    @this.doExport({
+                        "fileName": result.value.fileName,
+                        "password": result.value.password
+                    });
                 } else {
                     console.log("no result");
                 }

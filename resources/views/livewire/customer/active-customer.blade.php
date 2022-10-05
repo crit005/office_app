@@ -39,10 +39,11 @@
                                 </div>
                                 <button wire:click.prevent="setToDate('-180 days')" class="btn btn-primary btn-sm elevation-1 ml-2">6M(-180ds)</button>
                                 <button wire:click.prevent="setToDate('-90 days')" class="btn btn-primary btn-sm elevation-1 ml-2">3M(-90ds)</button>
-                                <button wire:click.prevent="setToDate('-30 days')" class="btn btn-primary btn-sm elevation-1 ml-2">1M(-30ds)</button>
-                                <button wire:click.prevent="export" class="btn btn-success btn-sm elevation-1 ml-2">
+                                <button wire:click.prevent="setToDate('-30 days')" class="btn btn-primary btn-sm elevation-1 ml-2 mr-2">1M(-30ds)</button>
+                                {{-- <button wire:click.prevent="export" class="btn btn-success btn-sm elevation-1 ml-2">
                                     <i class="far fa-file-excel"></i>
-                                </button>
+                                </button> --}}
+                                <livewire:components.export-button :firstData="$firstData"/>
                             </div>
 
                             <div class="card-tools">

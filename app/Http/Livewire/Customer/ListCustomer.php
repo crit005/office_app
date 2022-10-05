@@ -37,6 +37,8 @@ class ListCustomer extends Component
 
     public $connection = null;
 
+    public $firstData = [];
+
     public function mount()
     {
         if (!Session::get('selectedSystem')) {
@@ -46,6 +48,13 @@ class ListCustomer extends Component
         // $this->checkExportJob();
         $this->emit('ExportButton_SetOrderField',$this->orderField);
         $this->emit('ExportButton_SetSearch',$this->search);
+        $this->emit('ExportButton_SetExportType','ALL_MEMBER');
+        $this->firstData = [
+            'pageName'=>'customer.list',
+            'search'=>$this->search,
+            'exportType'=>'ALL_MEMBER',
+            'orderField' => $this->orderField
+        ];
     }
 
     public function updatedSearch($var)

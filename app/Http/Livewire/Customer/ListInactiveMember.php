@@ -18,6 +18,8 @@ class ListInactiveMember extends Component
     public $fromDate = null;
     public $toDate = null;
 
+    public $firstData = [];
+
     public $connection = null;
     public function mount()
     {
@@ -28,24 +30,43 @@ class ListInactiveMember extends Component
 
         // $this->fromDate = date('d-M-Y', strtotime('-30 days'));
         $this->toDate = date('d-M-Y', strtotime('-30 days'));
+
+        // $this->emit('ExportButton_SetOrderField',$this->orderField);
+        // $this->emit('ExportButton_SetSearch',$this->search);
+        // $this->emit('ExportButton_SetExportType','NEW_MEMBER');
+        // $this->emit('ExportButton_SetFromDate',$this->fromDate);
+        // $this->emit('ExportButton_SetToDate',$this->toDate);
+
+        $this->firstData = [
+            'pageName'=>'customer.inactive',
+            'search'=>$this->search,
+            'exportType'=>'INACTIVE_MEMBER',
+            'orderField' => $this->orderField,
+            'fromDate' => $this->fromDate,
+            'toDate' => $this->toDate,
+        ];
     }
 
     public function updatedSearch($var)
     {
+        $this->emit('ExportButton_SetSearch',$this->search);
         $this->resetPage();
     }
     public function updatedFromDate($var)
     {
+        $this->emit('ExportButton_SetFromDate',$this->fromDate);
         $this->resetPage();
     }
     public function updatedToDate($var)
     {
+        $this->emit('ExportButton_SetToDate',$this->toDate);
         $this->resetPage();
     }
 
     public function setToDate($strDate)
     {
         $this->toDate = date('d-M-Y',strtotime($strDate));
+        $this->emit('ExportButton_SetToDate',$this->toDate);
     }
 
     public function setOrderField($fieldName)
@@ -56,6 +77,7 @@ class ListInactiveMember extends Component
             $this->orderField['field'] = $fieldName;
             $this->orderField['order'] = 'asc';
         }
+        $this->emit('ExportButton_SetOrderField',$this->orderField);
     }
 
     public function getSortIcon($field)

@@ -24,7 +24,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <livewire:components.export-button :pageName="'customer.list'" />
+                            <livewire:components.export-button :firstData="$firstData" />
                             {{-- <div class="d-flex flex-row float-left">
                                 @if (!$exporting)
                                     <button wire:click.prevent="protectDownload()"
