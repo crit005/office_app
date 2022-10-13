@@ -107,7 +107,7 @@ class ListInactiveMember extends Component
             })
             ->orderBY($this->orderField['field'], $this->orderField['order'])
             ->paginate(env('PAGINATE'));
-
+        $this->firstData['totalRecord'] = $customers->total();
         return view('livewire.customer.list-inactive-member', ['customers' => $customers]);
     }
 }

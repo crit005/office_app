@@ -108,7 +108,7 @@ class ListNewMember extends Component
             })
             ->orderBY($this->orderField['field'], $this->orderField['order'])
             ->paginate(env('PAGINATE'));
-
+        $this->firstData['totalRecord'] = $customers->total();
         return view('livewire.customer.list-new-member', ['customers' => $customers]);
     }
 }

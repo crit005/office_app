@@ -4,10 +4,12 @@ namespace App\Http\Livewire\Components;
 
 use App\Jobs\ExportMemberJob;
 use App\Models\Notifications;
+use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
+use ZipArchive;
 
 class ExportButton extends Component
 {
@@ -20,18 +22,22 @@ class ExportButton extends Component
 
     public $exporting = null;
     public $exportType = '';
-    public $fromDate='';
-    public $toDate='';
-    public $firstData=[];
+    public $fromDate = '';
+    public $toDate = '';
+    public $firstData = [];
+    public $exportData = [];
+
+    public $totalRecord = 0;
 
     public $connection = null;
 
     protected $listeners = [
-        'ExportButton_SetOrderField'=>'setOrderField',
-        'ExportButton_SetSearch'=>'setSearch',
-        'ExportButton_SetExportType'=>'setExportType',
-        'ExportButton_SetFromDate'=>'setFromDate',
-        'ExportButton_SetToDate'=>'setToDate',
+        'ExportButton_SetOrderField' => 'setOrderField',
+        'ExportButton_SetSearch' => 'setSearch',
+        'ExportButton_SetExportType' => 'setExportType',
+        'ExportButton_SetFromDate' => 'setFromDate',
+        'ExportButton_SetToDate' => 'setToDate',
+        'ExportButton_SetTotalRecord' => 'setTotalRecord',
     ];
 
     // public function mount($pageName)
@@ -46,10 +52,13 @@ class ExportButton extends Component
         $this->pageName = $this->firstData['pageName'];
         $this->exportType = $this->firstData['exportType'];
         $this->orderField = $this->firstData['orderField'];
-        if(array_key_exists('fromDate',$firstData)){
+        if (array_key_exists('totalRecord', $firstData)) {
+            $this->totalRecord = $firstData['totalRecord'];
+        }
+        if (array_key_exists('fromDate', $firstData)) {
             $this->fromDate = $firstData['fromDate'];
         }
-        if(array_key_exists('toDate',$firstData)){
+        if (array_key_exists('toDate', $firstData)) {
             $this->toDate = $firstData['toDate'];
         }
         $this->checkExportJob();
@@ -70,9 +79,14 @@ class ExportButton extends Component
     public function setFromDate($fromDate)
     {
         $this->fromDate = $fromDate;
-    }public function setToDate($toDate)
+    }
+    public function setToDate($toDate)
     {
         $this->toDate = $toDate;
+    }
+    public function setTotalRecord($totalRecord)
+    {
+        $this->totalRecord = $totalRecord;
     }
 
     public function checkExportJob()
@@ -93,10 +107,6 @@ class ExportButton extends Component
         unset($notification);
     }
 
-    // public function doExport($protectData)
-    // {
-
-    // }
 
     public function doDownload()
     {
@@ -117,8 +127,38 @@ class ExportButton extends Component
     {
         $this->isDownloading = true;
         // return Excel::download(new MemberExport($this->search, $this->orderField), 'ListMember.xlsx');
+        $download_name = $protectData['fileName'] . strtotime(now());
 
-        $batch = Bus::batch([])->dispatch();
+        $numberOfFiles = (int)($this->totalRecord / 10000);
+        if (($this->totalRecord % 10000) > 0) {
+            $numberOfFiles += 1;
+        }
+        $fileNames = [];
+        for($i=0; $i<$numberOfFiles; $i++){
+            array_push($fileNames,[
+                'temFile'=>($download_name."_".$i+1),
+                'fileName'=>($protectData['fileName']. $i+1)]
+            );
+        }
+
+        $batch = Bus::batch([])->then(function (Batch $abatch) {
+            $compressData = [
+                'download_name' => 'string',
+                'fileNames' => ['excel1', 'excel2'],
+                'password' => $this->exportData['password']
+            ];
+            $this->compressExcellFiles($compressData);
+
+            $notification = Notifications::find($this->exportData['notification_id']);
+            if ($notification->status != 'DONE') {
+                $notification->message = $this->data['fileName'] . " is ready to download.";
+                $notification->status = 'SUCCESS_ALERT';
+                $notification->save();
+            }
+
+            unset($notification);
+            unset($compressData);
+        })->dispatch();
         // Create notification type PROCESSING
         $notificationData = null;
         $notificationData['user_id'] = Auth::user()->id;
@@ -128,13 +168,23 @@ class ExportButton extends Component
         $notificationData['page'] = $this->pageName;
         $notificationData['type'] = 'DOWNLOAD';
 
-        $download_name = $protectData['fileName'] . strtotime(now());
-
         $notificationData['download_link'] = $this->downloadLink . $download_name . '.zip';
         $notificationData['batch_id'] = $batch->id;
         $notificationData['status'] = 'PROCESSING';
         $notification = Notifications::create($notificationData);
 
+        //
+        $this->exportData = [
+            "exportType" => $this->exportType,
+            "tableName" => $this->connection->connection_name,
+            "orderField" => $this->orderField,
+            "fileName" => $protectData['fileName'],
+            "download_name" => $download_name,
+            "password" => $protectData['password'],
+            "userId" => Auth::user()->id,
+            "batch_id" => $batch->id,
+            "notification_id" => $notification->id
+        ];
         // Exporting data
         $data = [
             "exportType" => $this->exportType,
@@ -147,14 +197,55 @@ class ExportButton extends Component
             "search" => $this->search,
             "batch_id" => $batch->id,
             "notification_id" => $notification->id,
-            "fromDate"=>$this->fromDate,
-            "toDate" => $this->toDate
+            "fromDate" => $this->fromDate,
+            "toDate" => $this->toDate,
+            "skip" => 0,
+            "take" => 0
         ];
+
         // dd($data);
         $batch->add(new ExportMemberJob($data));
 
         unset($notification);
     }
+
+    /**
+     * compressExcellFiles
+     * $compressData[
+     *  'download_name'=>string
+     *  'fileNames'=>['excel1', 'excel2',...]
+     *  'password'=>''
+     * ]
+     */
+    public function compressExcellFiles($compressData)
+    {
+
+        //! make zip by loop thrue to excelfiles and add to one zip file
+        $zip = new ZipArchive;
+        $res = $zip->open(storage_path('app/public/xlsx/' . $compressData['download_name'] . '_Enc.zip'), ZipArchive::CREATE);
+        if ($res === TRUE) {
+            foreach ($compressData['fileNames'] as $excelFile) {
+                $zip->addFile(storage_path('app/public/xlsx/' . $excelFile), $excelFile);
+                unlink(storage_path('app/public/xlsx/' . $excelFile));
+                //$zip->setEncryptionName($this->data['download_name'] . '.xlsx', ZipArchive::EM_AES_256, $this->data['password']);
+            }
+            $zip->close();
+        } else {
+            echo 'failed';
+        }
+
+        $zipFinall = new ZipArchive;
+        $resFinall = $zipFinall->open(storage_path('app/public/xlsx/' . $compressData['download_name'] . '.zip'), ZipArchive::CREATE);
+        if ($resFinall === TRUE) {
+            $zipFinall->addFile(storage_path('app/public/xlsx/' . $compressData['download_name'] . '_Enc.zip'), $compressData['download_name'] . '_Enc.zip');
+            unlink(storage_path('app/public/xlsx/' . $compressData['download_name'] . '_Enc.zip'));
+            $zipFinall->setEncryptionName($compressData['download_name'] . '_Enc.zip', ZipArchive::EM_AES_256, $this->compressData['password']);
+            $zipFinall->close();
+        } else {
+            echo 'failed to create final zip';
+        }
+    }
+
 
     public function doDownload_F()
     {
@@ -167,7 +258,6 @@ class ExportButton extends Component
         // $this->exporting = null;
         unset($notification);
         return response()->download(storage_path($file))->deleteFileAfterSend(true);
-
     }
 
     public function doDeleteExport_F()
@@ -182,7 +272,6 @@ class ExportButton extends Component
         unlink(storage_path($file));
         // $this->exporting = null;
         unset($notification);
-
     }
 
 

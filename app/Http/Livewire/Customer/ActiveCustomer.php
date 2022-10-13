@@ -115,7 +115,7 @@ class ActiveCustomer extends Component
             })
             ->orderBY($this->orderField['field'], $this->orderField['order'])
             ->paginate(env('PAGINATE'));
-
+        $this->firstData['totalRecord'] = $customers->total();
         return view('livewire.customer.active-customer', ['customers' => $customers]);
     }
 }

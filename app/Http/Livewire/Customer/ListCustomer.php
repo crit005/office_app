@@ -46,9 +46,9 @@ class ListCustomer extends Component
         }
         $this->connection = Session::get('selectedSystem');
         // $this->checkExportJob();
-        $this->emit('ExportButton_SetOrderField',$this->orderField);
-        $this->emit('ExportButton_SetSearch',$this->search);
-        $this->emit('ExportButton_SetExportType','ALL_MEMBER');
+        // $this->emit('ExportButton_SetOrderField',$this->orderField);
+        // $this->emit('ExportButton_SetSearch',$this->search);
+        // $this->emit('ExportButton_SetExportType','ALL_MEMBER');
         $this->firstData = [
             'pageName'=>'customer.list',
             'search'=>$this->search,
@@ -194,6 +194,9 @@ class ListCustomer extends Component
             ->orWhere('club_name', 'like', '%' . $this->search . '%')
             ->orderBY($this->orderField['field'], $this->orderField['order'])
             ->paginate(env('PAGINATE'));
+        // dd($customers->total());
+        // $this->emit('ExportButton_SetTotalRecord',$customers->total());
+        $this->firstData['totalRecord'] = $customers->total();
         return view('livewire.customer.list-customer', ['customers' => $customers]);
     }
 }

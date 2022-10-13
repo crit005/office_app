@@ -26,6 +26,10 @@ class ExportMemberJob implements ShouldQueue
     public function __construct($data)
     {
         $this->data = $data;
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', 1800);
+        ini_set('max_input_time', 1200);
+        set_time_limit ( 0 );
     }
 
     /**
@@ -35,10 +39,11 @@ class ExportMemberJob implements ShouldQueue
      */
     public function handle()
     {
+
         ini_set('memory_limit', -1);
         ini_set('max_execution_time', 1800);
         ini_set('max_input_time', 1200);
-
+        set_time_limit ( 0 );
         (new MemberExport($this->data))->store('xlsx/' . $this->data['download_name'] . '.xlsx', 'public');
 
         $zip = new ZipArchive;

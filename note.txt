@@ -41,3 +41,8 @@ protected $queryString = [
     ];
 
 	https://codingspoint.com/how-to-get-current-url-with-query-string-in-laravel-8/
+
+
+run queue:work all time
+----------------------------
+php artisan queue:work --timeout=0

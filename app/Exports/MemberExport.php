@@ -19,7 +19,8 @@ class MemberExport implements FromCollection, WithHeadings
     public $exportType;
     public $fromDate;
     public $toDate;
-
+    public $skip;
+    public $take;
     use Exportable;
     public function __construct($condition)
     {
@@ -29,6 +30,12 @@ class MemberExport implements FromCollection, WithHeadings
         $this->exportType = $condition["exportType"];
         $this->fromDate = $condition["fromDate"];
         $this->toDate = $condition["toDate"];
+        if(array_key_exists('skip',$condition)){
+            $this->skip = $condition['skip'];
+        }
+        if(array_key_exists('take',$condition)){
+            $this->take = $condition['take'];
+        }
     }
 
     public function headings(): array
@@ -60,6 +67,7 @@ class MemberExport implements FromCollection, WithHeadings
         ini_set('memory_limit', -1);
         ini_set('max_execution_time', 1800);
         ini_set('max_input_time', 1200);
+
         $customer = new Customer();
         $customer->setTable('tbl_' . $this->tableName);
         //! for all member
@@ -70,7 +78,14 @@ class MemberExport implements FromCollection, WithHeadings
                 ->orWhere('id', 'like', '%' . $this->search . '%')
                 ->orWhere('email', 'like', '%' . $this->search . '%')
                 ->orWhere('club_name', 'like', '%' . $this->search . '%')
-                ->orderBY($this->orderField['field'], $this->orderField['order'])->get();
+                ->orderBY($this->orderField['field'], $this->orderField['order'])
+                ->when($this->skip,function($q){
+                    $q->skip($this->skip);
+                })
+                ->when($this->take,function($q){
+                    $q->take($this->take);
+                })
+                ->get();
         }
         //! for new member
         elseif ($this->exportType == 'NEW_MEMBER') {
