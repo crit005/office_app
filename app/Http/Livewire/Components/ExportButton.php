@@ -129,10 +129,13 @@ class ExportButton extends Component
         // return Excel::download(new MemberExport($this->search, $this->orderField), 'ListMember.xlsx');
         $download_name = $protectData['fileName'] . strtotime(now());
 
+        // កំណត់ចំនួន Files ដែលត្រូវ export
         $numberOfFiles = (int)($this->totalRecord / 10000);
         if (($this->totalRecord % 10000) > 0) {
             $numberOfFiles += 1;
         }
+
+        // បង្កើតអារេហ្វាល
         $fileNames = [];
         for($i=0; $i<$numberOfFiles; $i++){
             array_push($fileNames,[
@@ -141,13 +144,14 @@ class ExportButton extends Component
             );
         }
 
+        // បង្កើតបាច់ហ្វាល
         $batch = Bus::batch([])->then(function (Batch $abatch) {
-            $compressData = [
-                'download_name' => 'string',
-                'fileNames' => ['excel1', 'excel2'],
-                'password' => $this->exportData['password']
-            ];
-            $this->compressExcellFiles($compressData);
+            // $compressData = [
+            //     'download_name' => 'string',
+            //     'fileNames' => ['excel1', 'excel2'],
+            //     'password' => $this->exportData['password']
+            // ];
+            // $this->compressExcellFiles($compressData);
 
             $notification = Notifications::find($this->exportData['notification_id']);
             if ($notification->status != 'DONE') {
@@ -159,6 +163,7 @@ class ExportButton extends Component
             unset($notification);
             unset($compressData);
         })->dispatch();
+
         // Create notification type PROCESSING
         $notificationData = null;
         $notificationData['user_id'] = Auth::user()->id;
