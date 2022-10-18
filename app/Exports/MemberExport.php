@@ -98,7 +98,14 @@ class MemberExport implements FromCollection, WithHeadings
                         ->orWhere('email', 'like', '%' . $this->search . '%')
                         ->orWhere('club_name', 'like', '%' . $this->search . '%');
                 })
-                ->orderBY($this->orderField['field'], $this->orderField['order'])->get();
+                ->orderBY($this->orderField['field'], $this->orderField['order'])
+                ->when($this->skip, function ($q) {
+                    $q->skip($this->skip);
+                })
+                ->when($this->take, function ($q) {
+                    $q->take($this->take);
+                })
+                ->get();
         }
         //! for active member
         elseif ($this->exportType == 'ACTIVE_MEMBER') {
@@ -112,6 +119,12 @@ class MemberExport implements FromCollection, WithHeadings
                         ->orWhere('club_name', 'like', '%' . $this->search . '%');
                 })
                 ->orderBY($this->orderField['field'], $this->orderField['order'])
+                ->when($this->skip, function ($q) {
+                    $q->skip($this->skip);
+                })
+                ->when($this->take, function ($q) {
+                    $q->take($this->take);
+                })
                 ->get();
         }
         //! for inactive member
@@ -126,6 +139,12 @@ class MemberExport implements FromCollection, WithHeadings
                         ->orWhere('club_name', 'like', '%' . $this->search . '%');
                 })
                 ->orderBY($this->orderField['field'], $this->orderField['order'])
+                ->when($this->skip, function ($q) {
+                    $q->skip($this->skip);
+                })
+                ->when($this->take, function ($q) {
+                    $q->take($this->take);
+                })
                 ->get();
         }
 

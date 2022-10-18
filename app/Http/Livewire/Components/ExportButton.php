@@ -140,30 +140,9 @@ class ExportButton extends Component
         for($i=0; $i<$numberOfFiles; $i++){
             array_push($fileNames,[
                 'temFile'=>($download_name."_".$i+1),
-                'fileName'=>($protectData['fileName']. $i+1)]
+                'fileName'=>($protectData['fileName'].'_'. $i+1)]
             );
         }
-dd($fileNames);
-        // បង្កើតបាច់ហ្វាល
-        $batch = Bus::batch([])->then(function ($abatch) use($fileNames,$download_name) {
-            $compressData = [
-                'download_name' => $download_name,
-                'fileNames' => $fileNames,
-                'password' => $this->exportData['password']
-            ];
-            $this->compressExcellFiles($compressData);
-
-            $notification = Notifications::find($this->exportData['notification_id']);
-            if ($notification->status != 'DONE') {
-                $notification->message = $this->data['fileName'] . " is ready to download.";
-                $notification->status = 'SUCCESS_ALERT';
-                $notification->save();
-            }
-
-            unset($notification);
-            unset($compressData);
-            // dd($this->exportData['notification_id']);
-        })->dispatch();
 
         // Create notification type PROCESSING
         $notificationData = null;
@@ -175,7 +154,7 @@ dd($fileNames);
         $notificationData['type'] = 'DOWNLOAD';
 
         $notificationData['download_link'] = $this->downloadLink . $download_name . '.zip';
-        $notificationData['batch_id'] = $batch->id;
+        // $notificationData['batch_id'] = $batch->id;
         $notificationData['status'] = 'PROCESSING';
         $notification = Notifications::create($notificationData);
 
@@ -188,9 +167,36 @@ dd($fileNames);
             "download_name" => $download_name,
             "password" => $protectData['password'],
             "userId" => Auth::user()->id,
-            "batch_id" => $batch->id,
+            // "batch_id" => $batch->id,
             "notification_id" => $notification->id
         ];
+
+        // បង្កើតបាច់ហ្វាល
+        // $batch = Bus::batch([])->then(function (Batch $abatch) use($fileNames,$download_name) {
+        $batch = Bus::batch([])->then(function (Batch $abatch) use($fileNames,$download_name){
+
+            $compressData = [
+                'download_name' => $download_name,
+                'fileNames' => $fileNames,
+                'password' => $this->exportData['password']
+            ];
+            $this->compressExcellFiles($compressData);
+
+            $notification = Notifications::find($this->exportData['notification_id']);
+            if ($notification->status != 'DONE') {
+                // $notification->message = $this->data['fileName'] . " is ready to download.";
+                $notification->message = $this->exportData['fileName'] . " is ready to download.";
+                $notification->status = 'SUCCESS_ALERT';
+                $notification->save();
+            }
+
+            unset($notification);
+            unset($compressData);
+            // dd($this->exportData['notification_id']);
+            // dd($fileNames);
+        })->dispatch();
+
+        // notification
 
         $index = 0;
         foreach ($fileNames as $fileName) {
@@ -218,7 +224,7 @@ dd($fileNames);
             $batch->add(new ExportMemberJob($data));
             $index++;
         }
-        unset($index);
+        // unset($index);
 
         //! old export all in one file
         // // Exporting data
@@ -262,26 +268,37 @@ dd($fileNames);
         $zip = new ZipArchive;
         $res = $zip->open(storage_path('app/public/xlsx/' . $compressData['download_name'] . '_Enc.zip'), ZipArchive::CREATE);
         if ($res === TRUE) {
+
             foreach ($compressData['fileNames'] as $excelFile) {
-                $zip->addFile(storage_path('app/public/xlsx/' . $excelFile['temFile']), $excelFile['fileName']);
-                unlink(storage_path('app/public/xlsx/' . $excelFile['temFile']));
-                //$zip->setEncryptionName($this->data['download_name'] . '.xlsx', ZipArchive::EM_AES_256, $this->data['password']);
+                $zip->addFile(storage_path('app/public/xlsx/' . $excelFile['temFile'].'.xlsx'), $excelFile['fileName'].'.xlsx');
+                // unlink(storage_path('app/public/xlsx/' . $excelFile['temFile'].'.xlsx'));
+                // $zip->setEncryptionName($excelFile['fileName'].'.xlsx', ZipArchive::EM_AES_256, $compressData['password']);
             }
+            // $zip->setPassword($compressData['password']);
             $zip->close();
+
+
         } else {
             echo 'failed';
+        }
+
+        // delete excel files
+        foreach ($compressData['fileNames'] as $excelFile) {
+            unlink(storage_path('app/public/xlsx/' . $excelFile['temFile'].'.xlsx'));
         }
 
         $zipFinall = new ZipArchive;
         $resFinall = $zipFinall->open(storage_path('app/public/xlsx/' . $compressData['download_name'] . '.zip'), ZipArchive::CREATE);
         if ($resFinall === TRUE) {
             $zipFinall->addFile(storage_path('app/public/xlsx/' . $compressData['download_name'] . '_Enc.zip'), $compressData['download_name'] . '_Enc.zip');
-            unlink(storage_path('app/public/xlsx/' . $compressData['download_name'] . '_Enc.zip'));
-            $zipFinall->setEncryptionName($compressData['download_name'] . '_Enc.zip', ZipArchive::EM_AES_256, $this->compressData['password']);
+            // unlink(storage_path('app/public/xlsx/' . $compressData['download_name'] . '_Enc.zip'));
+            $zipFinall->setEncryptionName($compressData['download_name'] . '_Enc.zip', ZipArchive::EM_AES_256, $compressData['password']);
             $zipFinall->close();
+
         } else {
             echo 'failed to create final zip';
         }
+        unlink(storage_path('app/public/xlsx/' . $compressData['download_name'] . '_Enc.zip'));
     }
 
 

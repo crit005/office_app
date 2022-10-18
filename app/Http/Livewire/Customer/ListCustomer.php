@@ -195,7 +195,7 @@ class ListCustomer extends Component
             ->orderBY($this->orderField['field'], $this->orderField['order'])
             ->paginate(env('PAGINATE'));
         // dd($customers->total());
-        // $this->emit('ExportButton_SetTotalRecord',$customers->total());
+        $this->emit('ExportButton_SetTotalRecord',$customers->total());
         $this->firstData['totalRecord'] = $customers->total();
         return view('livewire.customer.list-customer', ['customers' => $customers]);
     }

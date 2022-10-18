@@ -45,7 +45,7 @@ class ExportMemberJob implements ShouldQueue
         ini_set('max_input_time', 1200);
         set_time_limit(0);
 
-        (new MemberExport($this->data))->store('xlsx/' . $this->data['download_name'] . '.xlsx', 'public');
+        (new MemberExport($this->data))->store('xlsx/' . $this->data['fileName'] . '.xlsx', 'public');
 
         // $zip = new ZipArchive;
         // $res = $zip->open(storage_path('app/public/xlsx/' . $this->data['download_name'] . '.zip'), ZipArchive::CREATE);
