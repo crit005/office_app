@@ -33,7 +33,7 @@ class MemberExport implements FromCollection, WithHeadings
         if(array_key_exists('skip',$condition)){
             $this->skip = $condition['skip'];
         }
-        if(array_key_exists('take',$condition)){
+        if (array_key_exists('take', $condition)) {
             $this->take = $condition['take'];
         }
     }
@@ -79,10 +79,10 @@ class MemberExport implements FromCollection, WithHeadings
                 ->orWhere('email', 'like', '%' . $this->search . '%')
                 ->orWhere('club_name', 'like', '%' . $this->search . '%')
                 ->orderBY($this->orderField['field'], $this->orderField['order'])
-                ->when($this->skip,function($q){
+                ->when($this->skip, function ($q) {
                     $q->skip($this->skip);
                 })
-                ->when($this->take,function($q){
+                ->when($this->take, function ($q) {
                     $q->take($this->take);
                 })
                 ->get();
@@ -117,16 +117,16 @@ class MemberExport implements FromCollection, WithHeadings
         //! for inactive member
         elseif ($this->exportType == 'INACTIVE_MEMBER') {
             return $customer->select('id', 'login_id', 'name', 'email', 'mobile', 'club_name', 'first_join', 'last_dp', 'last_wd', 'last_active', 'total_dp', 'total_wd', 'total_turnover', 'totall_winlose')
-            ->where('last_active','<',date('Y-m-d', strtotime($this->toDate)))
-            ->where(function ($q) {
-                $q->where('login_id', 'like', '%' . $this->search . '%')
-                    ->orWhere('mobile', 'like', '%' . $this->search . '%')
-                    ->orWhere('id', 'like', '%' . $this->search . '%')
-                    ->orWhere('email', 'like', '%' . $this->search . '%')
-                    ->orWhere('club_name', 'like', '%' . $this->search . '%');
-            })
-            ->orderBY($this->orderField['field'], $this->orderField['order'])
-            ->get();
+                ->where('last_active', '<', date('Y-m-d', strtotime($this->toDate)))
+                ->where(function ($q) {
+                    $q->where('login_id', 'like', '%' . $this->search . '%')
+                        ->orWhere('mobile', 'like', '%' . $this->search . '%')
+                        ->orWhere('id', 'like', '%' . $this->search . '%')
+                        ->orWhere('email', 'like', '%' . $this->search . '%')
+                        ->orWhere('club_name', 'like', '%' . $this->search . '%');
+                })
+                ->orderBY($this->orderField['field'], $this->orderField['order'])
+                ->get();
         }
 
 

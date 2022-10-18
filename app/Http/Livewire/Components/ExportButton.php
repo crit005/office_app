@@ -143,7 +143,7 @@ class ExportButton extends Component
                 'fileName'=>($protectData['fileName']. $i+1)]
             );
         }
-
+dd($fileNames);
         // បង្កើតបាច់ហ្វាល
         $batch = Bus::batch([])->then(function ($abatch) use($fileNames,$download_name) {
             $compressData = [
@@ -191,28 +191,60 @@ class ExportButton extends Component
             "batch_id" => $batch->id,
             "notification_id" => $notification->id
         ];
-        // Exporting data
-        $data = [
-            "exportType" => $this->exportType,
-            "tableName" => $this->connection->connection_name,
-            "orderField" => $this->orderField,
-            "fileName" => $protectData['fileName'],
-            "download_name" => $download_name,
-            "password" => $protectData['password'],
-            "userId" => Auth::user()->id,
-            "search" => $this->search,
-            "batch_id" => $batch->id,
-            "notification_id" => $notification->id,
-            "fromDate" => $this->fromDate,
-            "toDate" => $this->toDate,
-            "skip" => 0,
-            "take" => 0
-        ];
 
-        // dd($data);
-        $batch->add(new ExportMemberJob($data));
+        $index = 0;
+        foreach ($fileNames as $fileName) {
+            $data = [
+                "exportType" => $this->exportType,
+                "tableName" => $this->connection->connection_name,
+                "orderField" => $this->orderField,
+                // "fileName" => $protectData['fileName'],
+                "fileName" => $fileName['temFile'],
+                //! problem with download name only 1 name
+                "download_name" => $download_name,
+                "password" => $protectData['password'],
+                "userId" => Auth::user()->id,
+                "search" => $this->search,
+                "batch_id" => $batch->id,
+                "notification_id" => $notification->id,
+                "fromDate" => $this->fromDate,
+                "toDate" => $this->toDate,
+                "skip" => $index * 10000,
+                "take" => 10000
+                // "fileNames" => $fileNames
+            ];
 
-        unset($notification);
+            // dd($data);
+            $batch->add(new ExportMemberJob($data));
+            $index++;
+        }
+        unset($index);
+
+        //! old export all in one file
+        // // Exporting data
+        // $data = [
+        //     "exportType" => $this->exportType,
+        //     "tableName" => $this->connection->connection_name,
+        //     "orderField" => $this->orderField,
+        //     "fileName" => $protectData['fileName'],
+        //     "download_name" => $download_name,
+        //     "password" => $protectData['password'],
+        //     "userId" => Auth::user()->id,
+        //     "search" => $this->search,
+        //     "batch_id" => $batch->id,
+        //     "notification_id" => $notification->id,
+        //     "fromDate" => $this->fromDate,
+        //     "toDate" => $this->toDate,
+        //     "skip" => 0,
+        //     "take" => 10000,
+        //     "fileNames" => $fileNames
+        // ];
+
+        // // dd($data);
+        // $batch->add(new ExportMemberJob($data));
+
+        // unset($notification);
+        //! End old export all in one file
     }
 
     /**

@@ -29,7 +29,7 @@ class ExportMemberJob implements ShouldQueue
         ini_set('memory_limit', -1);
         ini_set('max_execution_time', 1800);
         ini_set('max_input_time', 1200);
-        set_time_limit ( 0 );
+        set_time_limit(0);
     }
 
     /**
@@ -43,26 +43,27 @@ class ExportMemberJob implements ShouldQueue
         ini_set('memory_limit', -1);
         ini_set('max_execution_time', 1800);
         ini_set('max_input_time', 1200);
-        set_time_limit ( 0 );
+        set_time_limit(0);
+
         (new MemberExport($this->data))->store('xlsx/' . $this->data['download_name'] . '.xlsx', 'public');
 
-        $zip = new ZipArchive;
-        $res = $zip->open(storage_path('app/public/xlsx/' . $this->data['download_name'] . '.zip'), ZipArchive::CREATE);
-        if ($res === TRUE) {
-            $zip->addFile(storage_path('app/public/xlsx/' . $this->data['download_name'] . '.xlsx'), $this->data['download_name'] . '.xlsx');
-            $zip->setEncryptionName($this->data['download_name'] . '.xlsx', ZipArchive::EM_AES_256, $this->data['password']);
-            $zip->close();
-            unlink(storage_path('app/public/xlsx/' . $this->data['download_name'] . '.xlsx'));
-        } else {
-            echo 'failed';
-        }
-        $notification = Notifications::find($this->data['notification_id']);
-        if ($notification->status != 'DONE') {
-            $notification->message = $this->data['fileName'] . " is ready to download.";
-            $notification->status = 'SUCCESS_ALERT';
-            $notification->save();
-        }
-        unset($notification);
+        // $zip = new ZipArchive;
+        // $res = $zip->open(storage_path('app/public/xlsx/' . $this->data['download_name'] . '.zip'), ZipArchive::CREATE);
+        // if ($res === TRUE) {
+        //     $zip->addFile(storage_path('app/public/xlsx/' . $this->data['download_name'] . '.xlsx'), $this->data['download_name'] . '.xlsx');
+        //     $zip->setEncryptionName($this->data['download_name'] . '.xlsx', ZipArchive::EM_AES_256, $this->data['password']);
+        //     $zip->close();
+        //     unlink(storage_path('app/public/xlsx/' . $this->data['download_name'] . '.xlsx'));
+        // } else {
+        //     echo 'failed';
+        // }
+        // $notification = Notifications::find($this->data['notification_id']);
+        // if ($notification->status != 'DONE') {
+        //     $notification->message = $this->data['fileName'] . " is ready to download.";
+        //     $notification->status = 'SUCCESS_ALERT';
+        //     $notification->save();
+        // }
+        // unset($notification);
         //
     }
 }
