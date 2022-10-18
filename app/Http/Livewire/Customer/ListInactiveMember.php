@@ -38,9 +38,9 @@ class ListInactiveMember extends Component
         // $this->emit('ExportButton_SetToDate',$this->toDate);
 
         $this->firstData = [
-            'pageName'=>'customer.inactive',
-            'search'=>$this->search,
-            'exportType'=>'INACTIVE_MEMBER',
+            'pageName' => 'customer.inactive',
+            'search' => $this->search,
+            'exportType' => 'INACTIVE_MEMBER',
             'orderField' => $this->orderField,
             'fromDate' => $this->fromDate,
             'toDate' => $this->toDate,
@@ -49,24 +49,24 @@ class ListInactiveMember extends Component
 
     public function updatedSearch($var)
     {
-        $this->emit('ExportButton_SetSearch',$this->search);
+        $this->emit('ExportButton_SetSearch', $this->search);
         $this->resetPage();
     }
     public function updatedFromDate($var)
     {
-        $this->emit('ExportButton_SetFromDate',$this->fromDate);
+        $this->emit('ExportButton_SetFromDate', $this->fromDate);
         $this->resetPage();
     }
     public function updatedToDate($var)
     {
-        $this->emit('ExportButton_SetToDate',$this->toDate);
+        $this->emit('ExportButton_SetToDate', $this->toDate);
         $this->resetPage();
     }
 
     public function setToDate($strDate)
     {
-        $this->toDate = date('d-M-Y',strtotime($strDate));
-        $this->emit('ExportButton_SetToDate',$this->toDate);
+        $this->toDate = date('d-M-Y', strtotime($strDate));
+        $this->emit('ExportButton_SetToDate', $this->toDate);
     }
 
     public function setOrderField($fieldName)
@@ -77,7 +77,7 @@ class ListInactiveMember extends Component
             $this->orderField['field'] = $fieldName;
             $this->orderField['order'] = 'asc';
         }
-        $this->emit('ExportButton_SetOrderField',$this->orderField);
+        $this->emit('ExportButton_SetOrderField', $this->orderField);
     }
 
     public function getSortIcon($field)
@@ -97,7 +97,7 @@ class ListInactiveMember extends Component
     {
         $customer = new Customer();
         $customer->setTable('tbl_' . $this->connection->connection_name);
-        $customers = $customer->where('last_active','<',date('Y-m-d', strtotime($this->toDate)))
+        $customers = $customer->where('last_active', '<', date('Y-m-d', strtotime($this->toDate)))
             ->where(function ($q) {
                 $q->where('login_id', 'like', '%' . $this->search . '%')
                     ->orWhere('mobile', 'like', '%' . $this->search . '%')
@@ -107,6 +107,7 @@ class ListInactiveMember extends Component
             })
             ->orderBY($this->orderField['field'], $this->orderField['order'])
             ->paginate(env('PAGINATE'));
+        $this->emit('ExportButton_SetTotalRecord', $customers->total());
         $this->firstData['totalRecord'] = $customers->total();
         return view('livewire.customer.list-inactive-member', ['customers' => $customers]);
     }

@@ -22,7 +22,7 @@ class ActiveCustomer extends Component
     public $connection = null;
     public function mount()
     {
-        if(!Session::get('selectedSystem')){
+        if (!Session::get('selectedSystem')) {
             return redirect(route('dashboard'));
         }
         $this->connection = Session::get('selectedSystem');
@@ -38,9 +38,9 @@ class ActiveCustomer extends Component
 
         // data for export button
         $this->firstData = [
-            'pageName'=>'customer.newmember',
-            'search'=>$this->search,
-            'exportType'=>'ACTIVE_MEMBER',
+            'pageName' => 'customer.newmember',
+            'search' => $this->search,
+            'exportType' => 'ACTIVE_MEMBER',
             'orderField' => $this->orderField,
             'fromDate' => $this->fromDate,
             'toDate' => $this->toDate,
@@ -49,27 +49,27 @@ class ActiveCustomer extends Component
 
     public function updatedSearch($var)
     {
-        $this->emit('ExportButton_SetSearch',$this->search);
+        $this->emit('ExportButton_SetSearch', $this->search);
         $this->resetPage();
     }
     public function updatedFromDate($var)
     {
-        $this->emit('ExportButton_SetFromDate',$this->fromDate);
+        $this->emit('ExportButton_SetFromDate', $this->fromDate);
         $this->resetPage();
     }
     public function updatedToDate($var)
     {
-        $this->emit('ExportButton_SetToDate',$this->toDate);
+        $this->emit('ExportButton_SetToDate', $this->toDate);
         $this->resetPage();
     }
 
     public function setToDate($strDate)
     {
-        $this->fromDate =  date('d-M-Y',strtotime($strDate));
+        $this->fromDate =  date('d-M-Y', strtotime($strDate));
         $this->toDate = date('d-M-Y', strtotime(now()));
 
-        $this->emit('ExportButton_SetFromDate',$this->fromDate);
-        $this->emit('ExportButton_SetToDate',$this->toDate);
+        $this->emit('ExportButton_SetFromDate', $this->fromDate);
+        $this->emit('ExportButton_SetToDate', $this->toDate);
     }
 
     public function setOrderField($fieldName)
@@ -80,7 +80,7 @@ class ActiveCustomer extends Component
             $this->orderField['field'] = $fieldName;
             $this->orderField['order'] = 'asc';
         }
-        $this->emit('ExportButton_SetOrderField',$this->orderField);
+        $this->emit('ExportButton_SetOrderField', $this->orderField);
     }
 
     public function getSortIcon($field)
@@ -105,7 +105,7 @@ class ActiveCustomer extends Component
     {
         $customer = new Customer();
         $customer->setTable('tbl_' . $this->connection->connection_name);
-        $customers = $customer->whereBetween('last_active', [date('Y-m-d',strtotime($this->fromDate)), date('Y-m-d',strtotime($this->toDate))])
+        $customers = $customer->whereBetween('last_active', [date('Y-m-d', strtotime($this->fromDate)), date('Y-m-d', strtotime($this->toDate))])
             ->where(function ($q) {
                 $q->where('login_id', 'like', '%' . $this->search . '%')
                     ->orWhere('mobile', 'like', '%' . $this->search . '%')
@@ -115,6 +115,7 @@ class ActiveCustomer extends Component
             })
             ->orderBY($this->orderField['field'], $this->orderField['order'])
             ->paginate(env('PAGINATE'));
+        $this->emit('ExportButton_SetTotalRecord', $customers->total());
         $this->firstData['totalRecord'] = $customers->total();
         return view('livewire.customer.active-customer', ['customers' => $customers]);
     }

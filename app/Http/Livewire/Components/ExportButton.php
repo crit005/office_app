@@ -137,10 +137,13 @@ class ExportButton extends Component
 
         // បង្កើតអារេហ្វាល
         $fileNames = [];
-        for($i=0; $i<$numberOfFiles; $i++){
-            array_push($fileNames,[
-                'temFile'=>($download_name."_".$i+1),
-                'fileName'=>($protectData['fileName'].'_'. $i+1)]
+        for ($i = 0; $i < $numberOfFiles; $i++) {
+            array_push(
+                $fileNames,
+                [
+                    'temFile' => ($download_name . "_" . $i + 1),
+                    'fileName' => ($protectData['fileName'] . '_' . $i + 1)
+                ]
             );
         }
 
@@ -173,7 +176,7 @@ class ExportButton extends Component
 
         // បង្កើតបាច់ហ្វាល
         // $batch = Bus::batch([])->then(function (Batch $abatch) use($fileNames,$download_name) {
-        $batch = Bus::batch([])->then(function (Batch $abatch) use($fileNames,$download_name){
+        $batch = Bus::batch([])->then(function (Batch $abatch) use ($fileNames, $download_name) {
 
             $compressData = [
                 'download_name' => $download_name,
@@ -206,7 +209,6 @@ class ExportButton extends Component
                 "orderField" => $this->orderField,
                 // "fileName" => $protectData['fileName'],
                 "fileName" => $fileName['temFile'],
-                //! problem with download name only 1 name
                 "download_name" => $download_name,
                 "password" => $protectData['password'],
                 "userId" => Auth::user()->id,
@@ -220,37 +222,10 @@ class ExportButton extends Component
                 // "fileNames" => $fileNames
             ];
 
-            // dd($data);
             $batch->add(new ExportMemberJob($data));
             $index++;
         }
-        // unset($index);
-
-        //! old export all in one file
-        // // Exporting data
-        // $data = [
-        //     "exportType" => $this->exportType,
-        //     "tableName" => $this->connection->connection_name,
-        //     "orderField" => $this->orderField,
-        //     "fileName" => $protectData['fileName'],
-        //     "download_name" => $download_name,
-        //     "password" => $protectData['password'],
-        //     "userId" => Auth::user()->id,
-        //     "search" => $this->search,
-        //     "batch_id" => $batch->id,
-        //     "notification_id" => $notification->id,
-        //     "fromDate" => $this->fromDate,
-        //     "toDate" => $this->toDate,
-        //     "skip" => 0,
-        //     "take" => 10000,
-        //     "fileNames" => $fileNames
-        // ];
-
-        // // dd($data);
-        // $batch->add(new ExportMemberJob($data));
-
-        // unset($notification);
-        //! End old export all in one file
+        unset($index);
     }
 
     /**
@@ -270,21 +245,19 @@ class ExportButton extends Component
         if ($res === TRUE) {
 
             foreach ($compressData['fileNames'] as $excelFile) {
-                $zip->addFile(storage_path('app/public/xlsx/' . $excelFile['temFile'].'.xlsx'), $excelFile['fileName'].'.xlsx');
+                $zip->addFile(storage_path('app/public/xlsx/' . $excelFile['temFile'] . '.xlsx'), $excelFile['fileName'] . '.xlsx');
                 // unlink(storage_path('app/public/xlsx/' . $excelFile['temFile'].'.xlsx'));
                 // $zip->setEncryptionName($excelFile['fileName'].'.xlsx', ZipArchive::EM_AES_256, $compressData['password']);
             }
             // $zip->setPassword($compressData['password']);
             $zip->close();
-
-
         } else {
             echo 'failed';
         }
 
         // delete excel files
         foreach ($compressData['fileNames'] as $excelFile) {
-            unlink(storage_path('app/public/xlsx/' . $excelFile['temFile'].'.xlsx'));
+            unlink(storage_path('app/public/xlsx/' . $excelFile['temFile'] . '.xlsx'));
         }
 
         $zipFinall = new ZipArchive;
@@ -294,7 +267,6 @@ class ExportButton extends Component
             // unlink(storage_path('app/public/xlsx/' . $compressData['download_name'] . '_Enc.zip'));
             $zipFinall->setEncryptionName($compressData['download_name'] . '_Enc.zip', ZipArchive::EM_AES_256, $compressData['password']);
             $zipFinall->close();
-
         } else {
             echo 'failed to create final zip';
         }
