@@ -32,12 +32,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     // return view('welcome');
+//     return 'hello';
+// });
 
 Route::middleware(['auth'])->group(function () {
     // Route::get('dashboard', [Dashboard::class, 'index'])->name('dashboard');
+    Route::get('/', Dashboard::class)->name('dashboard');
     Route::get('dashboard', Dashboard::class)->name('dashboard');
     Route::get('setting/users', ListUsers::class)->name('setting.users');
     Route::get('setting/currencies', ListCurrency::class)->name('setting.currencies');

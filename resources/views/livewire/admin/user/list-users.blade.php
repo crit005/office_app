@@ -25,13 +25,16 @@
                     <div class="card">
                         <div class="card-header">
                             {{-- <h3 class="card-title text-white">List Users</h3> --}}
+                            @if (auth()->user()->isAdmin())
                             <button wire:click.prevent='addNew()' type="button" class="btn btn-primary" {{--
                                 data-toggle="modal" data-target="#userModal" --}}>
                                 <i class="fa fa-user-plus mr-2"></i>
                                 New User
                             </button>
+                            @endif
 
                             <div class="card-tools">
+                                @if (auth()->user()->isAdmin())
                                 <div class="input-group input-group-sm" style="width: 150px;">
                                     <input wire:model.debounce='search' type="text" name="table_search" class="form-control float-right"
                                         placeholder="Search">
@@ -42,6 +45,7 @@
                                         </button>
                                     </div>
                                 </div>
+                                @endif
                             </div>
                         </div>
                         <!-- /.card-header -->
@@ -163,7 +167,11 @@
                                             <label for="username">Username:</label>
                                             <input wire:model.debounce='form.username' type="text"
                                                 class="form-control  @error('username') is-invalid @else {{$this->getValidClass('username')}} @enderror"
-                                                name="username" id="username" placeholder="Username">
+                                                name="username" id="username" placeholder="Username"
+                                                @if (!auth()->user()->isAdmin())
+                                                    disabled
+                                                @endif
+                                                >
                                             @error('username')
                                             <div class="invalid-feedback">{{$message}}</div>
                                             @enderror
@@ -204,7 +212,11 @@
                                             <label for="group">Group:</label>
                                             <select wire:model.debounce='form.group_id'
                                                 class="form-control @error('group_id') is-invalid @else {{$this->getValidClass('group_id')}} @enderror"
-                                                name="group" id="group">
+                                                name="group" id="group"
+                                                @if (!auth()->user()->isAdmin())
+                                                    disabled
+                                                @endif
+                                                >
                                                 <option value="">Select group</option>
                                                 @foreach ($groups as $group)
                                                 <option value="{{$group['id']}}">{{$group['name']}}</option>
@@ -219,7 +231,11 @@
                                             <label for="status">Status:</label>
                                             <select wire:model.debounce='form.status'
                                                 class="form-control @error('status') is-invalid @else {{$this->getValidClass('status')}} @enderror"
-                                                name="status" id="status">
+                                                name="status" id="status"
+                                                @if (!auth()->user()->isAdmin())
+                                                    disabled
+                                                @endif
+                                                >
                                                 <option value="">Select satus</option>
                                                 <option value="ENABLED">Enabled</option>
                                                 <option value="DISABLED">Disabled</option>

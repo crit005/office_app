@@ -263,7 +263,15 @@ class ListUsers extends Component
                 ->orderBy('name','asc')
                 ->paginate(env('PAGINAT'));
         } else {
-            $users = User::query()            
+            $users = User::query()
+            ->where('status', '!=', 'DELETED')
+            ->where('group_id', '!=', '1')
+            ->where('id','=',auth()->user()->id)
+            ->orderBy('name','asc')
+            ->paginate(env('PAGINAT'));
+        }
+        /*else {
+            $users = User::query()
             ->where('status', '!=', 'DELETED')
             ->where('group_id', '!=', '1')
             ->where(function ($query) {
@@ -274,7 +282,7 @@ class ListUsers extends Component
             })->orderBy('status','desc')
             ->orderBy('name','asc')
             ->paginate(env('PAGINAT'));
-        }        
+        }*/
 
         return view('livewire.admin.user.list-users', ['groups' => $groups, 'users' => $users]);
     }

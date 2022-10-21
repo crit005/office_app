@@ -46,3 +46,10 @@ protected $queryString = [
 run queue:work all time
 ----------------------------
 php artisan queue:work --timeout=0
+
+Web rout not change
+php artisan config:clear
+php artisan config:cache
+php artisan route:clear  ***
+php artisan view:clear
+php artisan cache:clear

@@ -125,6 +125,7 @@
                 </li>
 
                 {{-- Paynebt menu --}}
+                @if (auth()->user()->group->name != 'MAKETING')
                 <li class="nav-item {{ Request::segment(1) == 'cash' ? 'menu-open' : 'menu-close' }}">
                     {{-- <li class="nav-item menu-open"> --}}
                     <a href="#" class="nav-link {{ Request::segment(1) == 'cash' ? 'active' : '' }}">
@@ -230,6 +231,8 @@
                         </p>
                     </a>
                 </li>
+                @endif
+
 
 
                 {{-- Setting menu --}}
@@ -244,7 +247,7 @@
                     </a>
 
                     <ul class="nav nav-treeview">
-
+                        @if (auth()->user()->group->name != 'MAKETING')
                         {{-- Depatment Menu --}}
                         <li class="nav-item">
                             <a href="{{ route('setting.depatments') }}"
@@ -277,7 +280,7 @@
                                 </p>
                             </a>
                         </li>
-
+                        @endif
                         {{-- User Menu --}}
                         <li class="nav-item">
                             <a href="{{ route('setting.users') }}"
