@@ -57,3 +57,4 @@ php artisan cache:clear
 Start server with ip and port
 --------------------------------
 php artisan serve --host 192.168.1.101 --port 80
+php artisan serve --host 192.168.9.12 --port 168 ** to start server on my cp

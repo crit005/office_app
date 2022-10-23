@@ -47,14 +47,14 @@ class SystemPanel extends Component
                 cf.LastWD,
                 cf.TotalDP,
                 cf.TotalWD,
-                winlose.loginid AS LoginID,
+                webaccount.loginid AS LoginID,
                 webaccount.clubName AS ClubName,
                 winlose.GroupFor AS `WinloseDate`,
                 winlose.trunover AS Turnover,
                 winlose.wlamt AS `winlose`
             FROM
                 winlose
-                INNER JOIN webaccount ON winlose.accountId = webaccount.id
+                RIGHT JOIN webaccount ON winlose.accountId = webaccount.id
                 INNER JOIN
 
                 (SELECT customer.id, CONCAT(customer.firstName,' ',customer.lastName) AS Name, customer.mobile AS Mobile, customer.email AS Email,
@@ -157,6 +157,9 @@ class SystemPanel extends Component
             $arrRecord = json_decode(json_encode($customer), true);
             $arrRecord['created_at'] = now();
             $arrRecord['updated_at'] = now();
+            if(!$arrRecord['last_active']){
+                $arrRecord['last_active'] = date('Y-m-d',strtotime(env('MINDATE')));
+            }
             array_push($recordPerInsert, $arrRecord);
             $j += 1;
             $i += 1;
