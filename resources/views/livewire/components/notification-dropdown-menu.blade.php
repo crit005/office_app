@@ -12,12 +12,17 @@
         @if($notifications)
         @foreach ($notifications as $notification)
             <div class="dropdown-divider"></div>
+            @if ($notification->status == 'PROCESSING')
+            <div class="dropdown-item">
+            @else
             <a href=""  wire:click.prevent='operator({{$notification}})'class="dropdown-item">
+            @endif
+            {{-- <a href=""  wire:click.prevent='operator({{$notification}})'class="dropdown-item"> --}}
                 @if ($notification->type == 'DOWNLOAD')
                     @if ($notification->status == 'PROCESSING')
-                    <i class="fas fa-spinner fa-spin mr-2"></i>
+                    <i class="fas fa-spinner fa-spin mr-2 text-warning"></i>
                     @else
-                    <i class="fas fa-download mr-2"></i>
+                    <i class="fas fa-download mr-2 text-success"></i>
                     @endif
 
                 {{$notification->file_name}}
@@ -27,12 +32,18 @@
                     {{-- {{$carbon->createFromDate($notification->updated_at)->diffForHumans()}} --}}
                     {{ \Carbon\Carbon::parse($notification->updated_at)->diffForHumans() }}
                 </span>
+            <div class="dropdown-divider"></div>
 
+            @if ($notification->status == 'PROCESSING')
+            </div>
+            @else
             </a>
+            @endif
+            {{-- </> --}}
         @endforeach
 
         @endif
-        <div class="dropdown-divider"></div>
+        {{-- <div class="dropdown-divider"></div>
         <a href="#" class="dropdown-item">
             <i class="fas fa-envelope mr-2"></i> 4 new messages
             <span class="float-right text-muted text-sm">3 mins</span>
@@ -46,7 +57,7 @@
         <a href="#" class="dropdown-item">
             <i class="fas fa-file mr-2"></i> 3 new reports
             <span class="float-right text-muted text-sm">2 days</span>
-        </a>
+        </a> --}}
         <div class="dropdown-divider"></div>
         <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
     </div>
