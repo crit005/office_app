@@ -53,3 +53,7 @@ php artisan config:cache
 php artisan route:clear  ***
 php artisan view:clear
 php artisan cache:clear
+
+Start server with ip and port
+--------------------------------
+php artisan serve --host 192.168.1.101 --port 80

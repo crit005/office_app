@@ -7,7 +7,7 @@
 
     <div wire:poll='checkExportJob()'>
         @if ($exporting)
-            <div class="customer-list-exporting text-white ml-2">
+            <div class="customer-list-exporting text-white ml-2 text-nowrap">
                 @if ($exporting['status'] == 'PROCESSING')
                     <i class="fas fa-spinner fa-spin align-self-center"></i>
                     Exporting...
@@ -15,8 +15,8 @@
                     Your Export is ready
                     {{-- <button wire:click.prevent="$emit('ListCustomer_DoDeleteExport',$exporting)" class="btn btn-danger btn-sm elevation-1">
                         <i class="fas fa-trash"></i>
-                    </button> --}}
-                    doDeleteExport
+                    </button>
+                    doDeleteExport--}}
                     <button wire:click.prevent="doDeleteExport_F" class="btn btn-danger btn-sm elevation-1">
                         <i class="fas fa-trash"></i>
                     </button>
