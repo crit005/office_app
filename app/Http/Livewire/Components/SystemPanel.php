@@ -145,7 +145,7 @@ class SystemPanel extends Component
     public function inseartRecordFromServer()
     {
         ini_set('memory_limit', -1);
-        ini_set('max_execution_time', 1800);
+        ini_set('max_execution_time', 0);
         ini_set('max_input_time', 1200);
         // ini_set('memory_limit','5120M');
         $listCustomerOnServer = DB::connection($this->connection->connection_name)->select($this->sqlMemberInfo);
