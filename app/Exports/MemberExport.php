@@ -65,7 +65,7 @@ class MemberExport implements FromCollection, WithHeadings
     public function collection()
     {
         ini_set('memory_limit', -1);
-        ini_set('max_execution_time', 1800);
+        ini_set('max_execution_time', 0);
         ini_set('max_input_time', 1200);
 
         $customer = new Customer();
