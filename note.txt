@@ -58,3 +58,11 @@ Start server with ip and port
 --------------------------------
 php artisan serve --host 192.168.1.101 --port 80
 php artisan serve --host 192.168.9.12 --port 168 ** to start server on my cp
+
+force git to pull
+--------------------------------
+# WARNING: this can't be undone!
+
+git reset --hard HEAD
+git clean -f -d
+git pull

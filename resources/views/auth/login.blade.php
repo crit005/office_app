@@ -27,7 +27,7 @@
                 <a href="" class="h1 text-white"><b>Sign In</b></a>
             </div>
             <div class="card-body">
-                <p class="login-box-msg">Sign in to start your session</p>
+                <p class="login-box-msg">WELCOM TO OFFICE</p>
                 <form action="{{ route('login') }}" method="POST">
                     @csrf
                     <div class="input-group mb-3">

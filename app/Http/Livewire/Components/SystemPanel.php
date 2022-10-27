@@ -6,6 +6,7 @@ use App\Models\ConnectionName;
 use App\Models\Customer;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Livewire\Component;
 
@@ -148,7 +149,9 @@ class SystemPanel extends Component
         ini_set('max_execution_time', 0);
         ini_set('max_input_time', 1200);
         // ini_set('memory_limit','5120M');
+        // Log::channel('stderr')->info("start load record:". date('Y-m-d H:i:s', strtotime(now())));
         $listCustomerOnServer = DB::connection($this->connection->connection_name)->select($this->sqlMemberInfo);
+        // Log::channel('stderr')->info("record loaded:". date('Y-m-d H:i:s', strtotime(now())));
         $totalRecord = count($listCustomerOnServer);
         $j = 0;
         $i = 0;
@@ -163,10 +166,12 @@ class SystemPanel extends Component
             array_push($recordPerInsert, $arrRecord);
             $j += 1;
             $i += 1;
-            if ($j == 100 || $i == $totalRecord) {
+            if ($j == 1000 || $i == $totalRecord) {
+                // Log::channel('stderr')->info("start Insert:". date('Y-m-d H:i:s', strtotime(now())));
                 DB::table('tbl_' . $this->connection->connection_name)->insert($recordPerInsert);
                 $j = 0;
                 $recordPerInsert = [];
+                // Log::channel('stderr')->info($i. date('Y-m-d H:i:s', strtotime(now())));
             }
         }
         $listCustomerOnServer = null;
