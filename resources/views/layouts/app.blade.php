@@ -93,6 +93,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{ asset('backend/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 
     <script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/ckeditor.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
     @stack('js')
     <script>
@@ -183,8 +184,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
         });
 
-
-
+        window.addEventListener('reach_the_last_record', e => {
+            toastr.info('You Reach The Last Record.',null,
+            {
+                "closeButton": true,
+                "positionClass": "toast-bottom-center",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            });
+        });
         // function globleSearch(val){
         //     console.log(val);
         //     $('#table_search').val(val);

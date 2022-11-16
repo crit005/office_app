@@ -10,6 +10,7 @@ use App\Http\Livewire\Cash\EditPayment;
 use App\Http\Livewire\Cash\Exchange;
 use App\Http\Livewire\Cash\ListCashdrawer;
 use App\Http\Livewire\Cash\ListCashTransactions;
+use App\Http\Livewire\Cash\Transaction\TrList;
 use App\Http\Livewire\Customer\ActiveCustomer;
 use App\Http\Livewire\Customer\CustomerDetail;
 use App\Http\Livewire\Customer\ListCustomer;
@@ -64,6 +65,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('customer/newmember', ListNewMember::class)->name('customer.newmember');
     Route::get('customer/inactive', ListInactiveMember::class)->name('customer.inactive');
     Route::get('customer/{id}/detail', CustomerDetail::class)->name('customer.detail');
+
+    // Cash transaction
+
+    Route::get('cash/transaction/tr_list',TrList::class)->name('cash.transaction.tr_list');
 
 
 });

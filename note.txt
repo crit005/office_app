@@ -66,3 +66,7 @@ force git to pull
 git reset --hard HEAD
 git clean -f -d
 git pull
+
+Rollback migration
+-----------------------------
+php artisan migrate:rollback --step=1
