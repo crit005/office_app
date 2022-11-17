@@ -32,6 +32,7 @@ class TrList extends Component
         }else{
             $this->takeAmount += env('TAKE_AMOUNT');
         }
+        $this->reset(['currentMonth']);
     }
 
     public function mount()

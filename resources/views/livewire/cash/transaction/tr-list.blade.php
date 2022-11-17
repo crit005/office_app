@@ -134,14 +134,16 @@
                                     @forelse ($trCashs as $indext => $transaction)
                                         {{-- detail record  animate__animated animate__fadeInUp --}}
                                         @if ($this->isNewMonth($transaction->month))
-                                        <tr class="tr-td-border-0 border-bottom stick-top-next">
-                                            <td scope="col" class="text-left text-info text-bold minimal-table-column">
-                                                {{date('M-Y', strtotime($transaction->month))}}
-                                            </td>
-                                            <td scope="col" colspan="7" class="text-left">
-                                                <livewire:components.transaction.tr-monthly-sumary :totals="$transaction->currency->getTotal($transaction->month)" wire:key="tr-total-{{ $transaction->id }}"/>
-                                            </td>
-                                        </tr>
+                                            <tr class="tr-td-border-0 border-bottom stick-top-next">
+                                                <td scope="col"
+                                                    class="text-left text-info text-bold minimal-table-column">
+                                                    {{ date('M-Y', strtotime($transaction->month)) }}
+                                                </td>
+                                                <td scope="col" colspan="7" class="text-left">
+                                                    <livewire:components.transaction.tr-monthly-sumary :totals="$transaction->currency->getTotal($transaction->month)"
+                                                        wire:key="tr-total-{{ $transaction->id }}" />
+                                                </td>
+                                            </tr>
                                         @endif
                                         <tr class="tr-td-border-0" wire:key="tr-{{ $transaction->id }}"
                                             id="{{ $transaction->id }}">
@@ -179,18 +181,20 @@
                                             </td>
                                             <td scope="col" class="text-center">
                                                 @if ($transaction->type == 1)
-                                                <i class="fas fa-user-circle text-lg text-success mr-1"></i>
-                                                {{ $transaction->toFromUser->name }}
+                                                    {{-- <i class="fas fa-user-circle text-lg text-success mr-1"></i> --}}
+                                                    <i class="fas fa-user  text-lg text-success mr-1"></i>
+                                                    {{ $transaction->toFromUser->name }}
                                                 @elseif ($transaction->type == 2)
-                                                {{ $transaction->depatment->name }}
+                                                    {{ $transaction->depatment->name }}
                                                 @elseif ($transaction->type == 3)
-                                                <div class="text-success">{{ $transaction->other_name }}</div>
+                                                    <div class="text-success">{{ $transaction->other_name }}</div>
                                                 @endif
 
                                             </td>
-                                            <td scope="col" class="text-center">{{$transaction->createdByUser->name}}</td>
+                                            <td scope="col" class="text-center">
+                                                {{ $transaction->createdByUser->name }}</td>
                                             <td scope="col" class="text-center text-nowrap">
-                                                {{$transaction->getDescription()}}
+                                                {{ $transaction->getDescription() }}
                                             </td>
                                             <td scope="col" class="text-center">
                                                 option
@@ -201,12 +205,13 @@
                                             <td colspan="8" class="text-center"> No record found...</td>
                                         </tr>
                                     @endforelse
-                                    @if($reachLastRecord)
-                                    <tr class="tr-td-border-0 border-bottom stick-top-next">
-                                        <th scope="col" colspan="8" class="text-center text-info">
-                                           You have reach the bottom!
-                                        </th>
-                                    </tr>
+                                    @if ($reachLastRecord)
+                                        <tr class="tr-td-border-0 border-bottom stick-top-next">
+                                            <th scope="col" colspan="8" class="text-center text-info">
+                                                You have reach the bottom!
+                                                {{-- <button onClick = 'goToTop()'>TOP</button> --}}
+                                            </th>
+                                        </tr>
                                     @endif
 
                                     {{-- month totaly --}}
@@ -292,10 +297,9 @@
 </div>
 @push('js')
     <script>
-        $(window).scroll(function(){
-            if($(window).scrollTop() + $(window).height() >= $(document).height()){
-               // alert('your reach the bottom page!');
-               @this.inceaseTakeAmount();
+        $(window).scroll(function() {
+            if ($(window).scrollTop() + $(window).height() >= $(document).height()) {
+                @this.inceaseTakeAmount();
             }
         });
         // window.addEventListener('changeCashTransactionMode', e => {

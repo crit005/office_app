@@ -195,6 +195,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 "hideMethod": "fadeOut"
             });
         });
+
+        function goToTop(){
+            $(window).scrollTop(0);
+        }
         // function globleSearch(val){
         //     console.log(val);
         //     $('#table_search').val(val);

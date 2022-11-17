@@ -36,6 +36,17 @@ class ListDepatment extends Component
     ];
     // End component variable //
 
+    public function setProp($prop,$value)
+    {
+        $this->form[$prop]=$value;
+    }
+
+    public function setColorStyle($tmpColorBgValue,$tmpColorValue)
+    {
+        $this->form['background'] = $tmpColorBgValue;
+        $this->form['color'] = $tmpColorValue;
+    }
+
     // Realtime validation //
     public function updatedForm($value)
     {
@@ -172,7 +183,7 @@ class ListDepatment extends Component
     }
 
     public function updateDepatmentOrder($items)
-    {        
+    {
         foreach($items as $item){
             Depatment::find($item['value'])->update(['position' => (($this->page - 1)* env('PAGINATE')) + $item['order']]);
         }

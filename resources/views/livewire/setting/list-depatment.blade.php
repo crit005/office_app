@@ -25,7 +25,8 @@
                     <div class="card">
                         <div class="card-header">
                             {{-- <h3 class="card-title text-white">List Users</h3> --}}
-                            <button wire:click.prevent='addNew()' type="button" class="btn btn-primary" {{--
+                            <button wire:click.prevent='addNew()' type="button" class="btn btn-primary"
+                                {{--
                                 data-toggle="modal" data-target="#depatmentModal" --}}>
                                 <i class="fa fa-user-plus mr-2"></i>
                                 New Depatment
@@ -50,7 +51,7 @@
                                 <table class="table table-hover">
                                     <thead class="thead-dark">
                                         <tr>
-                                            <th scope="col" >#</th>
+                                            <th scope="col">#</th>
                                             <th scope="col">Depatment Name</th>
                                             <th scope="col" class="text-center">Position</th>
                                             <th scope="col" class="text-center">Created By</th>
@@ -58,54 +59,55 @@
                                             <th scope="col" class="text-center">Options</th>
                                         </tr>
                                     </thead>
-                                        <tbody id="sortable">
+                                    <tbody id="sortable">
                                         @forelse ($depatments as $indext => $depatment)
-                                        <tr wire:key="depatment-{{ $depatment->id }}" id="{{ $depatment->id }}">
-                                            <th scope="row">
-                                                @if(!$search)
-                                                <i class="fas fa-arrows-alt mr-2 handle" style="cursor: move"></i>
-                                                @endif
-                                                {{$depatments->firstItem() + $indext}}
-                                            </th>
-                                            <td>{{$depatment->name}}</td>
-                                            <td class="text-center">{{$depatment->position}}</td>
-                                            <td class="text-center">{{$depatment->user->name}}</td>
-
-                                            <td class="text-center d-flex align-middle justify-content-center">
-                                                <label class="switch mr-2">
-                                                    <input type="checkbox" value="{{$depatment->id}}"
-                                                        wire:click.prevent="togleStatus(event.target.value)"
-                                                        @if($depatment->status == 'ENABLED') checked @endif>
-                                                    <span class="slider round"></span>
-                                                </label>
-                                                <span class="text-xs">{{$depatment->status}}</span>
-                                            </td>
-
-                                            <td class="text-center">
-                                                <div class="d-flex justify-content-center">
-                                                    <button class="btn btn-xs btn-primary mr-2"
-                                                        wire:click.prevent="edit({{$depatment}})"><i
-                                                            class="fa fa-edit"></i>
-                                                    </button>
-
-                                                    <button class="btn btn-xs btn-danger mr-2"
-                                                        wire:click.prevent="confirmTrash({{$depatment}})">
-                                                        <i class="fa fa-trash"></i>
-                                                    </button>
-
-                                                    @if (Auth()->user()->isAdmin())
-                                                    <button class="btn btn-xs btn-danger"
-                                                        wire:click.prevent="confirmDepatmentRemoval({{$depatment->id}})">
-                                                        <i class="fas fa-eraser"></i>
-                                                    </button>
+                                            <tr wire:key="depatment-{{ $depatment->id }}" id="{{ $depatment->id }}">
+                                                <th scope="row">
+                                                    @if (!$search)
+                                                        <i class="fas fa-arrows-alt mr-2 handle"
+                                                            style="cursor: move"></i>
                                                     @endif
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                    {{ $depatments->firstItem() + $indext }}
+                                                </th>
+                                                <td>{{ $depatment->name }}</td>
+                                                <td class="text-center">{{ $depatment->position }}</td>
+                                                <td class="text-center">{{ $depatment->user->name }}</td>
+
+                                                <td class="text-center d-flex align-middle justify-content-center">
+                                                    <label class="switch mr-2">
+                                                        <input type="checkbox" value="{{ $depatment->id }}"
+                                                            wire:click.prevent="togleStatus(event.target.value)"
+                                                            @if ($depatment->status == 'ENABLED') checked @endif>
+                                                        <span class="slider round"></span>
+                                                    </label>
+                                                    <span class="text-xs">{{ $depatment->status }}</span>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <div class="d-flex justify-content-center">
+                                                        <button class="btn btn-xs btn-primary mr-2"
+                                                            wire:click.prevent="edit({{ $depatment }})"><i
+                                                                class="fa fa-edit"></i>
+                                                        </button>
+
+                                                        <button class="btn btn-xs btn-danger mr-2"
+                                                            wire:click.prevent="confirmTrash({{ $depatment }})">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+
+                                                        @if (Auth()->user()->isAdmin())
+                                                            <button class="btn btn-xs btn-danger"
+                                                                wire:click.prevent="confirmDepatmentRemoval({{ $depatment->id }})">
+                                                                <i class="fas fa-eraser"></i>
+                                                            </button>
+                                                        @endif
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         @empty
-                                        <tr>
-                                            <td colspan="6" class="text-center"> No depatment found...</td>
-                                        </tr>
+                                            <tr>
+                                                <td colspan="6" class="text-center"> No depatment found...</td>
+                                            </tr>
                                         @endforelse
 
 
@@ -137,14 +139,14 @@
                             <div>
                                 <h5 class="modal-title text-white" id="exampleModalLongTitle">
                                     @if ($showEditModal)
-                                    Edit Depatment
+                                        Edit Depatment
                                     @else
-                                    New Depatment
+                                        New Depatment
                                     @endif
                                 </h5>
                                 <span class="d-block small text-white">Input By: <strong>
                                         @if ($creater)
-                                        {{$creater['name']}}
+                                            {{ $creater['name'] }}
                                         @endif
                                     </strong></span>
                             </div>
@@ -152,52 +154,51 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form wire:submit.prevent='{{$showEditModal?' updateDepatment':'createDepatment'}}'>
+                        <form wire:submit.prevent='{{ $showEditModal ? ' updateDepatment' : 'createDepatment' }}'>
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             @error('form.name')
-                                            {{$message}}
+                                                {{ $message }}
                                             @enderror
                                             <label for="name">Depatment Name:</label>
                                             <input wire:model.debounce='form.name' type="text"
-                                                class="form-control @error('name') is-invalid @else {{$this->getValidClass('name')}} @enderror"
+                                                class="form-control @error('name') is-invalid @else {{ $this->getValidClass('name') }} @enderror"
                                                 name="name" id="name" placeholder="Your name">
                                             @error('name')
-                                            <div class="invalid-feedback">{{$message}}</div>
+                                                <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
 
                                         <div class="form-group">
                                             <label for="position">Position:</label>
                                             <input wire:model.debounce='form.position' type="number"
-                                                class="form-control  @error('position') is-invalid @else {{$this->getValidClass('position')}} @enderror"
+                                                class="form-control  @error('position') is-invalid @else {{ $this->getValidClass('position') }} @enderror"
                                                 name="position" id="position" placeholder="position">
                                             @error('position')
-                                            <div class="invalid-feedback">{{$message}}</div>
+                                                <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
 
                                         <div class="form-group">
                                             <label for="status">Status:</label>
                                             <select wire:model.debounce='form.status'
-                                                class="form-control @error('status') is-invalid @else {{$this->getValidClass('status')}} @enderror"
+                                                class="form-control @error('status') is-invalid @else {{ $this->getValidClass('status') }} @enderror"
                                                 name="status" id="status">
                                                 <option value="">Select satus</option>
                                                 <option value="ENABLED">Enabled</option>
                                                 <option value="DISABLED">Disabled</option>
                                             </select>
                                             @error('status')
-                                            <div class="invalid-feedback">{{$message}}</div>
+                                                <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
 
                                         <div class="form-group">
                                             <label for="description">Description:</label>
-                                            <textarea wire:model.debounce='form.description' name="description"
-                                                id="description" class="form-control" rows="3"
-                                                placeholder="Enter ..."></textarea>
+                                            <textarea wire:model.debounce='form.description' name="description" id="description" class="form-control"
+                                                rows="3" placeholder="Enter ..."></textarea>
                                         </div>
 
 
@@ -209,96 +210,108 @@
                             <div class="modal-footer">
                                 <div class="d-flex justify-content-between" style="width: 100%;">
                                     <div class="text-white">Created_at:
-                                        @if (array_key_exists('created_at',$form))
-                                        {{date('Y-m-d',strtotime($form['created_at']))}}
+                                        @if (array_key_exists('created_at', $form))
+                                            {{ date('Y-m-d', strtotime($form['created_at'])) }}
                                         @else
-                                        ...
+                                            ...
                                         @endif
                                     </div>
                                     <div>
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
                                                 class="fa fa-times mr-2"></i>Cancel</button>
 
-                                        <button type="submit" class="btn btn-primary" wire:loading.attr="disabled"><i
-                                                class="fa fa-save mr-2"></i>{{$showEditModal ? 'Save Change' :
-                                            'Save'}}</button>
+                                        <button type="submit" class="btn btn-primary"
+                                            wire:loading.attr="disabled"><i
+                                                class="fa fa-save mr-2"></i>{{ $showEditModal ? 'Save Change' : 'Save' }}</button>
+
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                            Launch demo modal
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
-            </div>
+            </div> <!-- End Modal -->
+
+            <!-- Modal color template -->
+            <x-color-templet/>
+            <!-- End modal -->
         </div>
         <!-- /.container-fluid -->
     </div>
     <!-- /.content -->
 </div>
 @push('js')
-<script>
-    window.addEventListener('show-depatment-form', e =>{
-        $('#depatmentModal').modal({backdrop: 'static', keyboard: false});
-    });
-
-    window.addEventListener('hide-depatment-form', e =>{
-        $('#depatmentModal').modal('hide');
-    });
-    $('doucument').ready(function(){
-        // alert('test');
-    })
-    $('.modal-dialog').draggable({
-    handle: ".modal-header"
-    });
-
-
-    window.addEventListener('show-confirm-trash', e =>{
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-          }).then((result) => {
-            if (result.isConfirmed) {
-              @this.putDepatmentToTrash();
-            }
-          })
-    });
-
-    window.addEventListener('show-confirm-delete', e =>{
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "This depatment will be deleted permanently!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-          }).then((result) => {
-            if (result.isConfirmed) {
-              @this.deleteDepatment();
-            }
-          })
-    });
-
-    $( function() {
-        $( "#sortable" ).sortable({
-        update: function( event, ui ) {
-            var arrOrder = $(this).sortable('toArray');
-            var items=[];
-            arrOrder.forEach((item, index) => {
-                items.push({'order':index+1 ,'value' : item});
+    <script>
+        window.addEventListener('show-depatment-form', e => {
+            $('#depatmentModal').modal({
+                backdrop: 'static',
+                keyboard: false
             });
-            // var productOrder = $(this).sortable('toArray').toString();
-            @this.updateDepatmentOrder(items);
-        },
-        handle: '.handle',
-        opacity: 0.9,
         });
-    } );
+
+        window.addEventListener('hide-depatment-form', e => {
+            $('#depatmentModal').modal('hide');
+        });
+        $('doucument').ready(function() {
+            // alert('test');
+        })
+        $('.modal-dialog').draggable({
+            handle: ".modal-header"
+        });
 
 
-</script>
+        window.addEventListener('show-confirm-trash', e => {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    @this.putDepatmentToTrash();
+                }
+            })
+        });
+
+        window.addEventListener('show-confirm-delete', e => {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This depatment will be deleted permanently!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    @this.deleteDepatment();
+                }
+            })
+        });
+
+        $(function() {
+            $("#sortable").sortable({
+                update: function(event, ui) {
+                    var arrOrder = $(this).sortable('toArray');
+                    var items = [];
+                    arrOrder.forEach((item, index) => {
+                        items.push({
+                            'order': index + 1,
+                            'value': item
+                        });
+                    });
+                    // var productOrder = $(this).sortable('toArray').toString();
+                    @this.updateDepatmentOrder(items);
+                },
+                handle: '.handle',
+                opacity: 0.9,
+            });
+        });
+    </script>
 @endpush
