@@ -13,9 +13,10 @@
     $(function(e){
     $('#{{$id}}').datetimepicker({
             format:"{{$format ?? 'L'}}",
-            defaultDate:moment().toDate(),
+            // defaultDate:moment().toDate(),
             // format:'L',
             viewMode:"{{$viewMode ?? 'days'}}",
+            useCurrent: false
         });
 })
 

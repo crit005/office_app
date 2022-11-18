@@ -62,7 +62,7 @@ class AddCashForm extends Component
             if(array_key_exists('amount', $this->form) && ($this->form['amount']!='')){
                 $amount = $this->form['amount'];
             }
-            $this->currencyNexBalance = $this->currencyBalance - $amount;
+            $this->currencyNexBalance = $this->currencyBalance + $amount;
             return $this->currencyNexBalance . ' ' . $this->selectedCurrency;
         }
         return '...';

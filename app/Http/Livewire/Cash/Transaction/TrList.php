@@ -11,10 +11,15 @@ class TrList extends Component
     public $globleBalance = false;
     public $currentMonth;
     public $takeAmount;
-    public $refresh;
+    // public $refresh;
     public $reachLastRecord = false;
 
-    protected $listeners = ['refreshCashList' => '$refresh'];
+    protected $listeners = ['refreshCashList' => 'refreshCashList'];
+
+    public function refreshCashList()
+    {
+        $this->reset(['currentMonth']);
+    }
 
     public function isNewMonth($month)
     {
