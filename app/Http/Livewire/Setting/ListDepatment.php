@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Setting;
 
+use App\Models\ColorPalate;
 use App\Models\Depatment;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
@@ -23,6 +24,12 @@ class ListDepatment extends Component
     public $depatmentIdBegingRemoved = null;
     public $search = null;
     public $creater = null;
+    public $colorPalates;
+
+    public function mount()
+    {
+        $this->colorPalates = ColorPalate::all();
+    }
 
     protected $depatmentRules = [
         'name' => 'required|unique:depatments',

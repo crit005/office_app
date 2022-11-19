@@ -236,7 +236,8 @@
             </div> <!-- End Modal -->
 
             <!-- Modal color template -->
-            <x-color-templet/>
+            <x-color-templet :colorPalates="$colorPalates"/>
+            {{-- <x-color-templet/> --}}
             <!-- End modal -->
         </div>
         <!-- /.container-fluid -->
