@@ -12,6 +12,8 @@ class Depatment extends Model
     protected $fillable = [
         'name',
         'position',
+        'text_color',
+        'bg_color',
         'created_by',
         'status',
         'description',

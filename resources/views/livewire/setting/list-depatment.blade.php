@@ -69,7 +69,15 @@
                                                     @endif
                                                     {{ $depatments->firstItem() + $indext }}
                                                 </th>
-                                                <td>{{ $depatment->name }}</td>
+                                                <td>
+                                                    <span class="pl-2 pr-2" style="
+                                                        background:{{$depatment->bg_color}};
+                                                        color:{{$depatment->text_color}};
+                                                        border-radius: 2px;
+                                                        ">
+                                                        {{ $depatment->name }}
+                                                    </span>
+                                                </td>
                                                 <td class="text-center">{{ $depatment->position }}</td>
                                                 <td class="text-center">{{ $depatment->user->name }}</td>
 
@@ -182,6 +190,14 @@
                                         </div>
 
                                         <div class="form-group">
+                                            <label for="">Color:</label>
+                                            <div data-toggle="modal" data-target="#colorPalateModal"
+                                            class="text-center" style="cursor: pointer;background:{{$form['bg_color']??'white'}}; color:{{$form['text_color']??'black'}}">
+                                                {{$form['name']??'Sample'}}
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
                                             <label for="status">Status:</label>
                                             <select wire:model.debounce='form.status'
                                                 class="form-control @error('status') is-invalid @else {{ $this->getValidClass('status') }} @enderror"
@@ -222,11 +238,7 @@
 
                                         <button type="submit" class="btn btn-primary"
                                             wire:loading.attr="disabled"><i
-                                                class="fa fa-save mr-2"></i>{{ $showEditModal ? 'Save Change' : 'Save' }}</button>
-
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                            Launch demo modal
-                                        </button>
+                                                class="fa fa-save mr-2"></i>{{ $showEditModal ? 'Update' : 'Save' }}</button>
                                     </div>
                                 </div>
                             </div>

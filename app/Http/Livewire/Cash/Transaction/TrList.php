@@ -13,12 +13,21 @@ class TrList extends Component
     public $takeAmount;
     // public $refresh;
     public $reachLastRecord = false;
+    public $editTransaction;
+    public $updateTime='';
 
-    protected $listeners = ['refreshCashList' => 'refreshCashList'];
+    protected $listeners = ['refreshCashList' => 'refreshCashList',
+    'clearEditTransactionCashList'=>'clearEditTransactionCashList'];
 
     public function refreshCashList()
     {
         $this->reset(['currentMonth']);
+    }
+
+    public function clearEditTransactionCashList()
+    {
+        $this->reset(['editTransaction','currentMonth']);
+        $this->updateTime = time();
     }
 
     public function isNewMonth($month)
@@ -44,6 +53,12 @@ class TrList extends Component
     {
         $this->globleBalance = Session::get('isGlobleCash')?? false;
         $this->takeAmount = env('TAKE_AMOUNT');
+    }
+
+    public function showEdit(TrCash $transaction)
+    {
+        $this->editTransaction = $transaction;
+        $this->reset(['currentMonth']);
     }
 
     public function render()

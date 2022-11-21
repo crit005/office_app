@@ -48,10 +48,10 @@ class ListDepatment extends Component
         $this->form[$prop]=$value;
     }
 
-    public function setColorStyle($tmpColorBgValue,$tmpColorValue)
+    public function setColorStyle($tmpBg_color,$tmpText_color)
     {
-        $this->form['background'] = $tmpColorBgValue;
-        $this->form['color'] = $tmpColorValue;
+        $this->form['bg_color'] = $tmpBg_color;
+        $this->form['text_color'] = $tmpText_color;
     }
 
     // Realtime validation //

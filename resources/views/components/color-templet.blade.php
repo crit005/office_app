@@ -1,11 +1,11 @@
-@props(['colorPalates'])
+@props(['colorPalates','id'])
 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="{{$id ?? 'colorPalateModal'}}" tabindex="-1" role="dialog"
+aria-labelledby="colorPalateModalLabel" aria-hidden="true">
 <div class="modal-dialog modal-xl" style="width:880px" role="document">
     <div class="modal-content">
         <div class="modal-header border-bottom-0 pb-0">
-            <h1 class="modal-title text-center w-100" id="exampleModalLabel">Color Palette</h1>
+            <h1 class="modal-title text-center w-100" id="colorPalateModalLabel">Color Palette</h1>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -38,7 +38,7 @@ aria-labelledby="exampleModalLabel" aria-hidden="true">
         // main component must has function setProp take 2 variables prop and value
         // @this.setProp(field,value);
         @this.setColorStyle(tmpColorBgValue,tmpColorValue);
-        $('#exampleModal').modal('hide');
+        $('#{{$id ?? 'colorPalateModal'}}').modal('hide');
     }
     </script>
 @endpush

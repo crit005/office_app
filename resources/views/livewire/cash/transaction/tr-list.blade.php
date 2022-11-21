@@ -26,7 +26,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header"  style="z-index: 10001">
                             <div class="d-flex flex-row justify-content-between mb-2">
                                 <div class="total-info-top d-flex flex-row">
                                     <div class="mr-3">
@@ -141,7 +141,7 @@
                                                 </td>
                                                 <td scope="col" colspan="7" class="text-left">
                                                     <livewire:components.transaction.tr-monthly-sumary :totals="$transaction->currency->getTotal($transaction->month)"
-                                                        wire:key="tr-total-{{ $transaction->id }}" />
+                                                        wire:key="tr-total-{{ $transaction->id.$updateTime }}" />
                                                 </td>
                                             </tr>
                                         @endif
@@ -182,10 +182,14 @@
                                             <td scope="col" class="text-center">
                                                 @if ($transaction->type == 1)
                                                     {{-- <i class="fas fa-user-circle text-lg text-success mr-1"></i> --}}
-                                                    <i class="fas fa-user  text-lg text-success mr-1"></i>
+                                                    <i class="fas fa-user text-success mr-1"></i>
                                                     {{ $transaction->toFromUser->name }}
                                                 @elseif ($transaction->type == 2)
-                                                    {{ $transaction->depatment->name }}
+                                                    <span class="pl-2 pr-2 pt-1 pb-1" style="
+                                                    background:{{$transaction->depatment->bg_color}};
+                                                    color:{{$transaction->depatment->text_color}};
+                                                    border-radius: 2px;
+                                                    ">{{ $transaction->depatment->name }}</span>
                                                 @elseif ($transaction->type == 3)
                                                     <div class="text-success">{{ $transaction->other_name }}</div>
                                                 @endif
@@ -197,9 +201,25 @@
                                                 {{ $transaction->getDescription() }}
                                             </td>
                                             <td scope="col" class="text-center">
-                                                option
+                                                <button class="btn btn-sm"><i class="fas fa-eye"></i></button>
+                                                <button class="btn btn-sm" wire:click.prevent="showEdit({{$transaction}})"><i class="fas fa-edit"></i></button>
                                             </td>
                                         </tr>
+                                        @if ($editTransaction)
+                                            @if ($editTransaction->id == $transaction->id)
+                                                <tr class="tr-td-border-0 white-hover">
+                                                    <td scope="col" class="pl-5 text-sm text-left minimal-table-column"></td>
+                                                    <td scope="col"
+                                                        class="text-right minimal-table-column border-left position-relative">
+                                                    <td scope="col" colspan="6" class="text-left p-0">
+                                                        @if ($transaction->type == 2)
+                                                        {{-- edit pament --}}
+                                                        <livewire:components.transaction.tr-edit-form :transaction="$transaction" wire:key="tr_edit_payment-{{ $transaction->id }}"/>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        @endif
                                     @empty
                                         <tr>
                                             <td colspan="8" class="text-center"> No record found...</td>
@@ -215,16 +235,16 @@
                                     @endif
 
                                     {{-- month totaly --}}
-                                    <tr class="tr-td-border-0 border-bottom stick-top-next">
+                                    {{-- <tr class="tr-td-border-0 border-bottom stick-top-next">
                                         <td scope="col" class="text-left text-bold minimal-table-column">Nov-2022
                                         </td>
                                         <td scope="col" colspan="7" class="text-left">
                                             <livewire:components.transaction.tr-monthly-sumary />
                                         </td>
-                                    </tr>
+                                    </tr> --}}
 
                                     {{-- detail record  animate__animated animate__fadeInUp --}}
-                                    <tr class="tr-td-border-0">
+                                    {{-- <tr class="tr-td-border-0">
                                         <td scope="col" class="pl-5 text-sm text-left minimal-table-column">
                                             01-11-2022</td>
                                         <td scope="col"
@@ -240,8 +260,8 @@
                                         <td scope="col" class="text-center">
                                             option
                                         </td>
-                                    </tr>
-                                    <tr class="tr-td-border-0 white-hover">
+                                    </tr> --}}
+                                    {{-- <tr class="tr-td-border-0 white-hover">
                                         <td scope="col" class="pl-5 text-sm text-left minimal-table-column"></td>
                                         <td scope="col"
                                             class="text-right minimal-table-column border-left position-relative">
@@ -249,27 +269,16 @@
                                         <td scope="col" colspan="6" class="text-left p-0">
                                             <livewire:components.transaction.tr-edit-form />
                                         </td>
-                                    </tr>
-                                    <tr class="tr-td-border-0">
-                                        <td scope="col" class="pl-5 text-sm text-left minimal-table-column">
-                                            01-11-2022</td>
-                                        <td scope="col"
-                                            class="text-right minimal-table-column border-left position-relative">
-                                            <div class="badge-time-line-expend badge-time-line"></div>
-                                            1
-                                        </td>
-                                        <td scope="col" class="text-left">Konsumsi Ktr</td>
-                                        <td scope="col" class="text-center text-danger">-300.00 ฿</td>
-                                        <td scope="col" class="text-center">FIFA</td>
-                                        <td scope="col" class="text-center">Anen</td>
-                                        <td scope="col" class="text-center"></td>
-                                        <td scope="col" class="text-center">
-                                            option
-                                        </td>
-                                    </tr>
+                                    </tr> --}}
 
                                 </tbody>
                             </table>
+                            @if (!$reachLastRecord)
+                                <div class="text-center text-info w-100 p-3" wire:loading="" wire:target="inceaseTakeAmount">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                </div>
+                            @endif
+
                         </div>
                         <!-- /.card-body -->
                         <div class="card-footer">
@@ -302,6 +311,27 @@
                 @this.inceaseTakeAmount();
             }
         });
+
+        window.addEventListener('update-payment-alert-success', e => {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Payment update successfully.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+
+            }).then((e) => {
+            // Hide from
+            // Clear emit transaction
+                // Livewire.emit('refreshCashList');
+                Livewire.emit('clearEditTransactionCashList');
+            });
+        });
+
+        $('.modal-dialog-pament').draggable({
+            handle: ".modal-header"
+        });
+
+
         // window.addEventListener('changeCashTransactionMode', e => {
         //     @this.globleBalance = e.detail.globleMode;
         // });
