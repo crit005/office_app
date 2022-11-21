@@ -59,6 +59,7 @@ class TrList extends Component
     {
         $this->editTransaction = $transaction;
         $this->reset(['currentMonth']);
+        $this->dispatchBrowserEvent('show-edit-payment-form');
     }
 
     public function render()

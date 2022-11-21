@@ -312,6 +312,17 @@
             }
         });
 
+        window.addEventListener('show-edit-payment-form',e=>{
+            // $(function(e){
+                const myTimeout = setTimeout(()=>{
+                    $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
+                }, 5000);
+
+            // $('.tr-edit-payment-form-controller').removeClass("height-0");
+
+        // })
+        });
+
         window.addEventListener('update-payment-alert-success', e => {
             Swal.fire({
                 title: 'Success!',
@@ -356,5 +367,45 @@
         //         }
         //     });
         // })
+
+        document.addEventListener("DOMContentLoaded", () => {
+
+                Livewire.hook('component.initialized', (component) => {
+                    console.log('component.initialized');
+                })
+
+                Livewire.hook('element.initialized', (el, component) => {
+                    console.log('element.initialized');
+                })
+
+                Livewire.hook('element.updating', (fromEl, toEl, component) => {
+                    console.log('element.updating')
+                })
+
+                Livewire.hook('element.updated', (el, component) => {
+                    console.log('element.updated');
+                })
+
+                Livewire.hook('element.removed', (el, component) => {
+                    console.log('element.removed');
+                })
+
+                Livewire.hook('message.sent', (message, component) => {
+                    console.log('message.sent');
+                })
+
+                Livewire.hook('message.failed', (message, component) => {
+                    console.log('message.failed');
+                })
+
+                Livewire.hook('message.received', (message, component) => {
+                    console.log('message.received');
+                })
+
+                Livewire.hook('message.processed', (message, component) => {
+                    console.log('message.processed');
+                })
+
+                });
     </script>
 @endpush

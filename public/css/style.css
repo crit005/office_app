@@ -26,7 +26,6 @@ body {
     /* border-right: 1px solid rgb(135 135 135 / 30%);*/
 }
 
-
 .brand-link {
     height: 4.05rem;
     border-bottom: rgb(255 255 255 / 30%) solid 1px;
@@ -96,9 +95,11 @@ body {
     border-radius: 15px;
     margin-top: -2px;
     background: rgb(76 175 80);
-    background: linear-gradient(0deg,
-            rgba(0, 201, 17, 1) 0%,
-            rgba(6 175 80) 100%);
+    background: linear-gradient(
+        0deg,
+        rgba(0, 201, 17, 1) 0%,
+        rgba(6 175 80) 100%
+    );
     outline: 3px solid rgb(76 175 80 / 38%);
 }
 
@@ -108,9 +109,11 @@ body {
     border-radius: 15px;
     margin-top: -2px;
     background: rgb(255, 145, 83, 1);
-    background: linear-gradient(0deg,
-            rgba(255, 209, 67, 1) 0%,
-            rgba(255, 145, 83, 1) 90%);
+    background: linear-gradient(
+        0deg,
+        rgba(255, 209, 67, 1) 0%,
+        rgba(255, 145, 83, 1) 90%
+    );
     outline: 3px solid rgb(255 145 83 / 38%);
 }
 
@@ -166,15 +169,15 @@ body {
     transition: 0.4s;
 }
 
-input:checked+.slider {
+input:checked + .slider {
     background-color: var(--green);
 }
 
-input:focus+.slider {
+input:focus + .slider {
     box-shadow: 0 0 1px var(--green);
 }
 
-input:checked+.slider:before {
+input:checked + .slider:before {
     -webkit-transform: translateX(20px);
     -ms-transform: translateX(20px);
     transform: translateX(20px);
@@ -194,7 +197,8 @@ input:checked+.slider:before {
 .draggable-mirror {
     /* display: none; */
     background-color: white;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .ui-sortable-helper {
@@ -203,7 +207,8 @@ input:checked+.slider:before {
     justify-content: space-between;
     background: white;
     border: none;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .ui-sortable-helper td,
@@ -236,7 +241,6 @@ input:checked+.slider:before {
 
 /* bounce animation */
 @-webkit-keyframes bounce {
-
     0%,
     20%,
     50%,
@@ -255,7 +259,6 @@ input:checked+.slider:before {
 }
 
 @keyframes bounce {
-
     0%,
     20%,
     50%,
@@ -380,7 +383,7 @@ input:checked+.slider:before {
 
 .stick-top-next {
     position: sticky;
-    top:  43px;
+    top: 43px;
     background: white;
     z-index: 10000;
 }
@@ -394,12 +397,16 @@ input:checked+.slider:before {
 }
 
 .main-title-block {
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 88.17%);
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.5) 0%,
+        rgba(255, 255, 255, 0) 88.17%
+    );
     backdrop-filter: blur(7px);
     border-radius: 4px;
 }
 
-.main-title-block h1{
+.main-title-block h1 {
     margin: 0;
     position: absolute;
     top: 50%;
@@ -407,11 +414,11 @@ input:checked+.slider:before {
     transform: translateY(-50%);
     text-transform: uppercase;
 }
-.border-radius-0{
+.border-radius-0 {
     border-radius: 0 !important;
 }
 
-.badge-incom-label{
+.badge-incom-label {
     background: #97d7a6;
     padding-left: 5px;
     padding-right: 5px;
@@ -419,7 +426,7 @@ input:checked+.slider:before {
     color: #035015;
 }
 
-.badge-expend-label{
+.badge-expend-label {
     background: #d79797;
     padding-left: 5px;
     padding-right: 5px;
@@ -427,7 +434,7 @@ input:checked+.slider:before {
     color: #500303;
 }
 
-.badge-exchange-label{
+.badge-exchange-label {
     background: #97bfd7;
     padding-left: 5px;
     padding-right: 5px;
@@ -460,7 +467,7 @@ input:checked+.slider:before {
 }
 
 /* color template */
-.color-label-conainner{
+.color-label-conainner {
     font-size: 14px;
     padding-left: 4px;
     padding-right: 4px;
@@ -469,12 +476,12 @@ input:checked+.slider:before {
     transition: transform 0.2s;
 }
 
-.color-label-conainner:hover{
+.color-label-conainner:hover {
     -ms-transform: scale(1.5); /* IE 9 */
     transform: scale(1.5);
 }
 
-.btn-inline-form-cancel{
+.btn-inline-form-cancel {
     width: 20px;
     height: 20px;
     background-color: #ffffff;
@@ -489,4 +496,12 @@ input:checked+.slider:before {
     padding: 0;
     border: 1px solid rgb(0 0 0 / 27%);
     z-index: 1;
+}
+
+.tr-edit-payment-form-controller {
+    overflow: hidden;
+    transition: height 0.5s;
+}
+.height-0 {
+    height: 0;
 }

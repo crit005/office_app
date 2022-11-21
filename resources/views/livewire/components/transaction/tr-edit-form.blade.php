@@ -3,9 +3,8 @@
         <button type="button" class="btn btn-inline-form-cancel btn-round btn-sm ml-2 w-32">
             <i class="fas fa-caret-up"></i>
         </button>
-        <div>
+        <div class="tr-edit-payment-form-controller height-0">
             <div class="inline-form m-0 row">
-
 
                 <div class="form-group col-md-2 col-sm-6">
                     <label for="tr_edit_tr_date">Date:</label>
@@ -128,8 +127,7 @@
 
 
     <script>
-        var trEditForm = $('.inline-form');
-        var trEditFormHeight = trEditForm.height();
+
     </script>
 
 </form>
