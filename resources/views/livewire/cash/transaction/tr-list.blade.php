@@ -322,6 +322,7 @@
 
         // Cancel button click
         function hideEditPaymentForm(){
+            $('.tr-edit-payment-form-controller').css({"overflow":"hidden"});
             $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
                 $('.tr-edit-payment-form').css("display","none");
             });
@@ -427,6 +428,9 @@
                         const myTimeout = setTimeout(()=>{
                             $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
                         },10);
+                        $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
+                            $('.tr-edit-payment-form-controller').css("overflow","unset");
+                        });
                     }
 
                 })
