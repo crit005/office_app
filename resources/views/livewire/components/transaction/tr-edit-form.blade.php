@@ -1,7 +1,7 @@
 <form wire:submit.prevent='updatePayment' class="">
-    <div style="position: relative; width:100%">
-        <button type="button" class="btn btn-inline-form-cancel btn-round btn-sm ml-2 w-32">
-            <i class="fas fa-caret-up"></i>
+    <div style="position: relative;" class="mr-3">
+        <button type="button" onclick="hideEditPaymentForm()" class="btn btn-inline-form-cancel btn-round btn-sm ml-2 w-32">
+            <i class="fas fa-times"></i>
         </button>
         <div class="tr-edit-payment-form-controller height-0">
             <div class="inline-form m-0 row">
@@ -16,10 +16,10 @@
                 </div>
 
                 <div class="form-group col-md-3 col-sm-6">
-                    <label for="tr_edit_item_id">Expand Name:</label>
+                    <label for="tr_edit_payment_item_id">Expand Name:</label>
                     <select wire:model.debounce='form.item_id'
                         class="form-control @error('item_id') is-invalid @else {{ $this->getValidClass('item_id') }} @enderror"
-                        name="item_id" id="tr_edit_tem_id">
+                        name="item_id" id="tr_edit_payment_item_id">
                         <option value="">Select Expand</option>
                         @foreach ($items as $item)
                             <option value={{ $item->id }}>{{ $item->name }}</option>
@@ -106,8 +106,10 @@
                 <div class="form-group col-md-2 d-flex flex-col justify-content-center">
                     <button type="submit" class="btn btn-primary btn-sm ml-2 w-32" style="width:45%"><i
                             class="fas fa-save"></i></button>
-                    <button type="button" class="btn btn-danger btn-sm ml-2 w-32" style="width:45%"><i
-                            class="fas fa-trash"></i></i></button>
+                    <button type="button" class="btn btn-danger btn-sm ml-2 w-32" style="width:45%"
+                    onclick="showConfirmDelete()">
+                        <i class="fas fa-trash"></i></i>
+                    </button>
                 </div>
 
                 <div class="text-sm text-gray row w-100">

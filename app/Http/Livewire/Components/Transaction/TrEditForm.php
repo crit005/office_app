@@ -31,8 +31,11 @@ class TrEditForm extends Component
     public $log;
     public $oldCurrency_id;
 
-    public function mount(TrCash $transaction)
+    protected $listeners = ['trEditPaymentFormDelete' => 'deletePayment'];
+
+    public function mount($id)
     {
+        $transaction = TrCash::find($id);
         $this->transaction = $transaction;
         $this->form = $transaction->toArray();
         $this->form['to_from'] = $transaction->to_from_id;
@@ -218,6 +221,16 @@ class TrEditForm extends Component
             ['user_id', 'currency_id'],
             ['current_balance']
         );
+    }
+
+    public function deletePayment()
+    {
+        $oldCurrency_id = $this->transaction->currency_id;
+        $oldUser_id = $this->transaction->created_by;
+        // $this->transaction->status = 0;
+        $this->transaction->update(['status'=>0]);
+        $this->updateBalance($oldCurrency_id,$oldUser_id);
+        $this->emitUp('clearEditTransactionCashList');
     }
 
     public function render()

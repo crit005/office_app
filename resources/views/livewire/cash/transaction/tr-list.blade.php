@@ -202,19 +202,26 @@
                                             </td>
                                             <td scope="col" class="text-center">
                                                 <button class="btn btn-sm"><i class="fas fa-eye"></i></button>
-                                                <button class="btn btn-sm" wire:click.prevent="showEdit({{$transaction}})"><i class="fas fa-edit"></i></button>
+                                                <button class="btn btn-sm" wire:click="showEdit({{$transaction->id}})" onclick="clearEditPaymentForm()"
+                                               @if ($editTransaction)
+                                                   {{$editTransaction->id == $transaction->id ? 'disabled':''}}
+                                               @endif
+                                                >
+                                                <i wire:loading.remove wire:target='showEdit({{$transaction->id}})' class="fas fa-edit"></i>
+                                                <i wire:loading='showEdit({{$transaction->id}})' wire:target='showEdit({{$transaction->id}})' class="fas fa-spinner fa-spin"></i>
+                                            </button>
                                             </td>
                                         </tr>
                                         @if ($editTransaction)
                                             @if ($editTransaction->id == $transaction->id)
-                                                <tr class="tr-td-border-0 white-hover">
+                                                <tr class="tr-td-border-0 white-hover tr-edit-payment-form">
                                                     <td scope="col" class="pl-5 text-sm text-left minimal-table-column"></td>
                                                     <td scope="col"
                                                         class="text-right minimal-table-column border-left position-relative">
                                                     <td scope="col" colspan="6" class="text-left p-0">
                                                         @if ($transaction->type == 2)
                                                         {{-- edit pament --}}
-                                                        <livewire:components.transaction.tr-edit-form :transaction="$transaction" wire:key="tr_edit_payment-{{ $transaction->id }}"/>
+                                                        <livewire:components.transaction.tr-edit-form :id="$transaction->id" wire:key="tr_edit_payment-{{ $transaction->id }}"/>
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -312,16 +319,23 @@
             }
         });
 
-        window.addEventListener('show-edit-payment-form',e=>{
-            // $(function(e){
-                const myTimeout = setTimeout(()=>{
-                    $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
-                }, 5000);
 
-            // $('.tr-edit-payment-form-controller').removeClass("height-0");
+        // Cancel button click
+        function hideEditPaymentForm(){
+            $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
+                $('.tr-edit-payment-form').css("display","none");
+            });
+            $('.tr-edit-payment-form-controller').css({"height":0});
+            Livewire.emit('clearEditTransactionCashList');
+        };
 
-        // })
-        });
+        // Edit button click
+        function clearEditPaymentForm(){
+            $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
+                $('.tr-edit-payment-form').css("display","none");
+            });
+            $('.tr-edit-payment-form-controller').css({"height":0});
+        };
 
         window.addEventListener('update-payment-alert-success', e => {
             Swal.fire({
@@ -331,12 +345,30 @@
                 confirmButtonText: 'OK',
 
             }).then((e) => {
-            // Hide from
-            // Clear emit transaction
+                // Hide from
+                // Clear emit transaction
                 // Livewire.emit('refreshCashList');
                 Livewire.emit('clearEditTransactionCashList');
             });
         });
+
+        function showConfirmDelete(){
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // @this.deletePaymenet();
+                    Livewire.emit('trEditPaymentFormDelete');
+                    alert('delete start');
+                }
+            });
+        }
 
         $('.modal-dialog-pament').draggable({
             handle: ".modal-header"
@@ -368,43 +400,56 @@
         //     });
         // })
 
+        // javascript event hooks
         document.addEventListener("DOMContentLoaded", () => {
 
-                Livewire.hook('component.initialized', (component) => {
-                    console.log('component.initialized');
-                })
+                // Livewire.hook('component.initialized', (component) => {
+                //     console.log('component.initialized');
+                // })
 
-                Livewire.hook('element.initialized', (el, component) => {
-                    console.log('element.initialized');
-                })
+                // Livewire.hook('element.initialized', (el, component) => {
+                //     console.log('element.initialized');
+                // })
 
-                Livewire.hook('element.updating', (fromEl, toEl, component) => {
-                    console.log('element.updating')
-                })
+                // Livewire.hook('element.updating', (fromEl, toEl, component) => {
+                //     // console.log('element.updating')
+                //     if(component.name == 'components.transaction.tr-edit-form'){
+                //         $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
+                //         const myTimeout = setTimeout(()=>{
+                //             $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
+                //         },10);
+                //     }
+                // })
 
                 Livewire.hook('element.updated', (el, component) => {
-                    console.log('element.updated');
+                    if(component.name == 'components.transaction.tr-edit-form'){
+                        $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
+                        const myTimeout = setTimeout(()=>{
+                            $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
+                        },10);
+                    }
+
                 })
 
-                Livewire.hook('element.removed', (el, component) => {
-                    console.log('element.removed');
-                })
+                // Livewire.hook('element.removed', (el, component) => {
+                //     console.log('element.removed');
+                // })
 
-                Livewire.hook('message.sent', (message, component) => {
-                    console.log('message.sent');
-                })
+                // Livewire.hook('message.sent', (message, component) => {
+                //     console.log('message.sent');
+                // })
 
-                Livewire.hook('message.failed', (message, component) => {
-                    console.log('message.failed');
-                })
+                // Livewire.hook('message.failed', (message, component) => {
+                //     console.log('message.failed');
+                // })
 
-                Livewire.hook('message.received', (message, component) => {
-                    console.log('message.received');
-                })
+                // Livewire.hook('message.received', (message, component) => {
+                //     console.log('message.received');
+                // })
 
-                Livewire.hook('message.processed', (message, component) => {
-                    console.log('message.processed');
-                })
+                // Livewire.hook('message.processed', (message, component) => {
+                //     console.log('message.processed');
+                // })
 
                 });
     </script>

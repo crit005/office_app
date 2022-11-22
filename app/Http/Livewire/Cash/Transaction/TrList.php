@@ -55,11 +55,11 @@ class TrList extends Component
         $this->takeAmount = env('TAKE_AMOUNT');
     }
 
-    public function showEdit(TrCash $transaction)
+    public function showEdit($id)
     {
+        $transaction= TrCash::find($id);
         $this->editTransaction = $transaction;
         $this->reset(['currentMonth']);
-        $this->dispatchBrowserEvent('show-edit-payment-form');
     }
 
     public function render()
