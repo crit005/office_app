@@ -114,8 +114,8 @@
 
                 <div class="text-sm text-gray row w-100">
                     <div class="col-md-6 d-flex flex-col justify-content-md-start w-100">
-                        <div class="mr-2">Created_at: {{ date(env('DATE_FORMAT'), strtotime(now())) }}</div>
-                        <div>Created_by:: Anen</div>
+                        <div class="mr-2">Created_at: {{ date(env('DATE_FORMAT'), strtotime($transaction->created_at)) }}</div>
+                        <div>Created_by: {{$transaction->createdByUser->name}}</div>
                     </div>
                     <div class="col-md-6 d-flex flex-col justify-content-md-end w-100">
                         <div class="mr-2">Updated_at: 12-10-2022</div>
