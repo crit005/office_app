@@ -332,6 +332,7 @@
 
         // Edit button click
         function clearEditPaymentForm(){
+            $('.tr-edit-payment-form-controller').css({"overflow":"hidden"});
             $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
                 $('.tr-edit-payment-form').css("display","none");
             });
