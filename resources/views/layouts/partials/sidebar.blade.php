@@ -186,9 +186,18 @@
                         </li> --}}
 
                         {{-- CashTransaction --}}
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a href="{{ route('cash.cashtransactions') }}"
                                 class="nav-link {{ request()->is('cash/cashtransactions') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-inbox  ml-3"></i>
+                                <p>
+                                    Cash Transactions
+                                </p>
+                            </a>
+                        </li> --}}
+                        <li class="nav-item">
+                            <a href="{{ route('cash.transaction.tr_list') }}"
+                                class="nav-link {{ request()->is('cash/transaction/tr_list') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-inbox  ml-3"></i>
                                 <p>
                                     Cash Transactions

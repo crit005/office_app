@@ -15,6 +15,8 @@ class TrList extends Component
     public $reachLastRecord = false;
     public $editTransaction;
     public $updateTime='';
+    public $viewTransaction;
+    public $viewId;
 
     protected $listeners = ['refreshCashList' => 'refreshCashList',
     'clearEditTransactionCashList'=>'clearEditTransactionCashList'];
@@ -60,6 +62,13 @@ class TrList extends Component
         $transaction= TrCash::find($id);
         $this->editTransaction = $transaction;
         $this->reset(['currentMonth']);
+    }
+
+    public function showView($id)
+    {
+        $this->viewId = $id;
+        $this->reset(['currentMonth']);
+        $this->dispatchBrowserEvent('show-view-form');
     }
 
     public function render()

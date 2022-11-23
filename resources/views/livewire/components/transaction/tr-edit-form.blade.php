@@ -118,8 +118,9 @@
                         <div>Created_by: {{$transaction->createdByUser->name}}</div>
                     </div>
                     <div class="col-md-6 d-flex flex-col justify-content-md-end w-100">
-                        <div class="mr-2">Updated_at: 12-10-2022</div>
-                        <div>Updated_by: Anen</div>
+                        @if($transaction->updated_by)
+                        <div class="mr-2">Last Update: {{$transaction->updatedByUser->name}}/{{date(env('DATE_FORMAT'), strtotime($transaction->updated_at))}}</div>
+                        @endif
                     </div>
                 </div>
 

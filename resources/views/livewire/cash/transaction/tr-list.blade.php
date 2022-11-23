@@ -201,8 +201,11 @@
                                                 {{ $transaction->getDescription() }}
                                             </td>
                                             <td scope="col" class="text-center">
-                                                <button class="btn btn-sm"><i class="fas fa-eye"></i></button>
-                                                <button class="btn btn-sm" wire:click="showEdit({{$transaction->id}})" onclick="clearEditPaymentForm()"
+                                                <button class="btn btn-sm text-success" wire:click="showView({{$transaction->id}})">
+                                                    <i wire:loading.remove wire:target='showView({{$transaction->id}})' class="fas fa-eye"></i>
+                                                    <i wire:loading='showView({{$transaction->id}})' wire:target='showView({{$transaction->id}})' class="fas fa-spinner fa-spin"></i>
+                                                </button>
+                                                <button class="btn btn-sm text-primary" wire:click="showEdit({{$transaction->id}})" onclick="clearEditPaymentForm()"
                                                @if ($editTransaction)
                                                    {{$editTransaction->id == $transaction->id ? 'disabled':''}}
                                                @endif
@@ -310,6 +313,9 @@
     <livewire:components.transaction.add-cash-form />
     <livewire:components.transaction.add-payment-form />
     <livewire:components.transaction.add-exchange-from />
+    @if ($viewId)
+        <livewire:components.transaction.tr-view-form :id="$viewId" wire:key="tr_view-form-{{ $viewId }}"/>
+    @endif
 </div>
 @push('js')
     <script>

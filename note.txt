@@ -74,3 +74,9 @@ php artisan migrate:rollback --step=1
 migration add field to table
 -----------------------------
 php artisan make:migration add_bg_color_and_text_color_to_depatments
+
+page expired problem
+=======================================
+@pirmax Try changing SESSION_DRIVER to file and try again.
+clear the config with php artisan config:clear after changing the value
+
