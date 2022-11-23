@@ -25,11 +25,11 @@
                 <div class="modal-body m-0 border-radius-0 bg-white">
                     @if ($transaction)
                         <div>
-                            <span class="mr-3">Date:</span> <span>10-11-2022</span>
+                            <span class="mr-3">Date:</span> <span>{{ date(env('DATE_FORMAT'), strtotime($transaction->tr_date)) }}</span>
                         </div>
                         <div>
-                            <span class="mr-3">Pament Name:</span> <span>Travelling</span>
-                            <span class="mr-3">Pay on:</span> <span>ACC</span>
+                            <span class="mr-3">Pament Name:</span> <span class="mr-3">{{$transaction->item->name}}</span>
+                            <span class="mr-3">Pay on:</span> <span>{{$transaction->depatment->name}}</span>
                         </div>
                         <div>
                             <span class="mr-3">Amount:</span> <span class="text-danger" style="font-size: 2rem;">{{$transaction->amount.' '.$transaction->currency->symbol}}</span>
@@ -39,8 +39,41 @@
                         </div>
                         <div>
                             {!! $transaction->description !!}
+                            {{json_decode($transaction->logs)[0]->tr_date}}
+                            {{-- {{json_decode($transaction->log)[0]->tr_date}} --}}
                         </div>
                     @endif
+
+
+
+                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                        <ol class="carousel-indicators">
+                          <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                          <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                          <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                          <div class="carousel-item active">
+                            <img class="d-block w-100" src="..." alt="First slide">
+                          </div>
+                          <div class="carousel-item">
+                            <img class="d-block w-100" src="..." alt="Second slide">
+                          </div>
+                          <div class="carousel-item">
+                            <img class="d-block w-100" src="..." alt="Third slide">
+                          </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          <span class="sr-only">Next</span>
+                        </a>
+                      </div>
+
+
 
                 </div> <!-- end modal-body -->
 
@@ -48,11 +81,9 @@
 
                     <div class="d-flex text-sm justify-content-between" style="width: 100%;">
                         <div class="text-white">Created_at:
-                            {{ date(env('DATE_FORMAT'), strtotime(now())) }}
+                            {{ date(env('DATE_FORMAT'), strtotime($transaction->created_at)) }}
                         </div>
-                        <div class="text-white">Type:
-                            <span class="badge-expend-label">Expend</span>
-                        </div>
+
                         <div>
                             <button type="button" class="btn btn-secondary"data-dismiss="modal">
                                 <i class="fa fa-times mr-2"></i>Cancel</button>
