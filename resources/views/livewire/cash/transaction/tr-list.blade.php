@@ -205,14 +205,14 @@
                                                     <i wire:loading.remove wire:target='showView({{$transaction->id}})' class="fas fa-eye"></i>
                                                     <i wire:loading='showView({{$transaction->id}})' wire:target='showView({{$transaction->id}})' class="fas fa-spinner fa-spin"></i>
                                                 </button>
-                                                <button class="btn btn-sm text-primary" wire:click="showEdit({{$transaction->id}})" onclick="clearEditPaymentForm()"
-                                               @if ($editTransaction)
-                                                   {{$editTransaction->id == $transaction->id ? 'disabled':''}}
-                                               @endif
-                                                >
-                                                <i wire:loading.remove wire:target='showEdit({{$transaction->id}})' class="fas fa-edit"></i>
-                                                <i wire:loading='showEdit({{$transaction->id}})' wire:target='showEdit({{$transaction->id}})' class="fas fa-spinner fa-spin"></i>
-                                            </button>
+                                                <button id="tr_btn_edit_{{$transaction->id}}" class="btn btn-sm text-primary" wire:click="showEdit({{$transaction->id}})" onclick="clearEditPaymentForm()"
+                                                @if ($editTransaction)
+                                                    {{$editTransaction->id == $transaction->id ? 'disabled':''}}
+                                                @endif
+                                                    >
+                                                    <i wire:loading.remove wire:target='showEdit({{$transaction->id}})' class="fas fa-edit"></i>
+                                                    <i wire:loading='showEdit({{$transaction->id}})' wire:target='showEdit({{$transaction->id}})' class="fas fa-spinner fa-spin"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                         @if ($editTransaction)

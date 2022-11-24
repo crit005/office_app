@@ -16,7 +16,8 @@
     </div>
     <div class="m-auto">
         <h3 class="text-white">
-            {{ Session::get('selectedSystem') ? Session::get('selectedSystem')->system_name : 'No System Selected' }}</h3>
+            {{ Session::get('selectedSystem') ? Session::get('selectedSystem')->system_name : 'No System Selected' }}
+        </h3>
     </div>
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
