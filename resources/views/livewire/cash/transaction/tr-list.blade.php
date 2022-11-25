@@ -198,7 +198,9 @@
                                             <td scope="col" class="text-center">
                                                 {{ $transaction->createdByUser->name }}</td>
                                             <td scope="col" class="text-center text-nowrap">
-                                                {{ $transaction->getDescription() }}
+                                                <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus"
+                                                    data-placement="auto"
+                                                    data-content="{{ $transaction->description }}">{{ $transaction->getDescription() }}</a>
                                             </td>
                                             <td scope="col" class="text-center">
                                                 <button class="btn btn-sm text-success" wire:click="showView({{$transaction->id}})">
@@ -225,6 +227,9 @@
                                                         @if ($transaction->type == 2)
                                                         {{-- edit pament --}}
                                                         <livewire:components.transaction.tr-edit-form :id="$transaction->id" wire:key="tr_edit_payment-{{ $transaction->id }}"/>
+                                                        @elseif($transaction->type == 1)
+                                                        {{-- edit pament --}}
+                                                        <livewire:components.transaction.tr-edit-add-cash-form :id="$transaction->id" wire:key="tr_edit_payment-{{ $transaction->id }}"/>
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -430,6 +435,9 @@
                 // })
 
                 Livewire.hook('element.updated', (el, component) => {
+                    $('[data-toggle="tooltip"]').tooltip();
+                    $('[data-toggle="popover"]').popover();
+
                     if(component.name == 'components.transaction.tr-edit-form'){
                         $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
                         const myTimeout = setTimeout(()=>{

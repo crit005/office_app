@@ -515,3 +515,7 @@ input:checked + .slider:before {
 .bootstrap-datetimepicker-widget{
     z-index: 90000;
 }
+/* Change bootstrap Popover with */
+.popover {
+    max-width: 400px;
+}

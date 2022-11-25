@@ -109,6 +109,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 }
             })
 
+            // activate tooltip and popover
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+                $('[data-toggle="popover"]').popover();
+            })
+
+
         window.addEventListener('alert-success', e => {
             Swal.fire({
                 title: 'Success!',
