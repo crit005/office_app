@@ -228,8 +228,8 @@
                                                         {{-- edit pament --}}
                                                         <livewire:components.transaction.tr-edit-form :id="$transaction->id" wire:key="tr_edit_payment-{{ $transaction->id }}"/>
                                                         @elseif($transaction->type == 1)
-                                                        {{-- edit pament --}}
-                                                        <livewire:components.transaction.tr-edit-add-cash-form :id="$transaction->id" wire:key="tr_edit_payment-{{ $transaction->id }}"/>
+                                                        {{-- edit add cash --}}
+                                                        <livewire:components.transaction.tr-edit-add-cash-form :id="$transaction->id" wire:key="tr_edit_add_cash-{{ $transaction->id }}"/>
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -417,7 +417,7 @@
         document.addEventListener("DOMContentLoaded", () => {
 
                 // Livewire.hook('component.initialized', (component) => {
-                //     console.log('component.initialized');
+                //     console.log('component.name');
                 // })
 
                 // Livewire.hook('element.initialized', (el, component) => {
@@ -437,8 +437,8 @@
                 Livewire.hook('element.updated', (el, component) => {
                     $('[data-toggle="tooltip"]').tooltip();
                     $('[data-toggle="popover"]').popover();
-
-                    if(component.name == 'components.transaction.tr-edit-form'){
+                    console.log(component.name);
+                    if(component.name == 'components.transaction.tr-edit-form' || component.name == 'components.transaction.tr-edit-add-cash-form'){
                         $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
                         const myTimeout = setTimeout(()=>{
                             $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
