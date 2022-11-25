@@ -1,5 +1,6 @@
 <div wire:ignore.self class="modal fade blur-bg-dialog " id="viewPaymentFormModal" tabindex="-1" role="dialog"
     aria-labelledby="viewPaymentFormModalTitle" aria-hidden="true">
+
     <div wire:ignore.self class="modal-dialog modal-dialog-view-pament modal-dialog-centered" role="document">
         <div class="modal-content
             @if ($transaction)
@@ -123,7 +124,10 @@
 
                     <div>
                         <button id="viewFormEditTransaction" type="submit" class="btn btn-primary btn-sm" wire:loading.attr="disabled"
-
+                            onclick="function callTrListUpdate(){
+                                $('#tr_btn_edit_{{$transaction->id}}').click();
+                                $('#viewPaymentFormModal').modal('hide');
+                                }callTrListUpdate();"
                         >
                             <i class="fas fa-edit"></i>
                         </button>
@@ -135,13 +139,6 @@
         </div>
     </div>
     <script>
-
-        $('#viewFormEditTransaction').on('click',function(){
-            $('#tr_btn_edit_{{$transaction->id}}').click();
-            $('#viewPaymentFormModal').modal('hide');
-            // not working
-        })
-
 
         window.addEventListener('show-view-form', e => {
             $('#viewPaymentFormModal').modal({
