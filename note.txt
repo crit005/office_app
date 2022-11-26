@@ -80,3 +80,15 @@ page expired problem
 @pirmax Try changing SESSION_DRIVER to file and try again.
 clear the config with php artisan config:clear after changing the value
 
+Change lifetime of session
+============================
+calculate
+60 * 24 * 365 = 525600 // 1 year
+.env
+SESSION_LIFETIME=120 // defalult
+SESSION_LIFETIME=525600
+
+pull alive or force
+add
+wire:poll.alive
+or wire:pull.force

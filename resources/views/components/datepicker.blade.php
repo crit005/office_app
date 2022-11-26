@@ -9,12 +9,12 @@
     onchange="this.dispatchEvent(new InputEvent('input'))"
     autocomplete="off" />
 
-@push('js')
+{{-- @push('js') --}}
 <script type="text/javascript">
     $(function(e){
     $('#{{$id}}').datetimepicker({
             format:"{{$format ?? 'L'}}",
-            //defaultDate:moment().toDate(),
+            // defaultDate:moment().toDate(),
             // format:'L',
             viewMode:"{{$viewMode ?? 'days'}}",
             useCurrent: false
@@ -22,4 +22,4 @@
 })
 
 </script>
-@endpush
+{{-- @endpush --}}

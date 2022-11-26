@@ -1,4 +1,4 @@
-<li class="nav-item dropdown" wire:poll wire:ignore.self>
+<li class="nav-item dropdown" wire:poll.alive wire:ignore.self>
     <a class="nav-link" data-toggle="dropdown" href="#">
         <i class="far fa-bell"></i>
         @if ($totalNotification > 0)

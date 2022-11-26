@@ -47,7 +47,7 @@
                         </div>
                         <div>
                             <span class="mr-3">Pament Name:</span> <span
-                                class="mr-3">{{ $transaction->item->name }}</span>
+                                class="mr-3">{{ $transaction->item_id != 13 ? $transaction->item->name : $transaction->other_name }}</span>
                             <span class="mr-3">Pay on:</span>
                             <span style="
                                 display: inline-block;
@@ -139,7 +139,6 @@
         </div>
     </div>
     <script>
-
         window.addEventListener('show-view-form', e => {
             $('#viewPaymentFormModal').modal({
                 backdrop: 'static',

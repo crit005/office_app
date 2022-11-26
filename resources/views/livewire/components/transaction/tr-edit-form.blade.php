@@ -3,7 +3,7 @@
         <button type="button" onclick="hideEditPaymentForm()" class="btn btn-inline-form-cancel btn-round btn-sm ml-2 w-32">
             <i class="fas fa-times"></i>
         </button>
-        <div class="tr-edit-payment-form-controller height-0">
+        <div class="tr-edit-payment-form-controller height-0"  wire:ignore.self>
             <div class="inline-form m-0 row">
 
                 <div class="form-group col-md-2 col-sm-6">
@@ -107,7 +107,7 @@
                     <button type="submit" class="btn btn-primary btn-sm ml-2 w-32" style="width:45%"><i
                             class="fas fa-save"></i></button>
                     <button type="button" class="btn btn-danger btn-sm ml-2 w-32" style="width:45%"
-                    onclick="showConfirmDelete()">
+                    onclick="showConfirmDelete('trEditPaymentFormDelete')">
                         <i class="fas fa-trash"></i></i>
                     </button>
                 </div>
@@ -128,9 +128,16 @@
         </div>
     </div>
 
-
     <script>
-
+        $(function e(){
+            $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
+            const myTimeout = setTimeout(()=>{
+                $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
+            },10);
+            $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
+                $('.tr-edit-payment-form-controller').css("overflow","unset");
+            });
+        })
     </script>
 
 </form>

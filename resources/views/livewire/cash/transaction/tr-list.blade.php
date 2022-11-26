@@ -330,7 +330,7 @@
             }
         });
 
-
+        // call by tr-edit-form x button
         // Cancel button click
         function hideEditPaymentForm(){
             $('.tr-edit-payment-form-controller').css({"overflow":"hidden"});
@@ -365,7 +365,7 @@
             });
         });
 
-        function showConfirmDelete(){
+        function showConfirmDelete(eventName){
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -377,15 +377,31 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     // @this.deletePaymenet();
-                    Livewire.emit('trEditPaymentFormDelete');
-                    alert('delete start');
+                    // Livewire.emit('trEditPaymentFormDelete');
+                    Livewire.emit(eventName);
+
                 }
             });
         }
 
-        $('.modal-dialog-pament').draggable({
-            handle: ".modal-header"
+        window.addEventListener('update-add-cash-alert-success', e => {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Cash update successfully.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+
+            }).then((e) => {
+                // Hide from
+                // Clear emit transaction
+                // Livewire.emit('refreshCashList');
+                Livewire.emit('clearEditTransactionCashList');
+            });
         });
+
+        // $('.modal-dialog-pament').draggable({
+        //     handle: ".modal-header"
+        // });
 
 
         // window.addEventListener('changeCashTransactionMode', e => {
@@ -437,16 +453,16 @@
                 Livewire.hook('element.updated', (el, component) => {
                     $('[data-toggle="tooltip"]').tooltip();
                     $('[data-toggle="popover"]').popover();
-                    console.log(component.name);
-                    if(component.name == 'components.transaction.tr-edit-form' || component.name == 'components.transaction.tr-edit-add-cash-form'){
-                        $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
-                        const myTimeout = setTimeout(()=>{
-                            $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
-                        },10);
-                        $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
-                            $('.tr-edit-payment-form-controller').css("overflow","unset");
-                        });
-                    }
+                    // console.log(component.name);
+                    // if(component.name == 'components.transaction.tr-edit-form' || component.name == 'components.transaction.tr-edit-add-cash-form'){
+                    //     $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
+                    //     const myTimeout = setTimeout(()=>{
+                    //         $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
+                    //     },10);
+                    //     $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
+                    //         $('.tr-edit-payment-form-controller').css("overflow","unset");
+                    //     });
+                    // }
 
                 })
 

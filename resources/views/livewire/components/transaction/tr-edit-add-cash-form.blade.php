@@ -3,12 +3,12 @@
         <button type="button" onclick="hideEditPaymentForm()" class="btn btn-inline-form-cancel btn-round btn-sm ml-2 w-32">
             <i class="fas fa-times"></i>
         </button>
-        <div class="tr-edit-payment-form-controller height-0">
+        <div class="tr-edit-payment-form-controller height-0" wire:ignore.self>
             <div class="inline-form m-0 row">
 
                 <div class="form-group col-md-2 col-sm-6">
-                    <label for="tr_date">Date:</label>
-                    <x-datepicker wire:model="form.tr_date" id="tr_date" :error="'tr_date'"
+                    <label for="tr_edit_add_cash_tr_date">Date:</label>
+                    <x-datepicker wire:model="form.tr_date" id="tr_edit_add_cash_tr_date" :error="'tr_date'"
                         :format="'DD-MMM-Y'" />
                     @error('tr_date')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -30,7 +30,6 @@
                     @error('currency_id')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
-
                 </div>
 
                 <div class="form-group col-md-2 col-sm-6">
@@ -38,7 +37,8 @@
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"
-                                id="basic-addon1">{{ $selectedCurrency ?? '?' }}</span>
+                                id="basic-addon1">{{ $selectedCurrency ?? '?' }}
+                            </span>
                         </div>
                         <input type="text"
                             class="form-control   @error('amount') is-invalid @else {{ $this->getValidClass('amount') }} @enderror"
@@ -53,7 +53,7 @@
                 <div class="form-group row col-md-10 col-sm-6 pr-0">
                     <label for="tr_edit_description" class="col-sm-12 col-md-2 col-form-label pt-0">Description:</label>
                     <div class="col-sm-12 col-md-10 m-md-0 p-0">
-                        <textarea wire:model.debounce='form.description' name="description" id="tr_edit_description" class="form-control"
+                        <textarea wire:model='form.description' name="description" id="tr_edit_description" class="form-control"
                             placeholder="Enter ..." rows="1"></textarea>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
                     <button type="submit" class="btn btn-primary btn-sm ml-2 w-32" style="width:45%"><i
                             class="fas fa-save"></i></button>
                     <button type="button" class="btn btn-danger btn-sm ml-2 w-32" style="width:45%"
-                    onclick="showConfirmDelete()">
+                    onclick="showConfirmDelete('trEditAddCashFormDelete')">
                         <i class="fas fa-trash"></i></i>
                     </button>
                 </div>
@@ -83,9 +83,16 @@
         </div>
     </div>
 
-
     <script>
-
+        $(function e(){
+            $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
+            const myTimeout = setTimeout(()=>{
+                $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
+            },10);
+            $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
+                $('.tr-edit-payment-form-controller').css("overflow","unset");
+            });
+        })
     </script>
 
 </form>

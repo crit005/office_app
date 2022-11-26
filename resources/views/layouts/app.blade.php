@@ -25,6 +25,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     {{-- <link rel="stylesheet" href="{{asset('css/them3.css')}}"> --}}
 
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+
     @livewireStyles
 </head>
 
@@ -69,8 +72,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- jQuery -->
 
     {{-- <script src="{{asset('backend/plugins/jquery/jquery.min.js')}}"></script> --}}
-    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+
     <!-- Bootstrap 4 -->
     <script src="{{ asset('backend/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- AdminLTE App -->

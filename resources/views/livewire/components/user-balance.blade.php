@@ -1,4 +1,4 @@
-<div wire:poll>
+<div wire:poll.alive>
     <div class="m-0 nave-balance shadow-sm" wire:click.prevent='switchGloble' alt="Click to switch your balance">
         <div class="text-sm text-white m-0 p-0">
             @if ($isGloble)
