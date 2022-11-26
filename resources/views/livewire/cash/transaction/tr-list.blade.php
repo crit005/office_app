@@ -333,11 +333,12 @@
         // call by tr-edit-form x button
         // Cancel button click
         function hideEditPaymentForm(){
-            $('.tr-edit-payment-form-controller').css({"overflow":"hidden"});
+            $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px',"overflow":"hidden"});
+            $('.tr-edit-payment-form-controller').css({"height":0});
             $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
                 $('.tr-edit-payment-form').css("display","none");
             });
-            $('.tr-edit-payment-form-controller').css({"height":0});
+            // $('.tr-edit-payment-form-controller').css({"height":0});
             Livewire.emit('clearEditTransactionCashList');
         };
 

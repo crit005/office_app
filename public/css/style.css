@@ -505,7 +505,6 @@ input:checked + .slider:before {
 }
 
 .tr-edit-payment-form-controller {
-    overflow: hidden;
     transition: height 0.5s;
 }
 .height-0 {

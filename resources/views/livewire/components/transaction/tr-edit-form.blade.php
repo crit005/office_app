@@ -3,7 +3,8 @@
         <button type="button" onclick="hideEditPaymentForm()" class="btn btn-inline-form-cancel btn-round btn-sm ml-2 w-32">
             <i class="fas fa-times"></i>
         </button>
-        <div class="tr-edit-payment-form-controller height-0"  wire:ignore.self>
+        <div class="tr-edit-payment-form-controller height-0" style="overflow: hidden;"  wire:ignore.self>
+        {{-- <div class="tr-edit-payment-form-controller height-0"  wire:ignore.self> --}}
             <div class="inline-form m-0 row">
 
                 <div class="form-group col-md-2 col-sm-6">
@@ -114,12 +115,12 @@
 
                 <div class="text-sm text-gray row w-100">
                     <div class="col-md-6 d-flex flex-col justify-content-md-start w-100">
-                        <div class="mr-2">Created_at: {{ date(env('DATE_FORMAT'), strtotime($transaction->created_at)) }}</div>
+                        <div class="mr-2">Created_at: {{ date(env('DATE_FORMAT','d-m-Y'), strtotime($transaction->created_at)) }}</div>
                         <div>Created_by: {{$transaction->createdByUser->name}}</div>
                     </div>
                     <div class="col-md-6 d-flex flex-col justify-content-md-end w-100">
                         @if($transaction->updated_by)
-                        <div class="mr-2">Last Update: {{$transaction->updatedByUser->name}}/{{date(env('DATE_FORMAT'), strtotime($transaction->updated_at))}}</div>
+                        <div class="mr-2">Last Update: {{$transaction->updatedByUser->name}}/{{date(env('DATE_FORMAT','d-m-Y'), strtotime($transaction->updated_at))}}</div>
                         @endif
                     </div>
                 </div>
@@ -131,11 +132,8 @@
     <script>
         $(function e(){
             $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
-            const myTimeout = setTimeout(()=>{
-                $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
-            },10);
             $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
-                $('.tr-edit-payment-form-controller').css("overflow","unset");
+                $('.tr-edit-payment-form-controller').css({"overflow":"","height":"auto"});
             });
         })
     </script>
