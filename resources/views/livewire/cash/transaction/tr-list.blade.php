@@ -249,42 +249,6 @@
                                         </tr>
                                     @endif
 
-                                    {{-- month totaly --}}
-                                    {{-- <tr class="tr-td-border-0 border-bottom stick-top-next">
-                                        <td scope="col" class="text-left text-bold minimal-table-column">Nov-2022
-                                        </td>
-                                        <td scope="col" colspan="7" class="text-left">
-                                            <livewire:components.transaction.tr-monthly-sumary />
-                                        </td>
-                                    </tr> --}}
-
-                                    {{-- detail record  animate__animated animate__fadeInUp --}}
-                                    {{-- <tr class="tr-td-border-0">
-                                        <td scope="col" class="pl-5 text-sm text-left minimal-table-column">
-                                            01-11-2022</td>
-                                        <td scope="col"
-                                            class="text-right minimal-table-column border-left position-relative">
-                                            <div class="badge-time-line-incom badge-time-line"></div>
-                                            1
-                                        </td>
-                                        <td scope="col" class="text-left">Konsumsi Ktr</td>
-                                        <td scope="col" class="text-center text-danger">-300.00 ฿</td>
-                                        <td scope="col" class="text-center">FIFA</td>
-                                        <td scope="col" class="text-center">Anen</td>
-                                        <td scope="col" class="text-center"></td>
-                                        <td scope="col" class="text-center">
-                                            option
-                                        </td>
-                                    </tr> --}}
-                                    {{-- <tr class="tr-td-border-0 white-hover">
-                                        <td scope="col" class="pl-5 text-sm text-left minimal-table-column"></td>
-                                        <td scope="col"
-                                            class="text-right minimal-table-column border-left position-relative">
-
-                                        <td scope="col" colspan="6" class="text-left p-0">
-                                            <livewire:components.transaction.tr-edit-form />
-                                        </td>
-                                    </tr> --}}
 
                                 </tbody>
                             </table>
@@ -400,35 +364,6 @@
             });
         });
 
-        // $('.modal-dialog-pament').draggable({
-        //     handle: ".modal-header"
-        // });
-
-
-        // window.addEventListener('changeCashTransactionMode', e => {
-        //     @this.globleBalance = e.detail.globleMode;
-        // });
-
-
-        // function globleSearch(val) {
-        //     @this.search = val;
-        // }
-
-        // window.addEventListener('show-confirm-trash', e => {
-        //     Swal.fire({
-        //         title: 'Are you sure?',
-        //         text: "You won't be able to revert this!",
-        //         icon: 'warning',
-        //         showCancelButton: true,
-        //         confirmButtonColor: '#3085d6',
-        //         cancelButtonColor: '#d33',
-        //         confirmButtonText: 'Yes, delete it!'
-        //     }).then((result) => {
-        //         if (result.isConfirmed) {
-        //             @this.putItemToTrash();
-        //         }
-        //     });
-        // })
 
         // javascript event hooks
         document.addEventListener("DOMContentLoaded", () => {
@@ -443,27 +378,12 @@
 
                 // Livewire.hook('element.updating', (fromEl, toEl, component) => {
                 //     // console.log('element.updating')
-                //     if(component.name == 'components.transaction.tr-edit-form'){
-                //         $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
-                //         const myTimeout = setTimeout(()=>{
-                //             $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
-                //         },10);
-                //     }
                 // })
 
                 Livewire.hook('element.updated', (el, component) => {
                     $('[data-toggle="tooltip"]').tooltip();
                     $('[data-toggle="popover"]').popover();
                     // console.log(component.name);
-                    // if(component.name == 'components.transaction.tr-edit-form' || component.name == 'components.transaction.tr-edit-add-cash-form'){
-                    //     $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
-                    //     const myTimeout = setTimeout(()=>{
-                    //         $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
-                    //     },10);
-                    //     $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
-                    //         $('.tr-edit-payment-form-controller').css("overflow","unset");
-                    //     });
-                    // }
 
                 })
 
