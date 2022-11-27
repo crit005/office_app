@@ -209,7 +209,7 @@ class TrEditAddCashForm extends Component
         // $this->transaction->status = 0;
         $this->transaction->update(['status'=>0]);
         $this->updateBalance($oldCurrency_id,$oldUser_id);
-        $this->emitUp('clearEditTransactionCashList');
+        $this->emitUp('clearEditTransactionCashList','delete');
     }
 
     public function render()

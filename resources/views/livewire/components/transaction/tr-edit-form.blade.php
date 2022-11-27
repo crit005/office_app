@@ -99,12 +99,14 @@
                 <div class="form-group row col-md-10 col-sm-6 pr-0">
                     <label for="tr_edit_description" class="col-sm-12 col-md-2 col-form-label pt-0">Description:</label>
                     <div class="col-sm-12 col-md-10 m-md-0 p-0">
-                        <textarea wire:model.debounce='form.description' name="description" id="tr_edit_description" class="form-control"
-                            placeholder="Enter ..." rows="1"></textarea>
+                        <textarea wire:ignore.self wire:model.debounce='form.description' name="description" id="tr_edit_description" class="form-control"
+                            placeholder="Enter ..."
+                             {{-- rows="1" --}}
+                             ></textarea>
                     </div>
                 </div>
 
-                <div class="form-group col-md-2 d-flex flex-col justify-content-center">
+                <div class="form-group col-md-2 d-flex flex-col justify-content-center align-items-end">
                     <button type="submit" class="btn btn-primary btn-sm ml-2 w-32" style="width:45%"><i
                             class="fas fa-save"></i></button>
                     <button type="button" class="btn btn-danger btn-sm ml-2 w-32" style="width:45%"
@@ -133,8 +135,17 @@
         $(function e(){
             $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
             $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
-                $('.tr-edit-payment-form-controller').css({"overflow":"","height":"auto"});
+                $('.tr-edit-payment-form-controller').css("overflow","");
             });
+            $('#tr_edit_description').on("resize",()=>{
+                console.log($('#tr_edit_description').heightgg);
+            });
+            // $('#tr_edit_payment_item_id').on('change',(e)=>{
+            //     // console.log($('#tr_edit_payment_item_id').find(":selected").val());
+            //     // const myTimeout = setTimeout(()=>{
+            //     $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
+            //     // },500);
+            // });
         })
     </script>
 

@@ -26,10 +26,15 @@ class TrList extends Component
         $this->reset(['currentMonth']);
     }
 
-    public function clearEditTransactionCashList()
+    public function clearEditTransactionCashList($action=null)
     {
         $this->reset(['editTransaction','currentMonth']);
         $this->updateTime = time();
+        if($action){
+            if($action == 'delete'){
+                $this->dispatchBrowserEvent('alert-success',["message"=>"Delete Successfuly."]);
+            }
+        }
     }
 
     public function isNewMonth($month)
