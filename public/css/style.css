@@ -1,6 +1,5 @@
 body {
     background: url("../images/bg.jpg") no-repeat top right fixed;
-    /* min-width:986px; */
 }
 
 .blur-light {
@@ -369,6 +368,19 @@ input:checked + .slider:before {
     width: 100%;
     position: relative;
     border-top: 1px solid rgb(0 0 0 / 27%);
+}
+
+.inline-form input, .inline-form select{
+    font-size: 14px;
+    height: 32px;
+    padding-top: 4px;
+}
+.inline-form textarea{
+    font-size: 14px;
+    padding-top: 4px;
+}
+.inline-form .input-group-append,.inline-form .input-group-prepend{
+    height: 32px;
 }
 
 .white-hover:hover {

@@ -122,12 +122,12 @@
                                     <tr class="tr-th-border-0 stick-top-0">
                                         <th scope="col" class="text-center text-info minimal-table-column">Date</th>
                                         <th scope="col" class="text-right text-info minimal-table-column">#</th>
-                                        <th scope="col" class="text-left text-info">Pament Name</th>
-                                        <th scope="col" class="text-center text-info">Amount</th>
-                                        <th scope="col" class="text-center text-info">Pay On</th>
-                                        <th scope="col" class="text-center text-info">Created By</th>
+                                        <th scope="col" class="text-left text-info minimal-table-column">Pament Name</th>
+                                        <th scope="col" class="text-center text-info minimal-table-column">Amount</th>
+                                        <th scope="col" class="text-center text-info minimal-table-column">Pay On</th>
                                         <th scope="col" class="text-center text-info">Detail</th>
-                                        <th scope="col" class="text-center text-info">Options</th>
+                                        <th scope="col" class="text-center text-info minimal-table-column">Created By</th>
+                                        <th scope="col" class="text-center text-info minimal-table-column">Options</th>
                                     </tr>
                                 </thead>
                                 <tbody id="sortable">
@@ -171,7 +171,7 @@
                                                 @endif
                                             </td>
                                             <td scope="col"
-                                                class="text-center
+                                                class="text-center minimal-table-column
                                                 @if ($transaction->type == 1) text-success
                                                 @elseif ($transaction->type == 2)
                                                 text-danger
@@ -179,7 +179,7 @@
                                                 text-info @endif ">
                                                 {{ $transaction->amount . $transaction->currency->symbol }}
                                             </td>
-                                            <td scope="col" class="text-center">
+                                            <td scope="col" class="text-center minimal-table-column">
                                                 @if ($transaction->type == 1)
                                                     {{-- <i class="fas fa-user-circle text-lg text-success mr-1"></i> --}}
                                                     <i class="fas fa-user text-success mr-1"></i>
@@ -195,14 +195,14 @@
                                                 @endif
 
                                             </td>
-                                            <td scope="col" class="text-center">
-                                                {{ $transaction->createdByUser->name }}</td>
                                             <td scope="col" class="text-center text-nowrap">
                                                 <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus"
                                                     data-placement="auto"
                                                     data-content="{{ $transaction->description }}">{{ $transaction->getDescription() }}</a>
                                             </td>
-                                            <td scope="col" class="text-center">
+                                            <td scope="col" class="text-center minimal-table-column">
+                                                {{ $transaction->createdByUser->name }}</td>
+                                            <td scope="col" class="text-center minimal-table-column">
                                                 <button class="btn btn-sm text-success" wire:click="showView({{$transaction->id}})">
                                                     <i wire:loading.remove wire:target='showView({{$transaction->id}})' class="fas fa-eye"></i>
                                                     <i wire:loading='showView({{$transaction->id}})' wire:target='showView({{$transaction->id}})' class="fas fa-spinner fa-spin"></i>
