@@ -189,7 +189,7 @@ class ListCustomer extends Component
         $customer->setTable('tbl_' . $this->connection->connection_name);
         $customers = $customer->where('login_id', 'like', '%' . $this->search . '%')
             ->orWhere('mobile', 'like', '%' . $this->search . '%')
-            ->orWhere('id', 'like', '%' . $this->search . '%')
+            ->orWhere('customer_id', 'like', '%' . $this->search . '%')
             ->orWhere('email', 'like', '%' . $this->search . '%')
             ->orWhere('club_name', 'like', '%' . $this->search . '%')
             ->orderBY($this->orderField['field'], $this->orderField['order'])

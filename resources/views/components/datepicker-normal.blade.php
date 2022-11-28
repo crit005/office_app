@@ -11,10 +11,13 @@
 <script type="text/javascript">
     $(function(e){
     $('#{{$id}}').datetimepicker({
+            // locale: moment.locale('km'),
             format:"{{$format ?? 'L'}}",
             // defaultDate:moment().toDate(),
+            defaultDate: moment().format(),
             // format:'L',
             viewMode:"{{$viewMode ?? 'days'}}",
+            useCurrent: false
         });
 })
 

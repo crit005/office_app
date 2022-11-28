@@ -73,12 +73,12 @@
                                             <th scope="col">#</th>
                                             <th scope="col" class="text-center"><a
                                                     class="d-flex justify-content-between" href=""
-                                                    wire:click.prevent="setOrderField('id')">ID
-                                                    <span wire:loading.class="d-none" wire:target="setOrderField('id')">
-                                                        {!! $this->getSortIcon('id') !!}
+                                                    wire:click.prevent="setOrderField('customer_id')">ID
+                                                    <span wire:loading.class="d-none" wire:target="setOrderField('customer_id')">
+                                                        {!! $this->getSortIcon('customer_id') !!}
                                                     </span>
                                                     <i class="fas fa-spinner fa-spin align-self-center" wire:loading
-                                                        wire:target="setOrderField('id')"></i>
+                                                        wire:target="setOrderField('customer_id')"></i>
                                                 </a>
                                             </th>
                                             <th scope="col" class="text-center"><a

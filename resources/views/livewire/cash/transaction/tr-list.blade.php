@@ -122,7 +122,7 @@
                                     <tr class="tr-th-border-0 stick-top-0">
                                         <th scope="col" class="text-center text-info minimal-table-column">Date</th>
                                         <th scope="col" class="text-right text-info minimal-table-column">#</th>
-                                        <th scope="col" class="text-left text-info minimal-table-column">Pament Name</th>
+                                        <th scope="col" class="text-left text-info" style="white-space: nowrap;">Pament Name</th>
                                         <th scope="col" class="text-center text-info minimal-table-column">Amount</th>
                                         <th scope="col" class="text-center text-info minimal-table-column">Pay On</th>
                                         <th scope="col" class="text-center text-info">Detail</th>
@@ -131,10 +131,16 @@
                                     </tr>
                                 </thead>
                                 <tbody id="sortable">
+                                    <?php
+                                        $trRowNumber = 0;
+                                    ?>
                                     @forelse ($trCashs as $indext => $transaction)
                                         {{-- detail record  animate__animated animate__fadeInUp --}}
                                         @if ($this->isNewMonth($transaction->month))
-                                            <tr class="tr-td-border-0 border-bottom stick-top-next">
+                                            <?php
+                                            $trRowNumber = 0;
+                                            ?>
+                                            <tr class="tr-td-border-0 border-bottom stick-top-next bg-wite">
                                                 <td scope="col"
                                                     class="text-left text-info text-bold minimal-table-column">
                                                     {{ date('M-Y', strtotime($transaction->month)) }}
@@ -145,10 +151,10 @@
                                                 </td>
                                             </tr>
                                         @endif
-                                        <tr class="tr-td-border-0" wire:key="tr-{{ $transaction->id }}"
+                                        <tr class="tr-td-border-0 bg-wite" wire:key="tr-{{ $transaction->id }}"
                                             id="{{ $transaction->id }}">
                                             <td scope="col" class="pl-5 text-sm text-left minimal-table-column">
-                                                {{ date(env('DATE_FORMAT'), strtotime($transaction->tr_date)) }}
+                                                {{ date(env('DATE_FORMAT','d-m-Y'), strtotime($transaction->tr_date)) }}
                                             </td>
                                             <td scope="col"
                                                 class="text-right minimal-table-column border-left position-relative">
@@ -161,7 +167,9 @@
                                                 badge-time-line-exchange @endif
                                                 badge-time-line">
                                                 </div>
-                                                {{ $indext }}
+                                                <?php $trRowNumber+=1; ?>
+                                                {{ $trRowNumber }}
+
                                             </td>
                                             <td scope="col" class="text-left">
                                                 @if ($transaction->item_id != 13)
@@ -230,18 +238,21 @@
                                                         @elseif($transaction->type == 1)
                                                         {{-- edit add cash --}}
                                                         <livewire:components.transaction.tr-edit-add-cash-form :id="$transaction->id" wire:key="tr_edit_add_cash-{{ $transaction->id }}"/>
+                                                        @elseif($transaction->type == 3)
+                                                        {{-- edit exchange --}}
+                                                        <livewire:components.transaction.tr-edit-exchange-form :id="$transaction->id" wire:key="tr_edit_exchange-{{ $transaction->id }}"/>
                                                         @endif
                                                     </td>
                                                 </tr>
                                             @endif
                                         @endif
                                     @empty
-                                        <tr>
+                                        <tr class="bg-wite">
                                             <td colspan="8" class="text-center"> No record found...</td>
                                         </tr>
                                     @endforelse
                                     @if ($reachLastRecord)
-                                        <tr class="tr-td-border-0 border-bottom stick-top-next">
+                                        <tr class="tr-td-border-0 border-bottom stick-top-next bg-wite">
                                             <th scope="col" colspan="8" class="text-center text-info">
                                                 You have reach the bottom!
                                                 {{-- <button onClick = 'goToTop()'>TOP</button> --}}

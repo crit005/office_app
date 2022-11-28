@@ -102,7 +102,7 @@ class ListNewMember extends Component
             ->where(function ($q) {
                 $q->where('login_id', 'like', '%' . $this->search . '%')
                     ->orWhere('mobile', 'like', '%' . $this->search . '%')
-                    ->orWhere('id', 'like', '%' . $this->search . '%')
+                    ->orWhere('customer_id', 'like', '%' . $this->search . '%')
                     ->orWhere('email', 'like', '%' . $this->search . '%')
                     ->orWhere('club_name', 'like', '%' . $this->search . '%');
             })

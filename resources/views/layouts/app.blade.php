@@ -89,6 +89,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{ asset('backend/plugins/toastr/toastr.min.js') }}"></script>
 
     <script src="{{ asset('backend/plugins/moment/moment.min.js') }}"></script>
+    {{-- <script src="{{ asset('backend/plugins/moment/locale/km.js') }}"></script> --}}
 
     <link rel="stylesheet"
         href="{{ asset('backend/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">

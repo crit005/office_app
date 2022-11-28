@@ -72,7 +72,7 @@ class MemberExport implements FromCollection, WithHeadings
         $customer->setTable('tbl_' . $this->tableName);
         //! for all member
         if ($this->exportType == 'ALL_MEMBER') {
-            return $customer->select('id', 'login_id', 'name', 'email', 'mobile', 'club_name', 'first_join', 'last_dp', 'last_wd', 'last_active', 'total_dp', 'total_wd', 'total_turnover', 'totall_winlose')
+            return $customer->select('customer_id', 'login_id', 'name', 'email', 'mobile', 'club_name', 'first_join', 'last_dp', 'last_wd', 'last_active', 'total_dp', 'total_wd', 'total_turnover', 'totall_winlose')
                 ->where('login_id', 'like', '%' . $this->search . '%')
                 ->orWhere('mobile', 'like', '%' . $this->search . '%')
                 ->orWhere('id', 'like', '%' . $this->search . '%')
@@ -89,7 +89,7 @@ class MemberExport implements FromCollection, WithHeadings
         }
         //! for new member
         elseif ($this->exportType == 'NEW_MEMBER') {
-            return $customer->select('id', 'login_id', 'name', 'email', 'mobile', 'club_name', 'first_join', 'last_dp', 'last_wd', 'last_active', 'total_dp', 'total_wd', 'total_turnover', 'totall_winlose')
+            return $customer->select('customer_id', 'login_id', 'name', 'email', 'mobile', 'club_name', 'first_join', 'last_dp', 'last_wd', 'last_active', 'total_dp', 'total_wd', 'total_turnover', 'totall_winlose')
                 ->whereBetween('first_join', [date('Y-m-d', strtotime($this->fromDate)), date('Y-m-d', strtotime($this->toDate))])
                 ->where(function ($q) {
                     $q->where('login_id', 'like', '%' . $this->search . '%')
@@ -109,7 +109,7 @@ class MemberExport implements FromCollection, WithHeadings
         }
         //! for active member
         elseif ($this->exportType == 'ACTIVE_MEMBER') {
-            return $customer->select('id', 'login_id', 'name', 'email', 'mobile', 'club_name', 'first_join', 'last_dp', 'last_wd', 'last_active', 'total_dp', 'total_wd', 'total_turnover', 'totall_winlose')
+            return $customer->select('customer_id', 'login_id', 'name', 'email', 'mobile', 'club_name', 'first_join', 'last_dp', 'last_wd', 'last_active', 'total_dp', 'total_wd', 'total_turnover', 'totall_winlose')
                 ->whereBetween('last_active', [date('Y-m-d', strtotime($this->fromDate)), date('Y-m-d', strtotime($this->toDate))])
                 ->where(function ($q) {
                     $q->where('login_id', 'like', '%' . $this->search . '%')
@@ -129,7 +129,7 @@ class MemberExport implements FromCollection, WithHeadings
         }
         //! for inactive member
         elseif ($this->exportType == 'INACTIVE_MEMBER') {
-            return $customer->select('id', 'login_id', 'name', 'email', 'mobile', 'club_name', 'first_join', 'last_dp', 'last_wd', 'last_active', 'total_dp', 'total_wd', 'total_turnover', 'totall_winlose')
+            return $customer->select('customer_id', 'login_id', 'name', 'email', 'mobile', 'club_name', 'first_join', 'last_dp', 'last_wd', 'last_active', 'total_dp', 'total_wd', 'total_turnover', 'totall_winlose')
                 ->where('last_active', '<', date('Y-m-d', strtotime($this->toDate)))
                 ->where(function ($q) {
                     $q->where('login_id', 'like', '%' . $this->search . '%')

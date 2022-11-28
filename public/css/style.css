@@ -531,3 +531,7 @@ input:checked + .slider:before {
 .popover {
     max-width: 400px;
 }
+
+.bg-wite{
+    background: white;
+}

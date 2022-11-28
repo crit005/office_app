@@ -1,7 +1,7 @@
 <div wire:ignore.self class="modal fade blur-bg-dialog " id="viewPaymentFormModal" tabindex="-1" role="dialog"
     aria-labelledby="viewPaymentFormModalTitle" aria-hidden="true">
 
-    <div wire:ignore.self class="modal-dialog modal-dialog-view-pament modal-dialog-centered" role="document">
+    <div wire:ignore.self class="modal-dialog modal-lg modal-dialog-view-pament modal-dialog-centered" role="document">
         <div class="modal-content
             @if ($transaction)
                 @if ($transaction->type == 2)
@@ -27,7 +27,7 @@
                                  #{{ $transaction->id }}
                             </h5>
                             <div class="text-white text-sm">
-                                Created_by: {{ auth()->user()->name }} on: {{ date(env('DATE_FORMAT'), strtotime($transaction->created_at)) }}
+                                Created_by: {{ auth()->user()->name }} on: {{ date(env('DATE_FORMAT', 'd-m-Y'), strtotime($transaction->created_at)) }}
                             </div>
                         </div>
                     @endif
@@ -42,13 +42,13 @@
                 @if ($transaction)
                     @if ($transaction->type == 2)
                         <div>
-                            <span class="mr-3">Date:</span>
-                            <span>{{ date(env('DATE_FORMAT'), strtotime($transaction->tr_date)) }}</span>
+                            <span class="mr-3 text-bold">Date:</span>
+                            <span>{{ date(env('DATE_FORMAT', 'd-m-Y'), strtotime($transaction->tr_date)) }}</span>
                         </div>
                         <div>
-                            <span class="mr-3">Pament Name:</span> <span
+                            <span class="mr-3 text-bold">Pament Name:</span> <span
                                 class="mr-3">{{ $transaction->item_id != 13 ? $transaction->item->name : $transaction->other_name }}</span>
-                            <span class="mr-3">Pay on:</span>
+                            <span class="mr-3 text-bold">Pay on:</span>
                             <span style="
                                 display: inline-block;
                                 border-radius: 2px;
@@ -58,11 +58,11 @@
                             </span>
                         </div>
                         <div>
-                            <span class="mr-3">Amount:</span> <span class="text-danger"
+                            <span class="mr-3 text-bold">Amount:</span> <span class="text-danger"
                                 style="font-size: 2rem;">{{ $transaction->amount . ' ' . $transaction->currency->symbol }}</span>
                         </div>
                         <div>
-                            <span>Describe:</span>
+                            <span class="text-bold">Describe:</span>
                         </div>
                         <div>
                             {!! nl2br($transaction->description) !!}
@@ -70,16 +70,16 @@
                     @elseif ($transaction->type == 1)
                         <!-- Add Cash View -->
                         <div>
-                            <span class="mr-3">Date:</span>
-                            <span>{{ date(env('DATE_FORMAT'), strtotime($transaction->tr_date)) }}</span>
+                            <span class="mr-3 text-bold">Date:</span>
+                            <span>{{ date(env('DATE_FORMAT', 'd-m-Y'), strtotime($transaction->tr_date)) }}</span>
                         </div>
                         <div>
-                            <span class="mr-3">Amount:</span> <span class="text-success"
+                            <span class="mr-3 text-bold">Amount:</span> <span class="text-success"
                                 style="font-size: 2rem;">{{ $transaction->amount . ' ' . $transaction->currency->symbol }}
                             </span>
                         </div>
                         <div>
-                            <span>Describe:</span>
+                            <span class="text-bold">Describe:</span>
                         </div>
                         <div>
                             {!! nl2br($transaction->description) !!}
@@ -87,19 +87,19 @@
                     @elseif ($transaction->type == 3)
                         <!-- Exchange View -->
                         <div>
-                            <span class="mr-3">Date:</span>
-                            <span>{{ date(env('DATE_FORMAT'), strtotime($transaction->tr_date)) }}</span>
+                            <span class="mr-3 text-bold">Date:</span>
+                            <span>{{ date(env('DATE_FORMAT', 'd-m-Y'), strtotime($transaction->tr_date)) }}</span>
                         </div>
                         <div>
-                            <span class="mr-3">From Amount:</span> <span class="text-danger"
+                            <span class="mr-3 text-bold">From Amount:</span> <span class="text-danger"
                                 style="font-size: 2rem;">{{ $transaction->amount . ' ' . $transaction->currency->symbol }}
                             </span>
-                            <span class="mr-3">From Amount:</span> <span class="text-success"
+                            <span class="mr-3 text-bold">To Amount:</span> <span class="text-success"
                                 style="font-size: 2rem;">{{ $transaction->other_name }}
                             </span>
                         </div>
                         <div>
-                            <span>Describe:</span>
+                            <span class="text-bold">Describe:</span>
                         </div>
                         <div>
                             {!! nl2br($transaction->description) !!}
@@ -118,7 +118,7 @@
                             by: {{ $transaction->updatedByUser->name }}
                         @endif
                         @if ($transaction->updated_at)
-                            on: {{ date(env('DATE_FORMAT'), strtotime($transaction->updated_at)) }}
+                            on: {{ date(env('DATE_FORMAT', 'd-m-Y'), strtotime($transaction->updated_at)) }}
                         @endif
                     </div>
 

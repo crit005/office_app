@@ -22,7 +22,7 @@ class SystemPanel extends Component
 
     public $sqlMemberInfo = "
     SELECT
-        cw.CustomerID AS id,
+        cw.CustomerID AS customer_id,
         cw.Name AS name,
         cw.Email AS email,
         cw.Mobile AS mobile,
@@ -70,7 +70,7 @@ class SystemPanel extends Component
                 ON webaccount.customerId = cf.Id
         )as cw
     GROUP BY
-        cw.CustomerID
+        cw.LoginID
         ";
     public $listCustomer = null;
 
@@ -91,7 +91,7 @@ class SystemPanel extends Component
     {
         Schema::create($tableName, function (Blueprint $table) {
             $table->id();
-            // $table->string('customer_id');
+            $table->bigInteger('customer_id');
             $table->string('name')->nullable();
             $table->string('email')->nullable();
             $table->string('mobile')->nullable();

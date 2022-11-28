@@ -68,4 +68,9 @@ class TrCash extends Model
         }
         return substr($this->description, 0, 35).'...';
     }
+
+    public function getToExchange()
+    {
+        return TrCash::find($this->tr_id);
+    }
 }

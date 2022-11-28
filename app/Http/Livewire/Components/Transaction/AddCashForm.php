@@ -37,6 +37,8 @@ class AddCashForm extends Component
         //! intit rule for currency id
         $this->cashRules['currency_id'] .= "|in:" . $this->currencyIds;
         $this->item = Items::where('name', '=', 'Add Cash')->where('status', '=', 'SYSTEM')->first();
+
+        // $this->form['tr_date'] = date('d-M-Y', strtotime(now()));
     }
 
     //! calculate get currency balance for user

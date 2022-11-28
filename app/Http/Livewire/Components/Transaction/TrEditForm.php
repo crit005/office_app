@@ -28,7 +28,7 @@ class TrEditForm extends Component
     public $currencyBalance = 0;
     public $currencyNexBalance = 0;
 
-    public $log;
+    public $logs;
     public $oldCurrency_id;
 
     protected $listeners = ['trEditPaymentFormDelete' => 'deletePayment'];
@@ -228,7 +228,7 @@ class TrEditForm extends Component
         $oldCurrency_id = $this->transaction->currency_id;
         $oldUser_id = $this->transaction->created_by;
         // $this->transaction->status = 0;
-        $this->transaction->update(['status'=>0]);
+        $this->transaction->update(['status'=>0,'updated_by'=>auth()->user()->id,'logs'=>$this->logs]);
         $this->updateBalance($oldCurrency_id,$oldUser_id);
         $this->emitUp('clearEditTransactionCashList','delete');
     }
