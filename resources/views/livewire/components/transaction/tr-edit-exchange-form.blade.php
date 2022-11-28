@@ -1,4 +1,4 @@
-<form wire:submit.prevent='updatePayment' class="">
+<form wire:submit.prevent='updateExchange' class="">
     <div style="position: relative;" class="mr-3">
         <button type="button" onclick="hideEditPaymentForm()" class="btn btn-inline-form-cancel btn-round btn-sm ml-2 w-32">
             <i class="fas fa-times"></i>

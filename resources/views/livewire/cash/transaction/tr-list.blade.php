@@ -375,6 +375,22 @@
             });
         });
 
+        window.addEventListener('update-exchange-alert-success', e => {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Exchange update successfully.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+
+            }).then((e) => {
+                // Hide from
+                // Clear emit transaction
+                // Livewire.emit('refreshCashList');
+                Livewire.emit('clearEditTransactionCashList');
+            });
+        });
+
+
 
         // javascript event hooks
         document.addEventListener("DOMContentLoaded", () => {

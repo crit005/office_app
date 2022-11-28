@@ -30,6 +30,7 @@ class TrEditExchangeForm extends Component
 
     public $logs;
     public $oldCurrency_id;
+    public $oldToCurrency_id;
     public $transaction;
     public $toTransaction;
 
@@ -38,6 +39,7 @@ class TrEditExchangeForm extends Component
         $transaction = TrCash::find($id);
         $this->transaction = $transaction;
         $this->toTransaction = $transaction->getToExchange();
+
         $this->form = $transaction->toArray();
         $this->form['to_currency_id'] = $transaction->to_from_id;
         $this->form['amount'] = - $transaction->amount;
@@ -45,6 +47,7 @@ class TrEditExchangeForm extends Component
         $this->form['tr_date'] = date('d-M-Y', strtotime($this->form['tr_date']));
 
         $this->oldCurrency_id = $transaction->currency_id;
+        $this->oldToCurrency_id = $transaction->to_from_id;
 
         $this->logs = json_decode($transaction->logs) ?? [];
         array_push($this->logs, array_filter($transaction->toArray(), function ($k) {
@@ -100,15 +103,15 @@ class TrEditExchangeForm extends Component
             return in_array($key, array_keys($this->form));
         }, ARRAY_FILTER_USE_KEY);
 
-        if (array_key_exists('item_id', $this->form)) {
-            if ($this->form['item_id'] == 13) {
-                $this->showOtherOption = true;
-                $this->cashRules['item_name'] = 'required';
-            } else {
-                $this->showOtherOption = false;
-                $this->cashRules['item_name'] = 'sometimes';
-            }
-        }
+        // if (array_key_exists('item_id', $this->form)) {
+        //     if ($this->form['item_id'] == 13) {
+        //         $this->showOtherOption = true;
+        //         $this->cashRules['item_name'] = 'required';
+        //     } else {
+        //         $this->showOtherOption = false;
+        //         $this->cashRules['item_name'] = 'sometimes';
+        //     }
+        // }
 
         Validator::make($this->form, $rules, [], $this->cashValidationAttributes)->validate();
         if (array_key_exists('currency_id', $this->form)) {
@@ -159,7 +162,7 @@ class TrEditExchangeForm extends Component
         return '...';
     }
 
-    public function addExchange()
+    public function updateExchange()
     {
 
         Validator::make($this->form, $this->cashRules, [], $this->cashValidationAttributes)->validate();
@@ -181,17 +184,17 @@ class TrEditExchangeForm extends Component
         $dataRecord['to_from_id'] =  $this->form['to_currency_id'];
         $dataRecord['month'] = date("Y-m-01", strtotime($dataRecord['tr_date']));
         $dataRecord['description'] =  $this->form['description'] ?? null;
-        $dataRecord['created_by'] = auth()->user()->id;
-        $dataRecord['type'] = 3; //1 = income, 2 = expand, 3 = exchange out, 4 = exchange in
-        $dataRecord['status'] = 2; //0 = deleted, 1 = done, 2 = wait
-        $dataRecord['input_type'] = 1; //1= menuly input, 2 = import from excle
+        // $dataRecord['created_by'] = auth()->user()->id;
+        // $dataRecord['type'] = 3; //1 = income, 2 = expand, 3 = exchange out, 4 = exchange in
+        // $dataRecord['status'] = 2; //0 = deleted, 1 = done, 2 = wait
+        // $dataRecord['input_type'] = 1; //1= menuly input, 2 = import from excle
         // $dataRecord['tr_id'] = null;
-        // $dataRecord['updated_by'] = null;
-        // $dataRecord['logs'] = null;
+        $dataRecord['updated_by'] = auth()->user()->id;
+        $dataRecord['logs'] = $this->logs;
         // $dataRecord['created_at'] = auto;
         // $dataRecord['updated_at'] = auto;
 
-        $fromTranaction = TrCash::create($dataRecord);
+        $this->transaction->update($dataRecord);
 
 
         //==================================================
@@ -205,87 +208,32 @@ class TrEditExchangeForm extends Component
         $dataRecordTo['currency_id'] = $this->form['to_currency_id'];
         $dataRecordTo['to_from_id'] =  $this->form['currency_id'];
         $dataRecordTo['month'] = date("Y-m-01", strtotime($dataRecord['tr_date']));
-        $dataRecordTo['description'] =  'The exchage amount from exchange id'.$fromTranaction->id;
-        $dataRecordTo['created_by'] = auth()->user()->id;
-        $dataRecordTo['type'] = 4; //1 = income, 2 = expand
-        $dataRecordTo['status'] = 1; //0 = deleted, 1 = done, 2 = wait
-        $dataRecordTo['input_type'] = 1; //1= menuly input, 2 = import from excle
-        $dataRecordTo['tr_id'] = $fromTranaction->id;
+        // $dataRecordTo['description'] =  'The exchage amount from exchange id'.$fromTranaction->id;
+        // $dataRecordTo['created_by'] = auth()->user()->id;
+        // $dataRecordTo['type'] = 4; //1 = income, 2 = expand
+        // $dataRecordTo['status'] = 1; //0 = deleted, 1 = done, 2 = wait
+        // $dataRecordTo['input_type'] = 1; //1= menuly input, 2 = import from excle
+        // $dataRecordTo['tr_id'] = $fromTranaction->id;
         // $dataRecord['updated_by'] = null;
         // $dataRecord['logs'] = null;
         // $dataRecord['created_at'] = auto;
         // $dataRecord['updated_at'] = auto;
 
-        $toTranaction = TrCash::create($dataRecordTo);
+        $this->toTransaction->update($dataRecordTo);
 
         //===============================================
+        //! update new currency balance
+        $this->updateBalance($this->transaction->currency_id,$this->transaction->created_by);
+        $this->updateBalance($this->toTransaction->currency_id,$this->toTransaction->created_by);
 
-        $fromTranaction->update(['tr_id' => $toTranaction->id, 'status' => 1]);
+        //! update old currency balance
+        if($this->oldCurrency_id != $this->transaction->currency_id && $this->oldCurrency_id != $this->toTransaction->currency_id){
+            $this->updateBalance($this->oldCurrency_id,$this->transaction->created_by);
+        }
 
-
-        //! total last balance with all user
-        $userLastBalance = TrCash::where('status', '=', '1')
-            ->where('currency_id', '=', $fromTranaction->currency_id)
-            ->where('created_by', '=', $fromTranaction->created_by)
-            ->sum('amount'); //require function
-
-        Balance::upsert(
-            [
-                'user_id' => auth()->user()->id,
-                'currency_id' => $fromTranaction->currency_id,
-                'current_balance' => $userLastBalance
-            ],
-            ['user_id', 'currency_id'],
-            ['current_balance']
-        );
-
-        //! total last balance for curren user
-        $lastBalance = TrCash::where('status', '=', '1')
-            ->where('currency_id', '=', $fromTranaction->currency_id)
-            ->sum('amount');
-
-        Balance::upsert(
-            [
-                'user_id' => 0,
-                'currency_id' => $fromTranaction->currency_id,
-                'current_balance' => $lastBalance
-            ],
-            ['user_id', 'currency_id'],
-            ['current_balance']
-        );
-
-        //==============================================
-
-        //! total last balance with all user
-        $userLastBalance = TrCash::where('status', '=', '1')
-            ->where('currency_id', '=', $toTranaction->currency_id)
-            ->where('created_by', '=', $toTranaction->created_by)
-            ->sum('amount'); //require function
-
-        Balance::upsert(
-            [
-                'user_id' => auth()->user()->id,
-                'currency_id' => $toTranaction->currency_id,
-                'current_balance' => $userLastBalance
-            ],
-            ['user_id', 'currency_id'],
-            ['current_balance']
-        );
-
-        //! total last balance for curren user
-        $lastBalance = TrCash::where('status', '=', '1')
-            ->where('currency_id', '=', $toTranaction->currency_id)
-            ->sum('amount');
-
-        Balance::upsert(
-            [
-                'user_id' => 0,
-                'currency_id' => $toTranaction->currency_id,
-                'current_balance' => $lastBalance
-            ],
-            ['user_id', 'currency_id'],
-            ['current_balance']
-        );
+        if($this->oldToCurrency_id != $this->transaction->currency_id && $this->oldToCurrency_id != $this->toTransaction->currency_id){
+            $this->updateBalance($this->oldToCurrency_id,$this->toTransaction->created_by);
+        }
 
         // $this->reset(['form']);
         $this->reset(['form','currencyBalance','currencyNexBalance','selectedCurrency']);
@@ -294,16 +242,49 @@ class TrEditExchangeForm extends Component
 
         //================================================================
 
-        $this->dispatchBrowserEvent('add-exchange-alert-success');
+        $this->dispatchBrowserEvent('update-exchange-alert-success');
     }
 
-    public function deletePayment()
+    public function updateBalance($currencyID,$userID)
     {
-        $oldCurrency_id = $this->transaction->currency_id;
-        $oldUser_id = $this->transaction->created_by;
-        // $this->transaction->status = 0;
+        //! total last balance with all user
+        $userLastBalance = TrCash::where('status', '=', '1')
+            ->where('currency_id', '=', $currencyID)
+            ->where('created_by', '=', $userID)
+            ->sum('amount'); //require function
+
+        Balance::upsert(
+            [
+                'user_id' => $userID,
+                'currency_id' => $currencyID,
+                'current_balance' => $userLastBalance
+            ],
+            ['user_id', 'currency_id'],
+            ['current_balance']
+        );
+
+        //! total last balance for curren user
+        $lastBalance = TrCash::where('status', '=', '1')
+            ->where('currency_id', '=', $currencyID)
+            ->sum('amount');
+
+        Balance::upsert(
+            [
+                'user_id' => 0,
+                'currency_id' => $currencyID,
+                'current_balance' => $lastBalance
+            ],
+            ['user_id', 'currency_id'],
+            ['current_balance']
+        );
+    }
+
+    public function deleteExchange()
+    {
         $this->transaction->update(['status'=>0,'updated_by'=>auth()->user()->id,'logs'=>$this->logs]);
-        $this->updateBalance($oldCurrency_id,$oldUser_id);
+        $this->updateBalance($this->oldCurrency_id,$this->transaction->created_by);
+        $this->toTransaction->update(['status'=>0,'updated_by'=>auth()->user()->id,'logs'=>$this->logs]);
+        $this->updateBalance($this->oldToCurrency_id,$this->toTransaction->created_by);
         $this->emitUp('clearEditTransactionCashList','delete');
     }
 
