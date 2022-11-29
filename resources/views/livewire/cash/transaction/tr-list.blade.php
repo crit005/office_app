@@ -31,9 +31,9 @@
                                 <div class="total-info-top d-flex flex-row">
                                     <div class="mr-3">
                                         <span class="info-label">Date:</span>
-                                        <span class="info-number">01-01-2022</span>
+                                        <span class="info-number">{{$fromDate??"..."}}</span>
                                         <i class="fas fa-angle-double-right"></i>
-                                        <span class="info-number">01-11-2022</span>
+                                        <span class="info-number">{{$toDate??"..."}}</span>
                                     </div>
                                 </div>
 
@@ -63,13 +63,13 @@
                                     <div class="input-group-prepend">
                                         <label class="input-group-text"><i class="fas fa-calendar"></i></label>
                                     </div>
-                                    <x-datepicker-normal id="from_date" :format="'DD-MMM-Y'" :placeholder="'From'" />
+                                    <x-datepicker-normal wire:model="fromDate" :id="'from_date'" :linked="'to_date'" :format="'DD-MMM-Y'" :placeholder="'From'" />
                                 </div>
                                 <div class="input-group input-group-sm mr-2 sort-input-date elevation-1">
                                     <div class="input-group-prepend">
                                         <label class="input-group-text"><i class="fas fa-calendar mr-1"></i></label>
                                     </div>
-                                    <x-datepicker-normal id="to_date" :format="'DD-MMM-Y'" :placeholder="'To'" />
+                                    <x-datepicker-normal wire:model="toDate" id="to_date" :format="'DD-MMM-Y'" :placeholder="'To'" />
                                 </div>
 
                                 <div class="input-group input-group-sm mr-2 sort-input-date elevation-1">
@@ -77,24 +77,44 @@
                                         <label class="input-group-text" for="inputGroupSelect01">
                                             <i class="fas fa-grip-horizontal"></i></label>
                                     </div>
-                                    <select class="custom-select" id="inputGroupSelect01">
+                                    <select wire:model="depatmentId" class="custom-select">
                                         <option selected>Depatment</option>
-                                        <option value="1">ACC</option>
-                                        <option value="2">BANDA</option>
-                                        <option value="3">CBO</option>
+                                        @foreach ($depatments as $depatment )
+                                            <option value={{$depatment->id}}>{{$depatment->name}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
+
+                                <div class="input-group input-group-sm mr-2 sort-input-date elevation-1">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="inputGroupSelect01">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </label>
+                                    </div>
+                                    <select wire:model="itemId" class="custom-select">
+                                        <option selected>Payment</option>
+                                        @foreach ($items as $item)
+                                        <option value={{$item->id}}>{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                @if ($isOther)
+                                   <div class="input-group input-group-sm mr-2 sort-input-date elevation-1">
+                                    <input type="text" wire:model="otherName" class="form-control" placeholder="Other name"/>
+                                    </div>
+                                @endif
 
                                 <div class="input-group input-group-sm mr-2 sort-input-date elevation-1">
                                     <div class="input-group-prepend">
                                         <label class="input-group-text" for="inputGroupSelect01"><i
                                                 class="fas fa-money-bill"></i></label>
                                     </div>
-                                    <select class="custom-select" id="inputGroupSelect01">
+                                    <select wire:model="currencyId" class="custom-select">
                                         <option selected>Currency</option>
-                                        <option value="1">$ USD</option>
-                                        <option value="2">B THB</option>
-                                        <option value="3">Rp IND</option>
+                                        @foreach ($currencys as $currency)
+                                        <option value={{$currency->id}}>{{$currency->symbol}} {{$currency->code}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
 
@@ -118,7 +138,7 @@
                         <!-- /.card-header -->
                         <div class="card-body-v1 p-0">
                             <table class="table table-v1 table-hover">
-                                <thead>
+                                {{-- <thead>
                                     <tr class="tr-th-border-0 stick-top-0">
                                         <th scope="col" class="text-center text-info minimal-table-column">Date</th>
                                         <th scope="col" class="text-right text-info minimal-table-column">#</th>
@@ -129,7 +149,7 @@
                                         <th scope="col" class="text-center text-info minimal-table-column">Created By</th>
                                         <th scope="col" class="text-center text-info minimal-table-column">Options</th>
                                     </tr>
-                                </thead>
+                                </thead> --}}
                                 <tbody id="sortable">
                                     <?php
                                         $trRowNumber = 0;
@@ -140,7 +160,7 @@
                                             <?php
                                             $trRowNumber = 0;
                                             ?>
-                                            <tr class="tr-td-border-0 border-bottom stick-top-next bg-wite">
+                                            <tr class="tr-td-border-0 stick-top-0 bg-wite">
                                                 <td scope="col"
                                                     class="text-left text-info text-bold minimal-table-column">
                                                     {{ date('M-Y', strtotime($transaction->month)) }}
@@ -150,8 +170,18 @@
                                                         wire:key="tr-total-{{ $transaction->id.$updateTime }}" />
                                                 </td>
                                             </tr>
+                                            <tr class="tr-th-border-0 stick-top-next">
+                                                <th scope="col" class="text-center text-info minimal-table-column m-0 p-0"><div class="border-bottom pb-2">Date</div></th>
+                                                <th scope="col" class="text-right text-info minimal-table-column m-0 p-0"><div class="border-bottom pb-2">#</div></th>
+                                                <th scope="col" class="text-left text-info m-0 p-0" style="white-space: nowrap;"><div class="border-bottom pb-2">Pament Name</div></th>
+                                                <th scope="col" class="text-center text-info minimal-table-column m-0 p-0"><div class="border-bottom pb-2">Amount</div></th>
+                                                <th scope="col" class="text-center text-info minimal-table-column m-0 p-0"><div class="border-bottom pb-2">Pay On</div></th>
+                                                <th scope="col" class="text-center text-info m-0 p-0"><div class="border-bottom pb-2">Detail</div></th>
+                                                <th scope="col" class="text-center text-info minimal-table-column m-0 p-0"><div class="border-bottom pb-2">Created By</div></th>
+                                                <th scope="col" class="text-center text-info minimal-table-column m-0 p-0"><div class="border-bottom pb-2">Options</div></th>
+                                            </tr>
                                         @endif
-                                        <tr class="tr-td-border-0 bg-wite" wire:key="tr-{{ $transaction->id }}"
+                                        <tr class="tr-td-border-0 bg-wite  text-sm-small-screen" wire:key="tr-{{ $transaction->id }}"
                                             id="{{ $transaction->id }}">
                                             <td scope="col" class="pl-5 text-sm text-left minimal-table-column">
                                                 {{ date(env('DATE_FORMAT','d-m-Y'), strtotime($transaction->tr_date)) }}
@@ -187,7 +217,7 @@
                                                 text-info @endif ">
                                                 {{ $transaction->amount . $transaction->currency->symbol }}
                                             </td>
-                                            <td scope="col" class="text-center minimal-table-column">
+                                            <td scope="col" class="text-center text-sm minimal-table-column">
                                                 @if ($transaction->type == 1)
                                                     {{-- <i class="fas fa-user-circle text-lg text-success mr-1"></i> --}}
                                                     <i class="fas fa-user text-success mr-1"></i>
@@ -258,16 +288,24 @@
                                                 {{-- <button onClick = 'goToTop()'>TOP</button> --}}
                                             </th>
                                         </tr>
+                                    @else
+                                        <tr class="tr-td-border-0 border-bottom stick-top-next bg-wite">
+                                            <th scope="col" colspan="8" class="text-center text-info">
+                                                <button class="btn btn-sm btn-info" wire:click='inceaseTakeAmount'>
+                                                    Load More <i wire:loading="" wire:target="inceaseTakeAmount" class="fas fa-spinner fa-spin"></i>
+                                                </button>
+                                            </th>
+                                        </tr>
                                     @endif
 
 
                                 </tbody>
                             </table>
-                            @if (!$reachLastRecord)
+                            {{-- @if (!$reachLastRecord)
                                 <div class="text-center text-info w-100 p-3" wire:loading="" wire:target="inceaseTakeAmount">
                                 <i class="fas fa-spinner fa-spin"></i>
                                 </div>
-                            @endif
+                            @endif --}}
 
                         </div>
                         <!-- /.card-body -->
@@ -298,142 +336,5 @@
     @endif
 </div>
 @push('js')
-    <script>
-        $(window).scroll(function() {
-            if ($(window).scrollTop() + $(window).height() >= $(document).height()) {
-                @this.inceaseTakeAmount();
-            }
-        });
-
-        // call by tr-edit-form x button
-        // Cancel button click
-        function hideEditPaymentForm(){
-            $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px',"overflow":"hidden"});
-            $('.tr-edit-payment-form-controller').css({"height":0});
-            $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
-                $('.tr-edit-payment-form').css("display","none");
-            });
-            // $('.tr-edit-payment-form-controller').css({"height":0});
-            Livewire.emit('clearEditTransactionCashList');
-        };
-
-        // Edit button click
-        function clearEditPaymentForm(){
-            $('.tr-edit-payment-form-controller').css({"overflow":"hidden"});
-            $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
-                $('.tr-edit-payment-form').css("display","none");
-            });
-            $('.tr-edit-payment-form-controller').css({"height":0});
-        };
-
-        window.addEventListener('update-payment-alert-success', e => {
-            Swal.fire({
-                title: 'Success!',
-                text: 'Payment update successfully.',
-                icon: 'success',
-                confirmButtonText: 'OK',
-
-            }).then((e) => {
-                // Hide from
-                // Clear emit transaction
-                // Livewire.emit('refreshCashList');
-                Livewire.emit('clearEditTransactionCashList');
-            });
-        });
-
-        function showConfirmDelete(eventName){
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // @this.deletePaymenet();
-                    // Livewire.emit('trEditPaymentFormDelete');
-                    Livewire.emit(eventName);
-
-                }
-            });
-        }
-
-        window.addEventListener('update-add-cash-alert-success', e => {
-            Swal.fire({
-                title: 'Success!',
-                text: 'Cash update successfully.',
-                icon: 'success',
-                confirmButtonText: 'OK',
-
-            }).then((e) => {
-                // Hide from
-                // Clear emit transaction
-                // Livewire.emit('refreshCashList');
-                Livewire.emit('clearEditTransactionCashList');
-            });
-        });
-
-        window.addEventListener('update-exchange-alert-success', e => {
-            Swal.fire({
-                title: 'Success!',
-                text: 'Exchange update successfully.',
-                icon: 'success',
-                confirmButtonText: 'OK',
-
-            }).then((e) => {
-                // Hide from
-                // Clear emit transaction
-                // Livewire.emit('refreshCashList');
-                Livewire.emit('clearEditTransactionCashList');
-            });
-        });
-
-
-
-        // javascript event hooks
-        document.addEventListener("DOMContentLoaded", () => {
-
-                // Livewire.hook('component.initialized', (component) => {
-                //     console.log('component.name');
-                // })
-
-                // Livewire.hook('element.initialized', (el, component) => {
-                //     console.log('element.initialized');
-                // })
-
-                // Livewire.hook('element.updating', (fromEl, toEl, component) => {
-                //     // console.log('element.updating')
-                // })
-
-                Livewire.hook('element.updated', (el, component) => {
-                    $('[data-toggle="tooltip"]').tooltip();
-                    $('[data-toggle="popover"]').popover();
-                    // console.log(component.name);
-
-                })
-
-                // Livewire.hook('element.removed', (el, component) => {
-                //     console.log('element.removed');
-                // })
-
-                // Livewire.hook('message.sent', (message, component) => {
-                //     console.log('message.sent');
-                // })
-
-                // Livewire.hook('message.failed', (message, component) => {
-                //     console.log('message.failed');
-                // })
-
-                // Livewire.hook('message.received', (message, component) => {
-                //     console.log('message.received');
-                // })
-
-                // Livewire.hook('message.processed', (message, component) => {
-                //     console.log('message.processed');
-                // })
-
-                });
-    </script>
+<script src="{{ asset('backend/dist/js/transactions/tr_list.js') }}"></script>
 @endpush

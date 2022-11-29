@@ -95,12 +95,9 @@
 
     <script>
         $(function e(){
-            //$('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
-            //const myTimeout = setTimeout(()=>{
-                $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
-            //},10);
+            $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
             $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
-                $('.tr-edit-payment-form-controller').css("overflow","unset");
+                $('.tr-edit-payment-form-controller').css("overflow","");
             });
         })
     </script>

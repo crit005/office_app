@@ -146,15 +146,6 @@
             $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
                 $('.tr-edit-payment-form-controller').css("overflow","");
             });
-            $('#tr_edit_description').on("resize",()=>{
-                console.log($('#tr_edit_description').heightgg);
-            });
-            // $('#tr_edit_payment_item_id').on('change',(e)=>{
-            //     // console.log($('#tr_edit_payment_item_id').find(":selected").val());
-            //     // const myTimeout = setTimeout(()=>{
-            //     $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
-            //     // },500);
-            // });
         })
     </script>
 

@@ -142,8 +142,5 @@
             handle: ".modal-header"
         });
 
-        function clickme() {
-            window.hide - add - cash - form();
-        }
     </script>
 @endpush

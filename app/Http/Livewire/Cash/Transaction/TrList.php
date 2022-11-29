@@ -2,6 +2,9 @@
 
 namespace App\Http\Livewire\Cash\Transaction;
 
+use App\Models\Currency;
+use App\Models\Depatment;
+use App\Models\Items;
 use App\Models\TrCash;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
@@ -17,6 +20,11 @@ class TrList extends Component
     public $updateTime='';
     public $viewTransaction;
     public $viewId;
+    public $depatments;
+    public $currencys;
+
+    // Search varibals
+    public $fromDate, $toDate, $depatmentId, $itemId, $otherName, $currencyId, $isOther;
 
     protected $listeners = ['refreshCashList' => 'refreshCashList',
     'clearEditTransactionCashList'=>'clearEditTransactionCashList'];
@@ -51,15 +59,38 @@ class TrList extends Component
         if($amount){
             $this->takeAmount += $amount;
         }else{
-            $this->takeAmount += env('TAKE_AMOUNT');
+            $this->takeAmount += env('TAKE_AMOUNT',100);
         }
         $this->reset(['currentMonth']);
     }
 
     public function mount()
     {
+        $this->depatments = Depatment::where('status','=','ENABLED')->orderBy('position','asc')->get();
+        $this->currencys = Currency::where('status','=','ENABLED')->orderBy('position','asc')->get();
+        $this->items = Items::where('status','=','ENABLED')->orderBy('position','asc')->get();
+
         $this->globleBalance = Session::get('isGlobleCash')?? false;
-        $this->takeAmount = env('TAKE_AMOUNT');
+        $this->takeAmount = env('TAKE_AMOUNT',100);
+    }
+
+    public function updated($name, $value)
+    {
+        if($name == 'itemId' && $value == 13){
+            $this->isOther = true;
+        }else{
+            $this->reset(['otherName']);
+            $this->isOther = false;
+        }
+        $this->resetSearch($name);
+    }
+
+    function resetSearch($name)
+    {
+        if(in_array($name,['fromDate', 'toDate', 'depatmentId', 'itemId', 'otherName', 'currencyId', 'isOther'])){
+            $this->reset(['currentMonth']);
+            $this->takeAmount = env('TAKE_AMOUNT',100);
+        }
     }
 
     public function showEdit($id)
