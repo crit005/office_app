@@ -72,6 +72,7 @@ class TrList extends Component
     public function showView($id)
     {
         $this->viewId = $id;
+        $this->reset(['editTransaction']);
         $this->reset(['currentMonth']);
         $this->dispatchBrowserEvent('show-view-form');
     }

@@ -6,7 +6,7 @@
         <div class="tr-edit-payment-form-controller height-0" wire:ignore.self>
             <div class="inline-form m-0 row">
 
-                <div class="form-group-sm text-sm col-md-4 col-sm-6">
+                <div class="form-group-sm text-sm col-md-4 col-sm-6 mt-2">
                     <label for="tr_edit_add_cash_tr_date">Date:</label>
                     <x-datepicker wire:model="form.tr_date" id="tr_edit_add_cash_tr_date" :error="'tr_date'"
                         :format="'DD-MMM-Y'" />
@@ -15,7 +15,7 @@
                     @enderror
                 </div>
 
-                <div class="form-group-sm text-sm col-md-4 col-sm-6">
+                <div class="form-group-sm text-sm col-md-4 col-sm-6 mt-2">
                     <label for="currency_id">Currency:</label>
                     <select wire:model.debounce='form.currency_id'
                         class="form-control @error('currency_id') is-invalid @else {{ $this->getValidClass('currency_id') }} @enderror"
@@ -32,7 +32,7 @@
                     @enderror
                 </div>
 
-                <div class="form-group-sm text-sm col-md-4 col-sm-6">
+                <div class="form-group-sm text-sm col-md-4 col-sm-6 mt-2">
                     <label for="amount">Amount:</label>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
@@ -50,7 +50,7 @@
                     </div>
                 </div>
 
-                <div class="form-group-sm text-sm col-md-10 col-sm-12">
+                <div class="form-group-sm text-sm col-md-10 col-sm-12 mt-2">
                     <label for="tr_edit_description">Description:</label>
                     <textarea wire:ignore.self wire:model.debounce='form.description' name="description" id="tr_edit_description" class="form-control"
                     placeholder="Enter ..." rows="1">
@@ -66,12 +66,12 @@
                     </button>
                 </div> --}}
 
-                <div class="form-group-sm text-sm col-sm-6 col-md-1 d-flex align-items-end">
+                <div class="form-group-sm text-sm col-sm-6 col-md-1 d-flex align-items-end mt-2">
                     <button type="submit" class="btn btn-primary btn-sm w-100 mt-2"><i
                         class="fas fa-save"></i></button>
                 </div>
 
-                <div class="form-group-sm text-sm col-sm-6 col-md-1 d-flex align-items-end">
+                <div class="form-group-sm text-sm col-sm-6 col-md-1 d-flex align-items-end mt-2">
                     <button type="button" class="btn btn-danger btn-sm w-100 mt-2"
                     onclick="showConfirmDelete('trEditAddCashFormDelete')">
                         <i class="fas fa-trash"></i>

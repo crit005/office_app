@@ -7,7 +7,7 @@
         {{-- <div class="tr-edit-payment-form-controller height-0"  wire:ignore.self> --}}
             <div class="inline-form m-0 row">
 
-                <div class="form-group-sm text-sm col-lg-2 col-md-4 col-sm-6  mb-2">
+                <div class="form-group-sm text-sm col-lg-2 col-md-3 col-sm-6 mt-2">
                     <label for="tr_date">Date:</label>
                     <x-datepicker wire:model="form.tr_date" id="tr_date_exchange" :error="'tr_date'"
                         :format="'DD-MMM-Y'" />
@@ -16,7 +16,9 @@
                     @enderror
                 </div>
 
-                <div class="form-group-sm text-sm col-lg-2 col-md-4 col-sm-6 ">
+                <div class="col-sm-9 d-none d-sm-block d-md-block d-lg-none"></div>
+
+                <div class="form-group-sm text-sm col-lg-2 col-md-3 col-sm-6  mt-2">
                     <label for="currency_id">From Currency:</label>
                     <select wire:model.debounce='form.currency_id'
                         class="form-control @error('currency_id') is-invalid @else {{ $this->getValidClass('currency_id') }} @enderror"
@@ -33,9 +35,9 @@
                     @enderror
                 </div>
 
-                <div class="form-group-sm text-sm col-lg-3 col-md-4 col-sm-6">
+                <div class="form-group-sm text-sm col-lg-3 col-md-3 col-sm-6 mt-2">
                     <label for="amount">From Amount:</label>
-                    <div class="input-group mb-3">
+                    <div class="input-group">
                         <input type="text"
                             class="form-control   @error('amount') is-invalid @else {{ $this->getValidClass('amount') }} @enderror"
                             wire:model.debounce='form.amount' name="amount" id="amount"
@@ -50,7 +52,7 @@
                     </div>
                 </div>
 
-                <div class="form-group-sm text-sm col-lg-2 col-md-4 col-sm-6">
+                <div class="form-group-sm text-sm col-lg-2 col-md-3 col-sm-6 mt-2">
                     <label for="to_currency_id">To Currency:</label>
                     <select wire:model.debounce='form.to_currency_id'
                         class="form-control @error('to_currency_id') is-invalid @else {{ $this->getValidClass('to_currency_id') }} @enderror"
@@ -68,9 +70,9 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
-                <div class="form-group-sm text-sm col-lg-3 col-md-4 col-sm-6">
+                <div class="form-group-sm text-sm col-lg-3 col-md-3 col-sm-6 mt-2">
                     <label for="to_amount">To Amount:</label>
-                    <div class="input-group mb-3">
+                    <div class="input-group">
                         <input type="text"
                             class="form-control   @error('to_amount') is-invalid @else {{ $this->getValidClass('to_amount') }} @enderror"
                             wire:model.debounce='form.to_amount' name="amount" id="to_amount"
@@ -85,7 +87,7 @@
                     </div>
                 </div>
 
-                <div class="form-group-sm text-sm col-md-10 col-sm-12">
+                <div class="form-group-sm text-sm col-md-10 col-sm-12 mt-2">
                     <label for="tr_edit_description">Description:</label>
                     <textarea wire:ignore.self wire:model.debounce='form.description' name="description" id="tr_edit_description" class="form-control"
                     placeholder="Enter ..."
@@ -93,12 +95,12 @@
                         ></textarea>
                 </div>
 
-                <div class="form-group-sm text-sm col-sm-6 col-md-1 d-flex align-items-end">
+                <div class="form-group-sm text-sm col-sm-6 col-md-1 d-flex align-items-end mt-2">
                     <button type="submit" class="btn btn-primary btn-sm w-100 mt-2"><i class="fas fa-save"></i></button>
                 </div>
 
-                <div class="form-group-sm text-sm col-sm-6 col-md-1 d-flex align-items-end">
-                    <button type="button" class="btn btn-danger btn-sm w-100 mt-2" onclick="showConfirmDelete('trEditPaymentFormDelete')">
+                <div class="form-group-sm text-sm col-sm-6 col-md-1 d-flex align-items-end mt-2">
+                    <button type="button" class="btn btn-danger btn-sm w-100 mt-2" onclick="showConfirmDelete('trEditExchangeFormDelete')">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -126,12 +128,6 @@
             $('.tr-edit-payment-form-controller').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
                 $('.tr-edit-payment-form-controller').css("overflow","");
             });
-            // $('#tr_edit_payment_item_id').on('change',(e)=>{
-            //     // console.log($('#tr_edit_payment_item_id').find(":selected").val());
-            //     // const myTimeout = setTimeout(()=>{
-            //     $('.tr-edit-payment-form-controller').css({"height":$('.inline-form').height()+'px'});
-            //     // },500);
-            // });
         })
     </script>
 

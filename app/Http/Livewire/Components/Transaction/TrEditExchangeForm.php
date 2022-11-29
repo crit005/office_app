@@ -34,6 +34,8 @@ class TrEditExchangeForm extends Component
     public $transaction;
     public $toTransaction;
 
+    protected $listeners = ['trEditExchangeFormDelete' => 'deleteExchange'];
+
     public function mount($id)
     {
         $transaction = TrCash::find($id);
@@ -283,7 +285,7 @@ class TrEditExchangeForm extends Component
     {
         $this->transaction->update(['status'=>0,'updated_by'=>auth()->user()->id,'logs'=>$this->logs]);
         $this->updateBalance($this->oldCurrency_id,$this->transaction->created_by);
-        $this->toTransaction->update(['status'=>0,'updated_by'=>auth()->user()->id,'logs'=>$this->logs]);
+        $this->toTransaction->update(['status'=>0,'updated_by'=>auth()->user()->id]);
         $this->updateBalance($this->oldToCurrency_id,$this->toTransaction->created_by);
         $this->emitUp('clearEditTransactionCashList','delete');
     }

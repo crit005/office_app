@@ -7,7 +7,7 @@
         {{-- <div class="tr-edit-payment-form-controller height-0"  wire:ignore.self> --}}
             <div class="inline-form m-0 row">
 
-                <div class="form-group-sm text-sm col-lg-2 col-md-4 col-sm-6  mb-2">
+                <div class="form-group-sm text-sm col-lg-2 col-md-4 col-sm-6 mt-2">
                     <label for="tr_edit_date_payment">Date:</label>
                     <x-datepicker wire:key='{{ $transaction->id }}' wire:model="form.tr_date"
                         id="tr_edit_date_payment" :error="'tr_date'" :format="'DD-MMM-Y'" />
@@ -16,7 +16,7 @@
                     @enderror
                 </div>
 
-                <div class="form-group-sm text-sm {{$showOtherOption ? 'col-lg-2 col-md-4 col-sm-6' : 'col-lg-4 col-md-8 col-sm-6'}} ">
+                <div class="form-group-sm text-sm mt-2 {{$showOtherOption ? 'col-lg-2 col-md-4 col-sm-6' : 'col-lg-4 col-md-8 col-sm-6'}} ">
                     <label for="tr_edit_payment_item_id">Expand Name:</label>
                     <select wire:model.debounce='form.item_id'
                         class="form-control mb-2 @error('item_id') is-invalid @else {{ $this->getValidClass('item_id') }} @enderror"
@@ -33,7 +33,7 @@
                 </div>
 
                 @if ($showOtherOption)
-                <div class="form-group-sm text-sm col-lg-2 col-md-4 col-sm-6">
+                <div class="form-group-sm text-sm col-lg-2 col-md-4 col-sm-6 mt-2">
                     <label for="tr_edit_item_name">Other Name:</label>
                     <div class="input-group mb-2">
                         <input type="text"
@@ -48,7 +48,7 @@
                 </div>
                 @endif
 
-                <div class="form-group-sm text-sm col-lg-2 col-md-4 col-sm-6">
+                <div class="form-group-sm text-sm col-lg-2 col-md-4 col-sm-6 mt-2">
                     <label for="tr_edit_currency_id">Currency:</label>
                     <select wire:model.debounce='form.currency_id'
                         class="form-control @error('currency_id') is-invalid @else {{ $this->getValidClass('currency_id') }} @enderror"
@@ -64,7 +64,7 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
-                <div class="form-group-sm text-sm col-lg-2 col-md-4 col-sm-6">
+                <div class="form-group-sm text-sm col-lg-2 col-md-4 col-sm-6 mt-2">
                     <label for="tr_edit_amount">Amount:</label>
                     <div class="input-group mb-2">
                         <input type="text"
@@ -81,7 +81,7 @@
                     </div>
                 </div>
 
-                <div class="form-group-sm text-sm col-lg-2 col-md-4 col-sm-6">
+                <div class="form-group-sm text-sm col-lg-2 col-md-4 col-sm-6 mt-2">
                     <label for="tr_edit_to_from">Expand On:</label>
                     <select wire:model.debounce='form.to_from'
                         class="form-control @error('to_from') is-invalid @else {{ $this->getValidClass('to_from') }} @enderror"
@@ -105,7 +105,7 @@
                     </div>
                 </div> --}}
 
-                <div class="form-group-sm text-sm col-md-10 col-sm-12">
+                <div class="form-group-sm text-sm col-md-10 col-sm-12 mt-2">
                     <label for="tr_edit_description">Description:</label>
                     <textarea wire:ignore.self wire:model.debounce='form.description' name="description" id="tr_edit_description" class="form-control"
                     placeholder="Enter ..."
@@ -113,11 +113,11 @@
                         ></textarea>
                 </div>
 
-                <div class="form-group-sm text-sm col-sm-6 col-md-1 d-flex align-items-end">
+                <div class="form-group-sm text-sm col-sm-6 col-md-1 d-flex align-items-end mt-2">
                     <button type="submit" class="btn btn-primary btn-sm w-100 mt-2"><i class="fas fa-save"></i></button>
                 </div>
 
-                <div class="form-group-sm text-sm col-sm-6 col-md-1 d-flex align-items-end">
+                <div class="form-group-sm text-sm col-sm-6 col-md-1 d-flex align-items-end mt-2">
                     <button type="button" class="btn btn-danger btn-sm w-100 mt-2" onclick="showConfirmDelete('trEditPaymentFormDelete')">
                         <i class="fas fa-trash"></i>
                     </button>
