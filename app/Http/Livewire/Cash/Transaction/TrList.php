@@ -84,6 +84,7 @@ class TrList extends Component
             $this->reset(['otherName']);
             $this->isOther = false;
         }
+        $this->emptySearchToNull($name,$value);
         $this->resetSearch($name);
     }
 
@@ -92,6 +93,17 @@ class TrList extends Component
         if (in_array($name, ['fromDate', 'toDate', 'depatmentId', 'itemId', 'otherName', 'currencyId', 'isOther'])) {
             $this->reset(['currentMonth']);
             $this->takeAmount = env('TAKE_AMOUNT', 100);
+        }
+    }
+
+    function emptySearchToNull($name,$value)
+    {
+        if (in_array($name, ['fromDate', 'toDate', 'depatmentId', 'itemId', 'otherName', 'currencyId', 'isOther'])) {
+            if($value==''){
+                $this->reset([$name]);
+            }
+
+
         }
     }
 
@@ -129,26 +141,27 @@ class TrList extends Component
                 ->where('created_by', '=', auth()->user()->id)
                 ->where('type', '!=', 4)
                 ->when($this->fromDate, function ($q) {
-                    $q->where('tr_date', '>=', $this->fromDate);
+                    $q->where('tr_date', '>=', date('Y-m-d', strtotime($this->fromDate)));
                 })
-                ->where(function ($q) {
-                    $q->when($this->toDate, function ($q) {
-                            $q->where('tr_date', '<=', $this->toDate);
-                        })
-                        ->when($this->depatmentId, function ($q) {
-                            $q->where('type', '=', 2)
-                                ->where('to_from_Id', '=', $this->depatmentId);
-                        })
-                        ->when($this->itemId, function ($q) {
-                            $q->where('item_id', '=', $this->itemId);
-                        })
-                        ->when($this->currencyId, function ($q) {
-                            $q->where('currency_id', '=', $this->currencyId);
-                        })
-                        ->when($this->otherName, function ($q) {
-                            $q->orWhere('other_name', 'like', "%" . $this->otherName . "%");
-                        });
+                ->when($this->toDate, function ($q) {
+                    $q->where('tr_date', '<=', date('Y-m-d', strtotime($this->toDate)));
                 })
+                ->when($this->depatmentId, function ($q) {
+                    $q->where('type', '=', 2)
+                    ->where('to_from_Id', '=', $this->depatmentId);
+                })
+                // ->where(function ($q) {
+                //     $q
+                //         ->when($this->itemId, function ($q) {
+                //             $q->where('item_id', '=', $this->itemId);
+                //         })
+                //         ->when($this->currencyId, function ($q) {
+                //             $q->where('currency_id', '=', $this->currencyId);
+                //         })
+                //         ->when($this->otherName, function ($q) {
+                //             $q->orWhere('other_name', 'like', "%" . $this->otherName . "%");
+                //         });
+                // })
 
                 ->orderBy('month', 'desc')
                 ->orderBy('tr_date', 'desc')

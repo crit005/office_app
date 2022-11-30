@@ -78,7 +78,7 @@
                                             <i class="fas fa-grip-horizontal"></i></label>
                                     </div>
                                     <select wire:model="depatmentId" class="custom-select">
-                                        <option selected>Depatment</option>
+                                        <option value="">Depatment</option>
                                         @foreach ($depatments as $depatment )
                                             <option value={{$depatment->id}}>{{$depatment->name}}</option>
                                         @endforeach
