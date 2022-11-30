@@ -5,7 +5,8 @@
     data-mindate="{{$minDate?? env('MINDATE')}}"
     data-maxdate="{{$maxDate?? env('MAXDATE')}}"
     placeholder="{{$placeholder?? ''}}"
-    onchange="this.dispatchEvent(new InputEvent('input'))" />
+    onchange="this.dispatchEvent(new InputEvent('input'))"
+    autocomplete="off"/>
 
 @push('js')
 <script type="text/javascript">

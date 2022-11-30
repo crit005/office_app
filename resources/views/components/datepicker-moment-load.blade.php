@@ -6,7 +6,8 @@
     @enderror" id="{{$id}}" data-toggle="datetimepicker" data-target="#{{$id}}"
     data-mindate="{{$minDate?? env('MINDATE')}}"
     data-maxdate="{{$maxDate?? env('MAXDATE')}}"
-    onchange="this.dispatchEvent(new InputEvent('input'))" />
+    onchange="this.dispatchEvent(new InputEvent('input'))"
+    autocomplete="off" />
 {{-- @push('js') --}}
 <script type="text/javascript">
     $(function(e){
@@ -14,7 +15,7 @@
             // locale: moment.locale('km'),
             format:"{{$format ?? 'L'}}",
             // defaultDate:moment().toDate(),
-            defaultDate: moment().format(),
+            // defaultDate: moment().format(),
             // format:'L',
             viewMode:"{{$viewMode ?? 'days'}}",
             useCurrent: false

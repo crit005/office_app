@@ -16,7 +16,7 @@
             // locale: moment.locale('km'),
             format:"{{$format ?? 'L'}}",
             // defaultDate:moment().toDate(),
-            defaultDate: moment().format(),
+            // defaultDate: moment().format(),
             // format:'L',
             viewMode:"{{$viewMode ?? 'days'}}",
             useCurrent: false
