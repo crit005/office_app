@@ -314,7 +314,7 @@ input:checked + .slider:before {
 }
 
 .sort-input-date {
-    width: 129px;
+    width: 150px;
 }
 
 .minimal-table-column {

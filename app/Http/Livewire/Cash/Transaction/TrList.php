@@ -78,7 +78,7 @@ class TrList extends Component
 
     public function updated($name, $value)
     {
-        if ($name == 'itemId' && $value == 13) {
+        if (($name == 'itemId' && $value == 13) || ($name == 'otherName')) {
             $this->isOther = true;
         } else {
             $this->reset(['otherName']);
@@ -107,6 +107,12 @@ class TrList extends Component
         }
     }
 
+    function clearFilter()
+    {
+        $this->reset(['currentMonth','fromDate', 'toDate', 'depatmentId', 'itemId', 'otherName', 'currencyId', 'isOther']);
+        $this->takeAmount = env('TAKE_AMOUNT', 100);
+    }
+
     public function showEdit($id)
     {
         $transaction = TrCash::find($id);
@@ -128,6 +134,31 @@ class TrList extends Component
         if ($this->globleBalance) {
             $transactions = TrCash::where('status', '!=', 0)
                 ->where('type', '!=', 4)
+
+                ->when($this->fromDate, function ($q) {
+                    $q->where('tr_date', '>=', date('Y-m-d', strtotime($this->fromDate)));
+                })
+                ->when($this->toDate, function ($q) {
+                    $q->where('tr_date', '<=', date('Y-m-d', strtotime($this->toDate)));
+                })
+                ->when($this->depatmentId, function ($q) {
+                    $q->where('type', '=', 2)
+                    ->where('to_from_Id', '=', $this->depatmentId);
+                })
+                ->when($this->itemId, function ($q) {
+                    $q->where('item_id', '=', $this->itemId);
+                })
+                ->when($this->otherName, function ($q) {
+                    $q->where('other_name', 'like', "%" . $this->otherName . "%");
+                })
+                ->when($this->currencyId, function ($q) {
+                    $q->where('currency_id', '=', $this->currencyId)
+                    ->orWhere(function($q){
+                        $q->where('type','=',3)
+                        ->where('to_from_id','=',$this->currencyId);
+                    });
+                })
+
                 ->orderBy('month', 'desc')
                 ->orderBy('tr_date', 'desc')
                 ->orderBy('id', 'desc')
@@ -140,6 +171,7 @@ class TrList extends Component
             $transactions = TrCash::where('status', '!=', 0)
                 ->where('created_by', '=', auth()->user()->id)
                 ->where('type', '!=', 4)
+
                 ->when($this->fromDate, function ($q) {
                     $q->where('tr_date', '>=', date('Y-m-d', strtotime($this->fromDate)));
                 })
@@ -150,18 +182,19 @@ class TrList extends Component
                     $q->where('type', '=', 2)
                     ->where('to_from_Id', '=', $this->depatmentId);
                 })
-                // ->where(function ($q) {
-                //     $q
-                //         ->when($this->itemId, function ($q) {
-                //             $q->where('item_id', '=', $this->itemId);
-                //         })
-                //         ->when($this->currencyId, function ($q) {
-                //             $q->where('currency_id', '=', $this->currencyId);
-                //         })
-                //         ->when($this->otherName, function ($q) {
-                //             $q->orWhere('other_name', 'like', "%" . $this->otherName . "%");
-                //         });
-                // })
+                ->when($this->itemId, function ($q) {
+                    $q->where('item_id', '=', $this->itemId);
+                })
+                ->when($this->otherName, function ($q) {
+                    $q->where('other_name', 'like', "%" . $this->otherName . "%");
+                })
+                ->when($this->currencyId, function ($q) {
+                    $q->where('currency_id', '=', $this->currencyId)
+                    ->orWhere(function($q){
+                        $q->where('type','=',3)
+                        ->where('to_from_id','=',$this->currencyId);
+                    });
+                })
 
                 ->orderBy('month', 'desc')
                 ->orderBy('tr_date', 'desc')

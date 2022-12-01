@@ -77,8 +77,8 @@
                                         <label class="input-group-text" for="inputGroupSelect01">
                                             <i class="fas fa-grip-horizontal"></i></label>
                                     </div>
-                                    <select wire:model="depatmentId" class="custom-select">
-                                        <option value="">Depatment</option>
+                                    <select wire:model="depatmentId" class="custom-select form-select">
+                                        <option value="">* Depatment</option>
                                         @foreach ($depatments as $depatment )
                                             <option value={{$depatment->id}}>{{$depatment->name}}</option>
                                         @endforeach
@@ -92,7 +92,7 @@
                                         </label>
                                     </div>
                                     <select wire:model="itemId" class="custom-select">
-                                        <option selected>Payment</option>
+                                        <option value="" selected>* Payment</option>
                                         @foreach ($items as $item)
                                         <option value={{$item->id}}>{{$item->name}}</option>
                                         @endforeach
@@ -110,15 +110,15 @@
                                         <label class="input-group-text" for="inputGroupSelect01"><i
                                                 class="fas fa-money-bill"></i></label>
                                     </div>
-                                    <select wire:model="currencyId" class="custom-select">
-                                        <option selected>Currency</option>
+                                    <select wire:model="currencyId" class="custom-select selectpicker">
+                                        <option value="" selected>* Currency</option>
                                         @foreach ($currencys as $currency)
                                         <option value={{$currency->id}}>{{$currency->symbol}} {{$currency->code}}</option>
                                         @endforeach
                                     </select>
                                 </div>
 
-                                <button class="btn btn-primary btn-sm elevation-1">All</button>
+                                <button class="btn btn-primary btn-sm elevation-1" wire:click="clearFilter">All</button>
 
                             </div>
 
