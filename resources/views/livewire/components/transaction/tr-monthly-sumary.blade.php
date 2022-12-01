@@ -8,7 +8,7 @@
         @endforeach
     </div>
     <div class="text-success  text-center">
-        Incom:
+        CashIn:
         @foreach ($totals as $total )
         <span class="{{$total->income < 0 ? 'text-danger':''}}">{{$total->income . $total->symbol}}</span>
             {{($total != end($totals)) ? '/':''}}

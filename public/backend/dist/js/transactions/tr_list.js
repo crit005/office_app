@@ -89,6 +89,12 @@ function showConfirmDelete(eventName) {
   });
 }
 
+window.addEventListener('trResetRankDateTimePicker', e => {
+  $('#tr_from_date').datetimepicker('maxDate', false);
+  $('#tr_to_date').datetimepicker('minDate', false);
+});
+
+
 // javascript event hooks
 document.addEventListener("DOMContentLoaded", () => {
 

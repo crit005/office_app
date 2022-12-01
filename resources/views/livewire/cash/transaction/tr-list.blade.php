@@ -39,7 +39,7 @@
 
                                 <div class="total-info-top d-flex flex-row">
                                     <div class="mr-3">
-                                        <span class="info-label">Incom:</span> <span class="info-number">861285 ฿ / 6538
+                                        <span class="info-label">CashIn:</span> <span class="info-number">861285 ฿ / 6538
                                             $</span>
                                     </div>
                                 </div>
@@ -63,13 +63,13 @@
                                     <div class="input-group-prepend">
                                         <label class="input-group-text"><i class="fas fa-calendar"></i></label>
                                     </div>
-                                    <x-datepicker-normal wire:model="fromDate" :id="'from_date'" :linked="'to_date'" :format="'DD-MMM-Y'" :placeholder="'From'" />
+                                    <x-datepicker-normal wire:model="fromDate" :id="'tr_from_date'" :linked="'tr_to_date'" :format="'DD-MMM-Y'" :placeholder="'From'" />
                                 </div>
                                 <div class="input-group input-group-sm mr-2 sort-input-date elevation-1">
                                     <div class="input-group-prepend">
                                         <label class="input-group-text"><i class="fas fa-calendar mr-1"></i></label>
                                     </div>
-                                    <x-datepicker-normal wire:model="toDate" id="to_date" :format="'DD-MMM-Y'" :placeholder="'To'" />
+                                    <x-datepicker-normal wire:model="toDate" id="tr_to_date" :format="'DD-MMM-Y'" :placeholder="'To'" />
                                 </div>
 
                                 <div class="input-group input-group-sm mr-2 sort-input-date elevation-1">

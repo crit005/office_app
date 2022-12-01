@@ -111,6 +111,7 @@ class TrList extends Component
     {
         $this->reset(['currentMonth','fromDate', 'toDate', 'depatmentId', 'itemId', 'otherName', 'currencyId', 'isOther']);
         $this->takeAmount = env('TAKE_AMOUNT', 100);
+        $this->dispatchBrowserEvent('trResetRankDateTimePicker');
     }
 
     public function showEdit($id)
