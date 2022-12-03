@@ -24,7 +24,8 @@ class TrList extends Component
     public $currencys;
 
     // Search varibals
-    public $fromDate, $toDate, $depatmentId, $itemId, $otherName, $currencyId, $isOther;
+    public $searchs = [];
+    public $fromDate, $toDate, $depatmentId, $itemId, $otherName, $currencyId, $isOther, $createdBy;
 
     protected $listeners = [
         'refreshCashList' => 'refreshCashList',
@@ -74,6 +75,10 @@ class TrList extends Component
 
         $this->globleBalance = Session::get('isGlobleCash') ?? false;
         $this->takeAmount = env('TAKE_AMOUNT', 100);
+
+        $this->createdBy = auth()->user()->id;
+
+        $this->initSearchs();
     }
 
     public function updated($name, $value)
@@ -84,8 +89,10 @@ class TrList extends Component
             $this->reset(['otherName']);
             $this->isOther = false;
         }
-        $this->emptySearchToNull($name,$value);
+        $this->emptySearchToNull($name, $value);
         $this->resetSearch($name);
+
+        $this->initSearchs();
     }
 
     function resetSearch($name)
@@ -96,22 +103,35 @@ class TrList extends Component
         }
     }
 
-    function emptySearchToNull($name,$value)
+    function initSearchs()
+    {
+        $this->searchs = [
+            'fromDate' => $this->fromDate,
+            'createdBy' => $this->createdBy,
+            'toDate' => $this->toDate,
+            'itemId' => $this->itemId,
+            'otherName' => $this->otherName,
+            'depatmentId' => $this->depatmentId,
+            'createdBy' => $this->createdBy
+        ];
+    }
+
+    function emptySearchToNull($name, $value)
     {
         if (in_array($name, ['fromDate', 'toDate', 'depatmentId', 'itemId', 'otherName', 'currencyId', 'isOther'])) {
-            if($value==''){
+            if ($value == '') {
                 $this->reset([$name]);
             }
-
-
         }
     }
 
     function clearFilter()
     {
-        $this->reset(['currentMonth','fromDate', 'toDate', 'depatmentId', 'itemId', 'otherName', 'currencyId', 'isOther']);
+        $this->reset(['currentMonth', 'fromDate', 'toDate', 'depatmentId', 'itemId', 'otherName', 'currencyId', 'isOther']);
         $this->takeAmount = env('TAKE_AMOUNT', 100);
         $this->dispatchBrowserEvent('trResetRankDateTimePicker');
+        $this->createdBy = auth()->user()->id;
+        $this->initSearchs();
     }
 
     public function showEdit($id)
@@ -129,6 +149,7 @@ class TrList extends Component
         $this->dispatchBrowserEvent('show-view-form');
     }
 
+
     public function render()
     {
         // $fromDate, $toDate, $depatmentId, $itemId, $otherName, $currencyId, $isOther;
@@ -144,7 +165,7 @@ class TrList extends Component
                 })
                 ->when($this->depatmentId, function ($q) {
                     $q->where('type', '=', 2)
-                    ->where('to_from_Id', '=', $this->depatmentId);
+                        ->where('to_from_Id', '=', $this->depatmentId);
                 })
                 ->when($this->itemId, function ($q) {
                     $q->where('item_id', '=', $this->itemId);
@@ -154,10 +175,10 @@ class TrList extends Component
                 })
                 ->when($this->currencyId, function ($q) {
                     $q->where('currency_id', '=', $this->currencyId)
-                    ->orWhere(function($q){
-                        $q->where('type','=',3)
-                        ->where('to_from_id','=',$this->currencyId);
-                    });
+                        ->orWhere(function ($q) {
+                            $q->where('type', '=', 3)
+                                ->where('to_from_id', '=', $this->currencyId);
+                        });
                 })
 
                 ->orderBy('month', 'desc')
@@ -181,7 +202,7 @@ class TrList extends Component
                 })
                 ->when($this->depatmentId, function ($q) {
                     $q->where('type', '=', 2)
-                    ->where('to_from_Id', '=', $this->depatmentId);
+                        ->where('to_from_Id', '=', $this->depatmentId);
                 })
                 ->when($this->itemId, function ($q) {
                     $q->where('item_id', '=', $this->itemId);
@@ -189,13 +210,17 @@ class TrList extends Component
                 ->when($this->otherName, function ($q) {
                     $q->where('other_name', 'like', "%" . $this->otherName . "%");
                 })
+                # AND (`currency_id` = 99 OR (`type` = 3 and `to_from_id` = 99))
                 ->when($this->currencyId, function ($q) {
-                    $q->where('currency_id', '=', $this->currencyId)
-                    ->orWhere(function($q){
-                        $q->where('type','=',3)
-                        ->where('to_from_id','=',$this->currencyId);
+                    $q->where(function($q){
+                        $q->where('currency_id', '=', $this->currencyId)
+                        ->orWhere(function($q){
+                            $q->where('type','=',3)
+                            ->where('to_from_id','=',$this->currencyId);
+                        });
                     });
                 })
+
 
                 ->orderBy('month', 'desc')
                 ->orderBy('tr_date', 'desc')

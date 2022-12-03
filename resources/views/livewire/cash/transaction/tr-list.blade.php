@@ -1,4 +1,5 @@
 <div>
+    @dump($searchs)
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -166,7 +167,7 @@
                                                     {{ date('M-Y', strtotime($transaction->month)) }}
                                                 </td>
                                                 <td scope="col" colspan="7" class="text-left">
-                                                    <livewire:components.transaction.tr-monthly-sumary :totals="$transaction->currency->getTotal($transaction->month)"
+                                                    <livewire:components.transaction.tr-monthly-sumary :totals="$transaction->currency->getTotal($searchs,['month'=>$transaction->month,'createdBy'=>$createdBy])"
                                                         wire:key="tr-total-{{ $transaction->id.$updateTime }}" />
                                                 </td>
                                             </tr>
