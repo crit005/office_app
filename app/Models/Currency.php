@@ -103,12 +103,14 @@ class Currency extends Model
         $otherName = array_key_exists('otherName', $condictions) ? $condictions['otherName'] : null;
         $depatment = array_key_exists('depatmentId', $condictions) ? $condictions['depatmentId'] : null;
         $type = array_key_exists('type', $condictions) ? $condictions['type'] : null;
+        $currencyId = array_key_exists('currencyId',$condictions) ? $condictions['currencyId'] : null;
 
         $arrCondition = [
             $fromDate, $fdMonth, $createdBy, $createdBy, $fromDate, $fromDate, $fdMonth, $fdMonth,
             $fromDate, $fromDate, $toDate, $toDate, $fdMonth, $fdMonth, $itemId, $itemId, $otherName, $otherName, $depatment, $depatment, $type, $type, $createdBy, $createdBy,
             $fromDate, $fromDate, $toDate, $toDate, $fdMonth, $fdMonth, $itemId, $itemId, $otherName, $otherName, $depatment, $depatment, $type, $type, $createdBy, $createdBy,
-            $fromDate, $fromDate, $toDate, $toDate, $fdMonth, $fdMonth, $itemId, $itemId, $otherName, $otherName, $depatment, $depatment, $type, $type, $createdBy, $createdBy
+            $fromDate, $fromDate, $toDate, $toDate, $fdMonth, $fdMonth, $itemId, $itemId, $otherName, $otherName, $depatment, $depatment, $type, $type, $createdBy, $createdBy,
+            $currencyId, $currencyId
         ];
 
         $sql = "
@@ -177,7 +179,7 @@ class Currency extends Model
                     )
                     ,0
                 ) AS total_cash
-        FROM currencies AS cu WHERE cu.status = 'ENABLED' ORDER BY cu.position ASC
+        FROM currencies AS cu WHERE cu.status = 'ENABLED' AND IF(?, cu.id = ?, TRUE) ORDER BY cu.position ASC
         ";
 
         // Return record with id, symbol, begin_amount, cash_in, expend, total_cash

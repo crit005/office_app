@@ -112,7 +112,8 @@ class TrList extends Component
             'itemId' => $this->itemId,
             'otherName' => $this->otherName,
             'depatmentId' => $this->depatmentId,
-            'createdBy' => $this->createdBy
+            'createdBy' => $this->createdBy,
+            'currencyId' => $this->currencyId
         ];
     }
 
