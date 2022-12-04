@@ -89,11 +89,21 @@
                                 </div>
 
                                 <button class="btn btn-primary btn-sm elevation-1" wire:click="clearFilter" onclick="clearSearchDate()">All</button>
-                                <button class="btn btn-primary btn-sm elevation-1" ><i class="fas fa-user"></i></button>
-                                <button class="btn btn-primary btn-sm elevation-1" ><i class="fas fa-users"></i></button>
-                                <button class="btn btn-primary btn-sm elevation-1" >Cash In</button>
-                                <button class="btn btn-primary btn-sm elevation-1" >Expend</button>
-                                <button class="btn btn-primary btn-sm elevation-1" >Exchange</button>
+
+                                <div class="btn-group-sm btn-group-toggle" data-toggle="buttons">
+                                    <label class="btn btn-sm bg-olive">
+                                        <input type="radio" name="tr_mode" id="option_b1" wire:model='type' value='' autocomplete="off"> All
+                                      </label>
+                                    <label class="btn btn-sm bg-olive">
+                                      <input type="radio" name="tr_mode" id="option_b2" wire:model='type' value=1 autocomplete="off"> Cash In
+                                    </label>
+                                    <label class="btn btn-sm bg-olive">
+                                      <input type="radio" name="tr_mode" id="option_b3" wire:model='type' value=2 autocomplete="off"> Expend
+                                    </label>
+                                    <label class="btn btn-sm bg-olive">
+                                      <input type="radio" name="tr_mode" id="option_b4" wire:model='type' value=3 autocomplete="off"> Exchange
+                                    </label>
+                                </div>
 
 
                             </div>

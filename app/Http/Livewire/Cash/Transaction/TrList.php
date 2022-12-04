@@ -27,6 +27,9 @@ class TrList extends Component
     public $searchs = [];
     public $fromDate, $toDate, $depatmentId, $itemId, $otherName, $currencyId, $isOther, $createdBy;
 
+    // search options
+    public $type;
+
     protected $listeners = [
         'refreshCashList' => 'refreshCashList',
         'clearEditTransactionCashList' => 'clearEditTransactionCashList'
@@ -99,7 +102,7 @@ class TrList extends Component
 
     function resetSearch($name)
     {
-        if (in_array($name, ['fromDate', 'toDate', 'depatmentId', 'itemId', 'otherName', 'currencyId', 'isOther'])) {
+        if (in_array($name, ['fromDate', 'toDate', 'depatmentId', 'itemId', 'otherName', 'currencyId', 'isOther','type'])) {
             $this->reset(['currentMonth']);
             $this->takeAmount = env('TAKE_AMOUNT', 100);
         }
@@ -115,14 +118,15 @@ class TrList extends Component
             'otherName' => $this->otherName,
             'depatmentId' => $this->depatmentId,
             'createdBy' => $this->createdBy,
-            'currencyId' => $this->currencyId
+            'currencyId' => $this->currencyId,
+            'type'=>$this->type
         ];
         $this->updateTime = time();
     }
 
     function emptySearchToNull($name, $value)
     {
-        if (in_array($name, ['fromDate', 'toDate', 'depatmentId', 'itemId', 'otherName', 'currencyId', 'isOther'])) {
+        if (in_array($name, ['fromDate', 'toDate', 'depatmentId', 'itemId', 'otherName', 'currencyId', 'isOther','type'])) {
             if ($value == '') {
                 $this->reset([$name]);
             }
@@ -131,7 +135,7 @@ class TrList extends Component
 
     function clearFilter()
     {
-        $this->reset(['currentMonth', 'fromDate', 'toDate', 'depatmentId', 'itemId', 'otherName', 'currencyId', 'isOther']);
+        $this->reset(['currentMonth', 'fromDate', 'toDate', 'depatmentId', 'itemId', 'otherName', 'currencyId', 'isOther','type']);
         $this->takeAmount = env('TAKE_AMOUNT', 100);
         $this->dispatchBrowserEvent('trResetRankDateTimePicker');
         $this->createdBy = auth()->user()->id;
@@ -213,6 +217,9 @@ class TrList extends Component
                 })
                 ->when($this->itemId, function ($q) {
                     $q->where('item_id', '=', $this->itemId);
+                })
+                ->when($this->type, function ($q) {
+                    $q->where('type', '=', $this->type);
                 })
                 ->when($this->otherName, function ($q) {
                     $q->where('other_name', 'like', "%" . $this->otherName . "%");
