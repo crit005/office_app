@@ -6,6 +6,9 @@
 
 // call by all close Edit-form x button to close edit form sub component
 // Cancel button click
+
+
+
 function hideEditPaymentForm() {
   $('.tr-edit-payment-form-controller').css({ "height": $('.inline-form').height() + 'px', "overflow": "hidden" });
   $('.tr-edit-payment-form-controller').css({ "height": 0 });
@@ -87,6 +90,11 @@ function showConfirmDelete(eventName) {
 
     }
   });
+}
+
+function clearSearchDate(){
+  $('#tr_from_date').datetimepicker('clear');
+  $('#tr_to_date').datetimepicker('clear');
 }
 
 window.addEventListener('trResetRankDateTimePicker', e => {

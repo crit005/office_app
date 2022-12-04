@@ -35,6 +35,7 @@ class TrList extends Component
     public function refreshCashList()
     {
         $this->reset(['currentMonth']);
+        $this->updateTime = time();
     }
 
     public function clearEditTransactionCashList($action = null)
@@ -77,6 +78,7 @@ class TrList extends Component
         $this->takeAmount = env('TAKE_AMOUNT', 100);
 
         $this->createdBy = auth()->user()->id;
+        // $this->createdBy = null;
 
         $this->initSearchs();
     }
@@ -106,15 +108,16 @@ class TrList extends Component
     function initSearchs()
     {
         $this->searchs = [
-            'fromDate' => $this->fromDate,
+            'fromDate' => $this->fromDate ? date('Y-m-d', strtotime($this->fromDate)) : null,
             'createdBy' => $this->createdBy,
-            'toDate' => $this->toDate,
+            'toDate' => $this->toDate ? date('Y-m-d', strtotime($this->toDate)) : null,
             'itemId' => $this->itemId,
             'otherName' => $this->otherName,
             'depatmentId' => $this->depatmentId,
             'createdBy' => $this->createdBy,
             'currencyId' => $this->currencyId
         ];
+        $this->updateTime = time();
     }
 
     function emptySearchToNull($name, $value)
@@ -192,7 +195,10 @@ class TrList extends Component
             // ->paginate(env('PAGINATE'));
         } else {
             $transactions = TrCash::where('status', '!=', 0)
-                ->where('created_by', '=', auth()->user()->id)
+                ->when($this->createdBy,function($q){
+                    $q->where('created_by','=',$this->createdBy);
+                })
+                // ->where('created_by', '=', auth()->user()->id)
                 ->where('type', '!=', 4)
 
                 ->when($this->fromDate, function ($q) {
@@ -213,12 +219,12 @@ class TrList extends Component
                 })
                 # AND (`currency_id` = 99 OR (`type` = 3 and `to_from_id` = 99))
                 ->when($this->currencyId, function ($q) {
-                    $q->where(function($q){
+                    $q->where(function ($q) {
                         $q->where('currency_id', '=', $this->currencyId)
-                        ->orWhere(function($q){
-                            $q->where('type','=',3)
-                            ->where('to_from_id','=',$this->currencyId);
-                        });
+                            ->orWhere(function ($q) {
+                                $q->where('type', '=', 3)
+                                    ->where('to_from_id', '=', $this->currencyId);
+                            });
                     });
                 })
 

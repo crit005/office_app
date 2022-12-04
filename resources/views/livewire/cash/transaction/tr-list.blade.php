@@ -1,5 +1,4 @@
 <div>
-    @dump($searchs)
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -28,37 +27,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header"  style="z-index: 10001">
-                            <div class="d-flex flex-row justify-content-between mb-2">
-                                <div class="total-info-top d-flex flex-row">
-                                    <div class="mr-3">
-                                        <span class="info-label">Date:</span>
-                                        <span class="info-number">{{$fromDate??"..."}}</span>
-                                        <i class="fas fa-angle-double-right"></i>
-                                        <span class="info-number">{{$toDate??"..."}}</span>
-                                    </div>
-                                </div>
-
-                                <div class="total-info-top d-flex flex-row">
-                                    <div class="mr-3">
-                                        <span class="info-label">CashIn:</span> <span class="info-number">861285 ฿ / 6538
-                                            $</span>
-                                    </div>
-                                </div>
-
-                                <div class="total-info-top d-flex flex-row">
-                                    <div>
-                                        <span class="info-label">Expand:</span> <span class="info-number">861285 ฿ /
-                                            6538 $</span>
-                                    </div>
-                                </div>
-
-                                <div class="total-info-top d-flex flex-row">
-                                    <div>
-                                        <span class="info-label">Balance:</span> <span class="info-number">861285 ฿ /
-                                            6538 $</span>
-                                    </div>
-                                </div>
-                            </div>
+                            <livewire:components.transaction.tr-sumary :arrSearchs="$searchs" :arrOptional="['createdBy'=>$createdBy]" wire:key="tr-head-sumary-{{$updateTime }}" />
                             <div class="d-flex flex-row justify-content-center">
                                 <div class="input-group input-group-sm mr-2 sort-input-date elevation-1">
                                     <div class="input-group-prepend">
@@ -119,7 +88,13 @@
                                     </select>
                                 </div>
 
-                                <button class="btn btn-primary btn-sm elevation-1" wire:click="clearFilter">All</button>
+                                <button class="btn btn-primary btn-sm elevation-1" wire:click="clearFilter" onclick="clearSearchDate()">All</button>
+                                <button class="btn btn-primary btn-sm elevation-1" ><i class="fas fa-user"></i></button>
+                                <button class="btn btn-primary btn-sm elevation-1" ><i class="fas fa-users"></i></button>
+                                <button class="btn btn-primary btn-sm elevation-1" >Cash In</button>
+                                <button class="btn btn-primary btn-sm elevation-1" >Expend</button>
+                                <button class="btn btn-primary btn-sm elevation-1" >Exchange</button>
+
 
                             </div>
 
