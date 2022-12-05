@@ -107,9 +107,9 @@ class Currency extends Model
 
         $arrCondition = [
             $fromDate, $fdMonth, $createdBy, $createdBy, $fromDate, $fromDate, $fdMonth, $fdMonth,
-            $fromDate, $fromDate, $toDate, $toDate, $fdMonth, $fdMonth, $itemId, $itemId, $otherName, $otherName, $depatment, $depatment, $type, $type, $createdBy, $createdBy,
-            $fromDate, $fromDate, $toDate, $toDate, $fdMonth, $fdMonth, $itemId, $itemId, $otherName, $otherName, $depatment, $depatment, $type, $type, $createdBy, $createdBy,
-            $fromDate, $fromDate, $toDate, $toDate, $fdMonth, $fdMonth, $itemId, $itemId, $otherName, $otherName, $depatment, $depatment, $type, $type, $createdBy, $createdBy,
+            $fromDate, $fromDate, $toDate, $toDate, $fdMonth, $fdMonth, $itemId, $itemId, $otherName, $otherName, $depatment, $depatment, $type, $type, $type, $createdBy, $createdBy,
+            $fromDate, $fromDate, $toDate, $toDate, $fdMonth, $fdMonth, $itemId, $itemId, $otherName, $otherName, $depatment, $depatment, $type, $type, $type, $createdBy, $createdBy,
+            $fromDate, $fromDate, $toDate, $toDate, $fdMonth, $fdMonth, $itemId, $itemId, $otherName, $otherName, $depatment, $depatment, $type, $type, $type, $createdBy, $createdBy,
             $currencyId, $currencyId
         ];
 
@@ -139,7 +139,7 @@ class Currency extends Model
                     AND IF(?, item_id = ?, TRUE)
                     AND IF(?, other_name LIKE CONCAT('%', ?, '%'), TRUE)
                     AND IF(?, (to_from_id = ? AND `type` = 2), TRUE)
-                    AND IF(?, `type` = ?, TRUE)
+                    AND (IF(?, `type` = ?, TRUE) OR IF(? = 3,`type` = 4, FALSE ))
                     AND IF(?, created_by = ?, TRUE)
                     )
                     ,0
@@ -157,7 +157,7 @@ class Currency extends Model
                     AND IF(?, item_id = ?, TRUE)
                     AND IF(?, other_name LIKE CONCAT('%', ?, '%'), TRUE)
                     AND IF(?, (to_from_id = ? AND `type` = 2), TRUE)
-                    AND IF(?, `type` = ?, TRUE)
+                    AND (IF(?, `type` = ?, TRUE) OR IF(? = 3,`type` = 4, FALSE ))
                     AND IF(?, created_by = ?, TRUE)
                     )
                     ,0
@@ -174,7 +174,7 @@ class Currency extends Model
                     AND IF(?, item_id = ?, TRUE)
                     AND IF(?, other_name LIKE CONCAT('%', ?, '%'), TRUE)
                     AND IF(?, (to_from_id = ? AND `type` = 2), TRUE)
-                    AND IF(?, `type` = ?, TRUE)
+                    AND (IF(?, `type` = ?, TRUE) OR IF(? = 3,`type` = 4, FALSE ))
                     AND IF(?, created_by = ?, TRUE)
                     )
                     ,0

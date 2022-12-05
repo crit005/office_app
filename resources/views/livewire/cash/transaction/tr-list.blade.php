@@ -26,9 +26,33 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header"  style="z-index: 10001">
+                        <div class="card-header @if($type == 1) modal-blur-light-green @endif @if($type == 2) modal-blur-light-red @endif @if($type == 3) modal-blur-light-blue @endif "  style="z-index: 10001">
                             <livewire:components.transaction.tr-sumary :arrSearchs="$searchs" :arrOptional="['createdBy'=>$createdBy]" wire:key="tr-head-sumary-{{$updateTime }}" />
-                            <div class="d-flex flex-row justify-content-center">
+
+                            <div class="float-lg-left mb-2 text-center">
+                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    {{-- <button value='' wire:click="resetUser" class="btn btn-sm elevation-1 bg-gradient-blue @if(!$createdBy) active @endif">
+                                        <i class="fas fa-users"></i>
+                                    </button> --}}
+                                    <label wire:click.prevent="resetUser" class="btn btn-sm elevation-1 bg-gradient-blue @if(!$createdBy) active @endif">
+                                        <input type="radio" name="tr_user" id="user_b1" value='' autocomplete="off"> <i class="fas fa-users"></i>
+                                        </label>
+                                    <label class="btn btn-sm elevation-1 bg-gradient-blue @if($type != 1 && $type != 2 && $type != 3) active @endif">
+                                        <input type="radio" name="tr_mode" id="type_b1" wire:model='type' value='' autocomplete="off" checked> All
+                                        </label>
+                                    <label class="btn btn-sm elevation-1 bg-gradient-blue @if($type==1) active @endif">
+                                        <input type="radio" name="tr_mode" id="type_b2" wire:model='type' value=1 autocomplete="off"> Cash In
+                                    </label>
+                                    <label class="btn btn-sm elevation-1 bg-gradient-blue @if($type==2) active @endif">
+                                        <input type="radio" name="tr_mode" id="type_b3" wire:model='type' value=2 autocomplete="off"> Expend
+                                    </label>
+                                    <label class="btn btn-sm elevation-1 bg-gradient-blue @if($type==3) active @endif">
+                                        <input type="radio" name="tr_mode" id="type_b4" wire:model='type' value=3 autocomplete="off"> Exchange
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="row float-md-right mb-2 text-center">
                                 <div class="input-group input-group-sm mr-2 sort-input-date elevation-1">
                                     <div class="input-group-prepend">
                                         <label class="input-group-text"><i class="fas fa-calendar"></i></label>
@@ -88,23 +112,9 @@
                                     </select>
                                 </div>
 
-                                <button class="btn btn-primary btn-sm elevation-1" wire:click="clearFilter" onclick="clearSearchDate()">All</button>
-
-                                <div class="btn-group-sm btn-group-toggle" data-toggle="buttons">
-                                    <label class="btn btn-sm bg-olive">
-                                        <input type="radio" name="tr_mode" id="option_b1" wire:model='type' value='' autocomplete="off"> All
-                                      </label>
-                                    <label class="btn btn-sm bg-olive">
-                                      <input type="radio" name="tr_mode" id="option_b2" wire:model='type' value=1 autocomplete="off"> Cash In
-                                    </label>
-                                    <label class="btn btn-sm bg-olive">
-                                      <input type="radio" name="tr_mode" id="option_b3" wire:model='type' value=2 autocomplete="off"> Expend
-                                    </label>
-                                    <label class="btn btn-sm bg-olive">
-                                      <input type="radio" name="tr_mode" id="option_b4" wire:model='type' value=3 autocomplete="off"> Exchange
-                                    </label>
-                                </div>
-
+                                <button class="btn btn-primary btn-sm elevation-1" wire:click="clearFilter" onclick="clearSearchDate()">
+                                    <i class="fas fa-brush"></i>
+                                </button>
 
                             </div>
 
@@ -119,7 +129,7 @@
                                         </button>
                                     </div>
                                 </div>
-                            </div> --}}
+                            </div>--}}
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body-v1 p-0">
@@ -225,7 +235,7 @@
                                                     data-content="{{ $transaction->description }}">{{ $transaction->getDescription() }}</a>
                                             </td>
                                             <td scope="col" class="text-center minimal-table-column">
-                                                {{ $transaction->createdByUser->name }}</td>
+                                                {{ $transaction->created_by == auth()->user()->id ? 'You': $transaction->createdByUser->name }}</td>
                                             <td scope="col" class="text-center minimal-table-column">
                                                 <button class="btn btn-sm text-success" wire:click="showView({{$transaction->id}})">
                                                     <i wire:loading.remove wire:target='showView({{$transaction->id}})' onclick="clearEditPaymentForm()" class="fas fa-eye"></i>

@@ -10,6 +10,17 @@
 
     <div class="total-info-top d-flex flex-row">
         <div class="mr-3">
+            <span class="info-label">Begin:</span> <span class="info-number">
+                @foreach ($totals as $total )
+                <span wire:key='sumary_begin_{{$total->id}}' class="{{$total->begin_amount < 0 ? 'text-danger':''}}">{{$total->begin_amount . $total->symbol}}</span>
+                    {{($total != end($totals)) ? '/':''}}
+                @endforeach
+            </span>
+        </div>
+    </div>
+
+    <div class="total-info-top d-flex flex-row">
+        <div class="mr-3">
             <span class="info-label">CashIn:</span> <span class="info-number">
                 @foreach ($totals as $total )
                 <span wire:key='sumary_cashin_{{$total->id}}' class="{{$total->cash_in < 0 ? 'text-danger':''}}">{{$total->cash_in . $total->symbol}}</span>
