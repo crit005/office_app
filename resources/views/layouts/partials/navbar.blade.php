@@ -11,16 +11,17 @@
             <a href="#" class="nav-link">Contact</a>
         </li> --}}
     </ul>
-    <div>
+    {{-- <div>
         <livewire:components.user-balance />
-    </div>
+    </div> --}}
     <div class="m-auto">
         <h3 class="text-white">
-            {{ Session::get('selectedSystem') ? Session::get('selectedSystem')->system_name : 'No System Selected' }}
+            {{ Session::get('selectedSystem') ? Session::get('selectedSystem')->system_name : 'OFFICE APP' }}
         </h3>
     </div>
     <!-- Right navbar links -->
-    <ul class="navbar-nav ml-auto">
+    <!-- ul class="navbar-nav ml-auto" -->
+    <ul class="navbar-nav">
         <!-- Navbar Search -->
         <li class="nav-item">
             <a class="nav-link" data-widget="navbar-search" href="#" role="button">

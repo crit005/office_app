@@ -33,7 +33,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 {{-- <body class="hold-transition sidebar-mini sidebar-collapse"> --}}
 
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini sidebar-collapse">
     <div class="wrapper">
 
         <!-- Navbar -->
