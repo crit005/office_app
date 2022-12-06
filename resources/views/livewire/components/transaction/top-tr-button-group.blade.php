@@ -8,7 +8,7 @@
     <button class="btn btn-info btn-sm transaction-operator-top" wire:click.prevent='OpenNewExchangeForm'>
         <i class="fas fa-exchange-alt"></i> Exchange
     </button>
-    <button class="btn btn-info btn-sm transaction-operator-top" wire:click.prevent='OpenNewExchangeForm'>
+    <button class="btn btn-info btn-sm transaction-operator-top" wire:click.prevent='OpenImportPaymentForm'>
         <i class="fas fa-file-import"></i> Import
     </button>
 </div>

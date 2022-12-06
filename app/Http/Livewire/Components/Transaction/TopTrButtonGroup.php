@@ -23,4 +23,8 @@ class TopTrButtonGroup extends Component
     {
         $this->dispatchBrowserEvent('show-add-exchange-form');
     }
+    public function OpenImportPaymentForm()
+    {
+        $this->dispatchBrowserEvent('show-import-payment-form');
+    }
 }

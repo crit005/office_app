@@ -330,6 +330,7 @@
     @if ($viewId)
         <livewire:components.transaction.tr-view-form :id="$viewId" wire:key="tr_view-form-{{ $viewId }}"/>
     @endif
+    <livewire:components.transaction.tr-import-expend />
 </div>
 @push('js')
 <script src="{{ asset('backend/dist/js/transactions/tr_list.js') }}"></script>
