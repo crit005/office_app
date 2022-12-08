@@ -20,8 +20,8 @@
             {{-- <form wire:submit.prevent='{{ $showEditModal ? ' updateDepatment' : 'createDepatment' }}'> --}}
             <form >
                 <div class="modal-body m-0 border-radius-0 bg-white import-modal-body">
-                    @dump($items)
                     @dump($errors)
+                    @dump($dataRows)
                     <div class="row">
                         <div class="col">
                             <div wire:ignore class="form-group form-group-sm">
@@ -96,14 +96,15 @@
                                     <td scope="col" class="text-center text-nowrap"></td>
                                     <td scope="col" class="text-center text-nowrap"></td>
                                 </tr> --}}
-
+                                <?php $k = 0 ?>
                                 @forelse ($importData as $indext => $data)
                                 @if ($indext >3)
                                 <tr>
-                                    @foreach ($data as $val)
-                                    <td scope="col" class="text-center text-nowrap th-excel">{{$val}}</td>
+                                    @foreach ($data as $i => $val)
+                                    <td scope="col" class="text-center text-nowrap th-excel">{{$val}} @error('dataRows.'.($k).'.'.$i) <span class="text-danger">[x]</span> @enderror </td>
                                     @endforeach
                                 </tr>
+                                <?php $k += 1 ?>
                                 @endif
                                 @empty
                                 <tr class="bg-wite">
