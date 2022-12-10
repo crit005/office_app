@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Components\Transaction;
 
 use App\Models\Currency;
+use App\Models\Depatment;
 use App\Models\Items;
 use Livewire\Component;
 
@@ -12,7 +13,8 @@ class TrImportExpend extends Component
     public $importData = [];
     public $dataRows = [];
     public $items=[];
-    public $itemRules;
+    public $itemRules, $depatmentRules;
+
 
     public function setImportData($arrExcelData)
     {
@@ -21,6 +23,25 @@ class TrImportExpend extends Component
         $this->items = array_filter($this->items, function($value) { return !is_null($value) && $value !== ''; });
         array_pop($this->items);
         $this->initDataRows();
+        $this->rules['dataRows.*.'.count($this->importData[0])-2]=[
+            //'in:'.$this->depatmentRules,
+            function($attribute, $value,$fail){
+                $test = $this->dataRows[explode(".",$attribute)[1]][2]??false;
+                if(!$test){ // not exist kay
+                    if($value==null || $value == ''){
+                        $fail('depatment required');
+                    }else{
+                        if(!in_array($value,explode(',',$this->depatmentRules))){
+                            $fail('depatment invalid');
+                        }
+                    }
+                }else{ // kay exist
+                    if($value !=null || $value != ''){
+                        $fail('depatment should be blank');
+                    }
+                }
+            },
+    ];
         $this->validate(null,['item.*'=>'Invalid Payment']);
     }
 
@@ -34,7 +55,7 @@ class TrImportExpend extends Component
                     array_filter(
                         $row,
                         function ($value, $key)use($row) {
-                            return (!is_null($value) && $value !== '') && (!in_array($key, [1, 2, count($row) - 1,count($row) - 4]));
+                            return ((!is_null($value) && $value !== '') && (!in_array($key, [1, count($row) - 1,count($row) - 4])) || $key == (count($row) - 2) || $key == (count($row) - 3));
                         }, ARRAY_FILTER_USE_BOTH
                     )
                 );
@@ -51,10 +72,12 @@ class TrImportExpend extends Component
     {
         $this->currencys = Currency::where('status', '=', 'ENABLED')->orderBy('position', 'asc')->get();
         $this->initItemRules();
+        $this->initDepatmentRules();
     }
 
     function initItemRules()
     {
+        $this->itemRules='';
         $items = Items::where('status','=','ENABLED')->get();
         foreach ($items as $index => $item) {
             $this->itemRules .= $item->name;
@@ -64,6 +87,17 @@ class TrImportExpend extends Component
             // $this->arrCurrencies[$currency->id] = $currency->toArray();
         }
         $this->rules['items.*']='in:'.$this->itemRules;
+    }
+    function initDepatmentRules()
+    {
+        $this->depatmentRules= '';
+        $depatments = Depatment::where('status','=','ENABLED')->get();
+        foreach ($depatments as $index => $depatment) {
+            $this->depatmentRules .= $depatment->name;
+            if ($index < count($depatments) - 1) {
+                $this->depatmentRules .= ",";
+            }
+        }
     }
     public function render()
     {
