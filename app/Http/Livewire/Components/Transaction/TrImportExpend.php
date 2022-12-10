@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Components\Transaction;
 use App\Models\Currency;
 use App\Models\Depatment;
 use App\Models\Items;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 
 class TrImportExpend extends Component
@@ -12,93 +13,185 @@ class TrImportExpend extends Component
     public $currencys;
     public $importData = [];
     public $dataRows = [];
-    public $items=[];
-    public $itemRules, $depatmentRules;
+    public $items=[], $inputItems;
+    public $depatments=[];
+    public $itemRules;
+    public $test=[];
 
-
-    public function setImportData($arrExcelData)
+    public function rules()
     {
-        $this->importData = $arrExcelData;
-        $this->items = $this->importData[3];
-        $this->items = array_filter($this->items, function($value) { return !is_null($value) && $value !== ''; });
-        array_pop($this->items);
-        $this->initDataRows();
-        $this->rules['dataRows.*.'.count($this->importData[0])-2]=[
-            //'in:'.$this->depatmentRules,
-            function($attribute, $value,$fail){
-                $test = $this->dataRows[explode(".",$attribute)[1]][2]??false;
-                if(!$test){ // not exist kay
-                    if($value==null || $value == ''){
+        return  [
+            // "items.*"=>'required',
+            'inputItems.*'=>'required|in:'.$this->itemRules,
+            "dataRows.*.0"=>'required|date',
+            // "dataRows.*.2"=>'numeric|sometimes',
+
+            "dataRows.*.*"=>function($attribute, $value, $fail){
+                $j =  explode(".", $attribute)[1];
+                $cashin = $this->dataRows[$j][2];
+                if (!$cashin) { // not kas
+                    $i = explode('.',$attribute)[2];
+                    if($i>2 && $i<(count($this->importData[0] ?? []) - 4)){
+                        if($value!=null || $value != ''){
+                            if(!is_numeric($value)){$fail('expend must be a number');}
+                            elseif($value>=0){$fail('expend must less than 0');}
+                            $t=[];
+                            for($a=3;$a<(count($this->importData[0] ?? []) - 4);$a++){
+                                if($this->dataRows[$j][$a]!=null || $this->dataRows[$j][$a] != ''){
+                                    array_push($t,$this->importData[$j][$a]);
+                                    $t +=1;
+                                }
+                            }
+                            array_push($this->test,$t);
+                            if($t>1){$fail('Invalid amount');}
+                        }
+                    }
+                } else { // has kas
+                    $i = explode('.',$attribute)[2];
+                    if($i>2 && $i<(count($this->importData[0] ?? []) - 4)){
+                        if($value!=null || $value != ''){
+                            $fail('expend must be empty');
+                        }
+                    }
+                }
+            },
+            "dataRows.*.2"=> function ($attribute, $value, $fail) {
+                $j =  explode(".", $attribute)[1];
+                if($value!=null || $value != ''){
+                    if(!is_numeric($value)){$fail('Cashin must be a number');}
+                    elseif($value<=0){$fail('Cashin must greater than 0');}
+                }else{
+                    if(count($this->dataRows[$j])<5){
+                        $fail('Cashin must be a number');
+                    }
+                }
+            },
+            "dataRows.*." . (count($this->importData[0] ?? []) - 2) =>
+            function ($attribute, $value, $fail) {
+                if ($value == null || $value == '') {
+                    $fail('invalid');
+                }
+                $cashin = $this->dataRows[explode(".", $attribute)[1]][2];
+                if (!$cashin) { // not kas
+                    if ($value == null || $value == '') {
                         $fail('depatment required');
-                    }else{
-                        if(!in_array($value,explode(',',$this->depatmentRules))){
+                    } else {
+                        if (!array_key_exists($value, $this->depatments)) {
                             $fail('depatment invalid');
                         }
                     }
-                }else{ // kay exist
-                    if($value !=null || $value != ''){
+                } else { // has kas
+                    if ($value != null || $value != '') {
                         $fail('depatment should be blank');
                     }
                 }
             },
-    ];
-        $this->validate(null,['item.*'=>'Invalid Payment']);
+
+        ];
     }
 
-    function initDataRows()
+    public function mount()
+    {
+        $this->currencys = Currency::where('status', '=', 'ENABLED')->orderBy('position', 'asc')->get();
+        $this->initItems();
+        $this->initDepatments();
+        $this->initItemRules();
+    }
+
+    function initItems()
+    {
+        $this->items = [];
+        $items = Items::select(['id', 'name'])->where('status', '=', 'ENABLED')->get();
+        foreach ($items as $item) {
+            $this->itemRules[$item->name] = $item->id;
+        }
+    }
+
+    function initDepatments()
+    {
+        $this->depatments = [];
+        $depatments = Depatment::select(['id', 'name'])->where('status', '=', 'ENABLED')->get();
+        foreach ($depatments as $depatment) {
+            $this->depatments[$depatment->name] = $depatment->id;
+        }
+    }
+
+    function initItemRules()
+    {
+        $this->itemRules='';
+
+        $items = Items::select(['id','name'])->where('status','=','ENABLED')->get();
+        foreach ($items as $index => $item) {
+            $this->itemRules .= $item->name;
+            if ($index < count($items) - 1) {
+                $this->itemRules .= ",";
+            }
+        }
+        // $this->rules['inputItems.*']='required|in:'.$this->itemRules;
+    }
+
+    public function setImportData($arrExcelData)
+    {
+        $this->importData = $arrExcelData;
+        $this->inputItems = $this->importData[3];
+        $this->inputItems = array_filter($this->inputItems, function($value) { return !is_null($value) && $value !== ''; });
+        array_pop($this->inputItems); // delete total col
+
+        $this->initDataRows();
+
+        // Validator::make($this->inputItems, $this->getRules())->validate();
+        //$this->initDepatmentRulls();
+
+        // $this->rules = $this->getRules();
+        $this->validate();
+
+    }
+
+    public function initDataRows()
     {
         $this->dataRows = [];
-        foreach($this->importData as $index => $row){
+        foreach ($this->importData as $index => $row) {
             if ($index > 3) {
                 array_push(
                     $this->dataRows,
                     array_filter(
                         $row,
-                        function ($value, $key)use($row) {
-                            return ((!is_null($value) && $value !== '') && (!in_array($key, [1, count($row) - 1,count($row) - 4])) || $key == (count($row) - 2) || $key == (count($row) - 3));
-                        }, ARRAY_FILTER_USE_BOTH
+                        function ($value, $key) use ($row) {
+                            return (($key == 2) || (!is_null($value) && $value !== '') && (!in_array($key, [1, count($row) - 1, count($row) - 4])) || $key == (count($row) - 2) || $key == (count($row) - 3));
+                        },
+                        ARRAY_FILTER_USE_BOTH
                     )
                 );
             }
         }
     }
 
-    public $rules=[
-        "items.*"=>'in:Travelling,Perlengkapan Ktr',
-        "dataRows.*.0"=>'date',
-    ];
-
-    public function mount()
+    function initDepatmentRulls()
     {
-        $this->currencys = Currency::where('status', '=', 'ENABLED')->orderBy('position', 'asc')->get();
-        $this->initItemRules();
-        $this->initDepatmentRules();
+        $this->rules['dataRows.*.' . count($this->importData[0]) - 2] = [
+            function ($attribute, $value, $fail) {
+                if($value == null || $value == ''){
+                    $fail('invalid');
+                }
+                $cashin = $this->dataRows[explode(".", $attribute)[1]][2];
+                if (!$cashin) { // not kas
+                    if ($value == null || $value == '') {
+                        $fail('depatment required');
+                    }
+                    else {
+                        if (!array_key_exists($value, $this->depatments)) {
+                            $fail('depatment invalid');
+                        }
+                    }
+                } else { // has kas
+                    if ($value != null || $value != '') {
+                        $fail('depatment should be blank');
+                    }
+                }
+            },
+        ];
     }
 
-    function initItemRules()
-    {
-        $this->itemRules='';
-        $items = Items::where('status','=','ENABLED')->get();
-        foreach ($items as $index => $item) {
-            $this->itemRules .= $item->name;
-            if ($index < count($items) - 1) {
-                $this->itemRules .= ",";
-            }
-            // $this->arrCurrencies[$currency->id] = $currency->toArray();
-        }
-        $this->rules['items.*']='in:'.$this->itemRules;
-    }
-    function initDepatmentRules()
-    {
-        $this->depatmentRules= '';
-        $depatments = Depatment::where('status','=','ENABLED')->get();
-        foreach ($depatments as $index => $depatment) {
-            $this->depatmentRules .= $depatment->name;
-            if ($index < count($depatments) - 1) {
-                $this->depatmentRules .= ",";
-            }
-        }
-    }
     public function render()
     {
         return view('livewire.components.transaction.tr-import-expend');

@@ -328,7 +328,7 @@
     <livewire:components.transaction.add-payment-form />
     <livewire:components.transaction.add-exchange-from />
     @if ($viewId)
-        <livewire:components.transaction.tr-view-form :id="$viewId" wire:key="tr_view-form-{{ $viewId }}"/>
+        <livewire:components.transaction.tr-view-form :id="$viewId" wire:key="tr_view_form-{{ $viewId }}"/>
     @endif
     <livewire:components.transaction.tr-import-expend />
 </div>

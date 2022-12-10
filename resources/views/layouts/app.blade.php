@@ -79,6 +79,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{ asset('backend/dist/js/adminlte.min.js') }}"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="{{ asset('backend/dist/js/excel/read-excel-file.min.js') }}"></script>
 
     <link rel="stylesheet" href="{{ asset('backend/plugins/toastr/toastr.min.css') }}">
 
