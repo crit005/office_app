@@ -1,8 +1,7 @@
 <div wire:ignore.self class="modal fade blur-bg-dialog " id="importPaymentFormModal" tabindex="-1" role="dialog"
     aria-labelledby="importPaymentFormModalTitle" aria-hidden="true">
-    {{-- <div wire:ignore.self class="modal-dialog modal-dialog-pament modal-dialog-centered modal-xl" role="document">
-        --}}
-        <div wire:ignore.self class="modal-dialog modal-dialog-pament modal-dialog-max" role="document">
+    {{-- <div wire:ignore.self class="modal-dialog modal-dialog-pament modal-dialog-centered modal-xl" role="document"> --}}
+        <div wire:ignore.self class="modal-dialog modal-dialog-import modal-dialog-max" role="document">
             <div class="modal-content modal-blur-light-red modal-dialog-import-pament">
                 <div class="modal-header import-modal-header">
                     <div class="w-100 d-flex flex-row justify-content-between">
@@ -17,23 +16,18 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-
-                {{-- <form wire:submit.prevent='{{ $showEditModal ? ' updateDepatment' : 'createDepatment' }}'> --}}
                     <form>
-                        <div class="modal-body m-0 border-radius-0 bg-white import-modal-body">
-                            @dump($errors)
+                        <div wire:ignore.self class="modal-body m-0 border-radius-0 bg-white import-modal-body">
+                            {{-- @dump(count($errors)) --}}
                             {{-- @dump($dataRows) --}}
-                            @dump($test)
+                            {{-- @dump($test) --}}
                             <div class="row">
-                                <div class="col">
-                                    <div wire:ignore class="form-group form-group-sm">
-                                        {{-- <label for="exampleInputFile">File input</label> --}}
+                                <div wire:ignore class="col">
+                                    <div class="form-group form-group-sm">
                                         <div class="input-group input-group-sm">
                                             <div class="custom-file">
                                                 <input type="file" class="custom-file-input" id="excelInputFile"
                                                     accept=".xlsx,.xls,.csv">
-                                                {{-- <input type="file" class="custom-file-input" id="excelInputFile">
-                                                --}}
                                                 <label class="custom-file-label" id="lblExcelInputFile"
                                                     for="excelInputFile">Choose file</label>
                                             </div>
@@ -41,7 +35,7 @@
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <div class="input-group input-group-sm  sort-input-date elevation-1">
+                                    <div class="input-group sort-input-date">
                                         <div class="input-group-prepend">
                                             <label class="input-group-text" for="inputGroupSelect01"><i
                                                     class="fas fa-money-bill"></i></label>
@@ -58,8 +52,7 @@
 
                             </div>
 
-                            @if ($importData)
-                            {{-- <table class="table table-v1 table-hover"> --}}
+                            @if ($importData && count($importData)>=5)
                                 <table class="table table-v1 table-excel table-hover">
                                     <thead>
                                         <tr class="tr-th-border-0 stick-top-0">
@@ -100,21 +93,33 @@
                                             <th scope="col"
                                                 class="text-center  text-info text-nowrap text-sm vertical-middle th-excel">
                                                 {{$item}}
-                                                @error('inputItems.'.$index) <span class="text-danger">[x]</span> @enderror
+                                                @error('inputItems.'.$index)
+                                                {{-- <span class="text-danger">[x]</span> --}}
+                                                <span class="text-danger import-error" role="button" onclick="toastError('{{$message}}')" >[?]</span>
+                                                @enderror
                                             </th>
                                             @endif
                                             @endforeach
                                         </tr>
                                     </thead>
-                                    <tbody id="sortable">
+                                    {{-- <tbody id="sortable" class="@if(count($errors)>0) table-zibra-red @else table-zibra-green @endif"> --}}
+                                    <tbody id="sortable" class="table-zibra-green">
                                         <?php $k = 0 ?>
                                         @forelse ($importData as $indext => $data)
                                         @if ($indext >3)
                                         <tr>
                                             @foreach ($data as $i => $val)
-                                                <td scope="col" class="text-center text-nowrap th-excel">
-                                                    {{$val}} @error('dataRows.'.($k).'.'.$i) <span class="text-danger">[x]</span> @enderror
-                                                </td>
+                                            <td scope="col" class="text-center text-nowrap th-excel">
+                                                @if($i==0)
+                                                {{date('d-m-Y',strtotime($val))}}
+                                                @else
+                                                {{$val}}
+                                                @endif
+                                                @error('dataRows.'.($k).'.'.$i)
+                                                    {{-- <span class="text-danger import-error">[x]</span>  --}}
+                                                    <span class="text-danger import-error" role="button" onclick="toastError('{{$message}}')" >[?]</span>
+                                                @enderror
+                                            </td>
                                             @endforeach
                                         </tr>
                                         <?php $k += 1 ?>
@@ -127,18 +132,29 @@
                                     </tbody>
                                 </table>
                             @endif
-
-
                         </div> <!-- end modal-body -->
 
                         <div class="modal-footer import-modal-footer">
 
-                            <div class="d-flex text-sm justify-content-between" style="width: 100%;">
+                            {{-- <div class="d-flex text-sm justify-content-between" style="width: 100%;">
                                 <div>
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">
                                         <i class="fa fa-times mr-2"></i>Cancel</button>
                                     <button type="submit" class="btn btn-primary" wire:loading.attr="disabled"><i
                                             class="fa fa-save mr-2"></i>Save</button>
+                                </div>
+                            </div> --}}
+                            <div class="row w-100">
+                                <div class="col text-left text-white float-left">
+                                    <span>Total: {{(count($importData)-4)>0?count($importData)-4:0}} records</span>
+                                </div>
+                                <div class="col col-auto">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                        <i class="fa fa-times mr-2"></i>Cancel</button>
+                                </div>
+                                <div class="col col-auto">
+                                    <button type="submit" class="btn btn-primary" wire:loading.attr="disabled"><i
+                                        class="fa fa-save mr-2"></i>Save</button>
                                 </div>
                             </div>
 
@@ -151,6 +167,7 @@
     @push('js')
 
     <script>
+
         window.addEventListener('show-import-payment-form', e => {
             $('#importPaymentFormModal').modal({
                 backdrop: 'static',
@@ -163,7 +180,7 @@
         });
 
 
-        $('.modal-dialog-pament').draggable({
+        $('.modal-dialog-import').draggable({
             handle: ".modal-header"
         });
 
@@ -178,28 +195,45 @@
             //     let screenW = window.innerWidth;
             //     $('.modal-dialog-import-pament').width((screenW * 0.84));
             // });
-           $('#excelInputFile').on('change',function(){
-                // let fileInput = document.getElementById('excelInputFile');
-                // let filename = fileInput.files[0].name;
+            $('#importPaymentFormModal').on('hidden.bs.modal', function (e) {
+                $("#excelInputFile").val(null);
+                $('#lblExcelInputFile').html('Choose file');
+                @this.resetImportData();
+            })
+            $('#excelInputFile').on('click',function(){
+               $("#excelInputFile").val(null);
+            });
+            $('#excelInputFile').on('change',function(){
+                submitImportData();
 
-                let importFile = $("#excelInputFile")[0].files[0];
+            });
+
+        });
+
+        function submitImportData(){
+            let importFile = $("#excelInputFile")[0].files[0];
                 if(importFile){
                     if (!(/\.(xlsx|xls)$/i).test(importFile.name)) {
                     alert('Please select a valid excel file(xlsx or xls).');
                     $("#excelInputFile").val(null);
                     importFile = null;
-                    }else(
+                    }else{
+                        $('#lblExcelInputFile').html(importFile? importFile.name : 'Choose file');
                         readXlsxFile(importFile).then(function(rows) {
-                            @this.setImportData(rows);
+                            // $("#excelInputFile").val(null);
+                            if(rows.length >=5){
+                                @this.setImportData(rows);
+                            }else{
+                                alert('Invalid data');
+                                $("#excelInputFile").val(null);
+                                $('#lblExcelInputFile').html('Choose file');
+                                @this.setImportData([]);
+                            }
                         })
-                    )
+                    }
                 }else{
                     alert('nofile selected');
                 }
-                $('#lblExcelInputFile').html(importFile? importFile.name : 'Choose file');
-                }
-            );
-
-        });
+        }
     </script>
     @endpush

@@ -17,72 +17,72 @@ class TrImportExpend extends Component
     public $depatments=[];
     public $itemRules;
     public $test=[];
+    public $currencyId;
 
     public function rules()
     {
         return  [
-            // "items.*"=>'required',
             'inputItems.*'=>'required|in:'.$this->itemRules,
             "dataRows.*.0"=>'required|date',
-            // "dataRows.*.2"=>'numeric|sometimes',
-
             "dataRows.*.*"=>function($attribute, $value, $fail){
                 $j =  explode(".", $attribute)[1];
                 $cashin = $this->dataRows[$j][2];
                 if (!$cashin) { // not kas
-                    $i = explode('.',$attribute)[2];
-                    if($i>2 && $i<(count($this->importData[0] ?? []) - 4)){
-                        if($value!=null || $value != ''){
-                            if(!is_numeric($value)){$fail('expend must be a number');}
-                            elseif($value>=0){$fail('expend must less than 0');}
-                            $t=[];
-                            for($a=3;$a<(count($this->importData[0] ?? []) - 4);$a++){
-                                if($this->dataRows[$j][$a]!=null || $this->dataRows[$j][$a] != ''){
-                                    array_push($t,$this->importData[$j][$a]);
-                                    $t +=1;
-                                }
+                    $i = explode('.', $attribute)[2];
+                    if ($i > 2 && $i < (count($this->importData[0] ?? []) - 4)) {
+                        if ($value != null || $value != '') {
+                            if (!is_numeric($value)) {
+                                $fail('Expend must be a number');
+                            } elseif ($value >= 0) {
+                                $fail('Expend must less than 0');
                             }
-                            array_push($this->test,$t);
-                            if($t>1){$fail('Invalid amount');}
+                            if(count($this->dataRows[$j])>5){
+                                $fail('There were multiple amounts found');
+                            }
                         }
                     }
                 } else { // has kas
                     $i = explode('.',$attribute)[2];
                     if($i>2 && $i<(count($this->importData[0] ?? []) - 4)){
                         if($value!=null || $value != ''){
-                            $fail('expend must be empty');
+                            $fail('There were multiple amounts found');
                         }
                     }
                 }
             },
             "dataRows.*.2"=> function ($attribute, $value, $fail) {
                 $j =  explode(".", $attribute)[1];
-                if($value!=null || $value != ''){
-                    if(!is_numeric($value)){$fail('Cashin must be a number');}
-                    elseif($value<=0){$fail('Cashin must greater than 0');}
-                }else{
-                    if(count($this->dataRows[$j])<5){
+                if ($value != null || $value != '') {
+                    if (count($this->dataRows[$j]) >= 5) {
+                        $fail('There were multiple amounts found');
+                    } elseif (!is_numeric($value)) {
                         $fail('Cashin must be a number');
+                    } elseif ($value <= 0) {
+                        $fail('Cash in must greater than 0');
+                    }
+                } else {
+                    if (count($this->dataRows[$j]) < 5) {
+                        $fail('Required amount');
                     }
                 }
             },
             "dataRows.*." . (count($this->importData[0] ?? []) - 2) =>
             function ($attribute, $value, $fail) {
-                if ($value == null || $value == '') {
-                    $fail('invalid');
-                }
+                // if ($value == null || $value == '') {
+                //     $fail('Invalid');
+                // }
                 $cashin = $this->dataRows[explode(".", $attribute)[1]][2];
                 if (!$cashin) { // not kas
                     if ($value == null || $value == '') {
-                        $fail('depatment required');
+                        $fail('Required department');
                     } else {
                         if (!array_key_exists($value, $this->depatments)) {
-                            $fail('depatment invalid');
+                            $fail('Invalid department');
                         }
                     }
                 } else { // has kas
                     if ($value != null || $value != '') {
-                        $fail('depatment should be blank');
+                        $fail('For cash in, department should be blank');
                     }
                 }
             },
@@ -132,19 +132,20 @@ class TrImportExpend extends Component
 
     public function setImportData($arrExcelData)
     {
+        $this->resetImportData();
         $this->importData = $arrExcelData;
-        $this->inputItems = $this->importData[3];
-        $this->inputItems = array_filter($this->inputItems, function($value) { return !is_null($value) && $value !== ''; });
-        array_pop($this->inputItems); // delete total col
+        if(count($arrExcelData)>=5){
+            $this->inputItems = $this->importData[3];
+            $this->inputItems = array_filter($this->inputItems, function($value) { return !is_null($value) && $value !== ''; });
+            array_pop($this->inputItems); // delete total col
+            $this->initDataRows();
+            $this->validate();
+        }
 
-        $this->initDataRows();
+    }
 
-        // Validator::make($this->inputItems, $this->getRules())->validate();
-        //$this->initDepatmentRulls();
-
-        // $this->rules = $this->getRules();
-        $this->validate();
-
+    public function resetImportData(){
+        $this->reset(['importData','dataRows','currencyId']);
     }
 
     public function initDataRows()
@@ -185,7 +186,7 @@ class TrImportExpend extends Component
                     }
                 } else { // has kas
                     if ($value != null || $value != '') {
-                        $fail('depatment should be blank');
+                        $fail('For cash in department should be blank');
                     }
                 }
             },

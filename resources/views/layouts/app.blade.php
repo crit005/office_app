@@ -214,6 +214,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
         //     $('#table_search').val(val);
         //
         // }
+        function toastError(message){
+            toastr.error(message,null,
+            {
+                "closeButton": true,
+                "positionClass": "toast-top-center",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            });
+        }
     </script>
     @livewireScripts
 </body>

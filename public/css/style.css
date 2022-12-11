@@ -568,6 +568,23 @@ input:checked + .slider:before {
     padding: 2px !important;
 }
 
+.table-zibra-red tr:nth-child(even) {
+    background-color: #ffebeb;
+  }
+
+.table-zibra-green tr:nth-child(even) {
+    background-color: #e1fbe3;
+}
+tr:has(.import-error){
+    background-color: #ffebeb !important;
+    font-weight: bold;
+}
+td:has(.import-error){
+    background-color: #ffebeb !important;
+    color: #d10000;
+    font-weight: bold;
+}
+
  /* Extra small devices (phones, 600px and down) */
  @media only screen and (max-width: 600px) {
 
