@@ -225,16 +225,16 @@ class TrEditExchangeForm extends Component
 
         //===============================================
         //! update new currency balance
-        $this->updateBalance($this->transaction->currency_id,$this->transaction->created_by);
-        $this->updateBalance($this->toTransaction->currency_id,$this->toTransaction->created_by);
+        updateBalance($this->transaction->currency_id,$this->transaction->created_by);
+        updateBalance($this->toTransaction->currency_id,$this->toTransaction->created_by);
 
         //! update old currency balance
         if($this->oldCurrency_id != $this->transaction->currency_id && $this->oldCurrency_id != $this->toTransaction->currency_id){
-            $this->updateBalance($this->oldCurrency_id,$this->transaction->created_by);
+            updateBalance($this->oldCurrency_id,$this->transaction->created_by);
         }
 
         if($this->oldToCurrency_id != $this->transaction->currency_id && $this->oldToCurrency_id != $this->toTransaction->currency_id){
-            $this->updateBalance($this->oldToCurrency_id,$this->toTransaction->created_by);
+            updateBalance($this->oldToCurrency_id,$this->toTransaction->created_by);
         }
 
         // $this->reset(['form']);
@@ -247,46 +247,12 @@ class TrEditExchangeForm extends Component
         $this->dispatchBrowserEvent('update-exchange-alert-success');
     }
 
-    public function updateBalance($currencyID,$userID)
-    {
-        //! total last balance with all user
-        $userLastBalance = TrCash::where('status', '=', '1')
-            ->where('currency_id', '=', $currencyID)
-            ->where('created_by', '=', $userID)
-            ->sum('amount'); //require function
-
-        Balance::upsert(
-            [
-                'user_id' => $userID,
-                'currency_id' => $currencyID,
-                'current_balance' => $userLastBalance
-            ],
-            ['user_id', 'currency_id'],
-            ['current_balance']
-        );
-
-        //! total last balance for curren user
-        $lastBalance = TrCash::where('status', '=', '1')
-            ->where('currency_id', '=', $currencyID)
-            ->sum('amount');
-
-        Balance::upsert(
-            [
-                'user_id' => 0,
-                'currency_id' => $currencyID,
-                'current_balance' => $lastBalance
-            ],
-            ['user_id', 'currency_id'],
-            ['current_balance']
-        );
-    }
-
     public function deleteExchange()
     {
         $this->transaction->update(['status'=>0,'updated_by'=>auth()->user()->id,'logs'=>$this->logs]);
-        $this->updateBalance($this->oldCurrency_id,$this->transaction->created_by);
+        updateBalance($this->oldCurrency_id,$this->transaction->created_by);
         $this->toTransaction->update(['status'=>0,'updated_by'=>auth()->user()->id]);
-        $this->updateBalance($this->oldToCurrency_id,$this->toTransaction->created_by);
+        updateBalance($this->oldToCurrency_id,$this->toTransaction->created_by);
         $this->emitUp('clearEditTransactionCashList','delete');
     }
 

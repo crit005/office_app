@@ -180,47 +180,13 @@ class TrEditForm extends Component
 
 
         //! update balance after update
-        $this->updateBalance($this->transaction->currency_id,auth()->user()->id);
+        updateBalance($this->transaction->currency_id,auth()->user()->id);
 
         //! update old currency Balance
         if($this->oldCurrency_id != $this->transaction->currency_id){
-            $this->updateBalance($this->oldCurrency_id,auth()->user()->id);
+            updateBalance($this->oldCurrency_id,auth()->user()->id);
         }
         $this->dispatchBrowserEvent('update-payment-alert-success');
-    }
-
-    public function updateBalance($currencyID,$userID)
-    {
-        //! total last balance with all user
-        $userLastBalance = TrCash::where('status', '=', '1')
-            ->where('currency_id', '=', $currencyID)
-            ->where('created_by', '=', $userID)
-            ->sum('amount'); //require function
-
-        Balance::upsert(
-            [
-                'user_id' => $userID,
-                'currency_id' => $currencyID,
-                'current_balance' => $userLastBalance
-            ],
-            ['user_id', 'currency_id'],
-            ['current_balance']
-        );
-
-        //! total last balance for curren user
-        $lastBalance = TrCash::where('status', '=', '1')
-            ->where('currency_id', '=', $currencyID)
-            ->sum('amount');
-
-        Balance::upsert(
-            [
-                'user_id' => 0,
-                'currency_id' => $currencyID,
-                'current_balance' => $lastBalance
-            ],
-            ['user_id', 'currency_id'],
-            ['current_balance']
-        );
     }
 
     public function deletePayment()
@@ -229,7 +195,7 @@ class TrEditForm extends Component
         $oldUser_id = $this->transaction->created_by;
         // $this->transaction->status = 0;
         $this->transaction->update(['status'=>0,'updated_by'=>auth()->user()->id,'logs'=>$this->logs]);
-        $this->updateBalance($oldCurrency_id,$oldUser_id);
+        updateBalance($oldCurrency_id,$oldUser_id);
         $this->emitUp('clearEditTransactionCashList','delete');
     }
 

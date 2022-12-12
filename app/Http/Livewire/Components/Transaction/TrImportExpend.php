@@ -5,7 +5,7 @@ namespace App\Http\Livewire\Components\Transaction;
 use App\Models\Currency;
 use App\Models\Depatment;
 use App\Models\Items;
-use Illuminate\Support\Facades\Validator;
+use App\Models\TrCash;
 use Livewire\Component;
 
 class TrImportExpend extends Component
@@ -17,13 +17,38 @@ class TrImportExpend extends Component
     public $depatments=[];
     public $itemRules;
     public $test=[];
-    public $currencyId;
+    public $currency;
+    public $selectedCurrency;
+    public $month;
+
+    public function updatedCurrency($value){
+        $this->selectedCurrency = Currency::find($value);
+        $this->validate();
+    }
 
     public function rules()
     {
         return  [
+            'month'=>'required|date',
+            'importData'=>'required',
+            'currency' => 'required',
             'inputItems.*'=>'required|in:'.$this->itemRules,
-            "dataRows.*.0"=>'required|date',
+            // "dataRows.*.0"=>'required|date,
+            "dataRows.*.0" => [
+                'required','date',
+                function($attribute, $value, $fail){
+                    if($this->month && date('d-m-Y',strtotime($this->month))!='01-01-1970'){
+                        $firstDate = date('01-m-Y',strtotime($this->month));
+                        $lastDate = date('t-m-Y',strtotime($this->month));
+                        $recordDate = date('d-m-Y',strtotime($value));
+                        if(!(strtotime($firstDate) <= strtotime($recordDate) && strtotime($recordDate) <= strtotime($lastDate))){
+                            $fail('Date should be between '.$firstDate.' and '.$lastDate);
+                        }
+                    }else{
+                        $fail('Invalid date rank');
+                    }
+                }
+            ],
             "dataRows.*.*"=>function($attribute, $value, $fail){
                 $j =  explode(".", $attribute)[1];
                 $cashin = $this->dataRows[$j][2];
@@ -101,9 +126,9 @@ class TrImportExpend extends Component
     function initItems()
     {
         $this->items = [];
-        $items = Items::select(['id', 'name'])->where('status', '=', 'ENABLED')->get();
+        $items = Items::select(['id', 'name'])->where('status', '!=', 'DISABLED')->get();
         foreach ($items as $item) {
-            $this->itemRules[$item->name] = $item->id;
+            $this->items[$item->name] = $item->id;
         }
     }
 
@@ -132,20 +157,20 @@ class TrImportExpend extends Component
 
     public function setImportData($arrExcelData)
     {
-        $this->resetImportData();
+        $this->reset(['importData','dataRows']);
         $this->importData = $arrExcelData;
         if(count($arrExcelData)>=5){
+            $this->month = $this->importData[1][0];
             $this->inputItems = $this->importData[3];
             $this->inputItems = array_filter($this->inputItems, function($value) { return !is_null($value) && $value !== ''; });
             array_pop($this->inputItems); // delete total col
             $this->initDataRows();
             $this->validate();
         }
-
     }
 
     public function resetImportData(){
-        $this->reset(['importData','dataRows','currencyId']);
+        $this->reset(['importData','dataRows','currency','selectedCurrency','month']);
     }
 
     public function initDataRows()
@@ -167,31 +192,66 @@ class TrImportExpend extends Component
         }
     }
 
-    function initDepatmentRulls()
-    {
-        $this->rules['dataRows.*.' . count($this->importData[0]) - 2] = [
-            function ($attribute, $value, $fail) {
-                if($value == null || $value == ''){
-                    $fail('invalid');
-                }
-                $cashin = $this->dataRows[explode(".", $attribute)[1]][2];
-                if (!$cashin) { // not kas
-                    if ($value == null || $value == '') {
-                        $fail('depatment required');
+    function saveDatas(){
+        $this->validate();
+        $rows=[];
+        foreach($this->dataRows as $dataRow){
+            $dataRecord=[];
+            $n=1;
+            $cashin = false;
+            $isOthers = false;
+            foreach ($dataRow as $key => $value) {
+                if ($n == 1) {
+                    $dataRecord['tr_date'] = date('Y-m-d', strtotime($value));
+                    $dataRecord['month'] = date("Y-m-01", strtotime($value));
+                } elseif ($n == 2 && ($value != null || $value != '')) {
+                    $dataRecord['item_id'] = $this->items['Add Cash'];
+                    $dataRecord['amount'] = $value;
+                    $dataRecord['to_from_id'] =  auth()->user()->id;
+                    $dataRecord['type'] = 1; //1 = income, 2 = expand
+                    $cashin = true;
+                }elseif($n == 3){
+                    if($cashin){
+                        $dataRecord['description'] =  $value;
+                        $dataRecord['other_name'] = null;
+                    }else{
+                        $dataRecord['item_id'] = $this->items[$this->inputItems[$key]];
+                        $isOthers = $this->inputItems[$key] == 'Others' ?? false;
+                        $dataRecord['amount'] = $value;
+                        $dataRecord['type'] = 2; //1 = income, 2 = expand
                     }
-                    else {
-                        if (!array_key_exists($value, $this->depatments)) {
-                            $fail('depatment invalid');
+                }elseif($n == 4){
+                    if(!$cashin){
+                        if(!$isOthers){
+                            $dataRecord['other_name'] = null;
+                            $dataRecord['description'] =  $value;
+                        }else{
+                            $dataRecord['other_name'] = 'Others';
+                            $dataRecord['description'] =  $value;
                         }
                     }
-                } else { // has kas
-                    if ($value != null || $value != '') {
-                        $fail('For cash in department should be blank');
+                }elseif($n == 5){
+                    if(!$cashin){
+                        $dataRecord['to_from_id'] =  $this->depatments[$value];
                     }
                 }
-            },
-        ];
+                $n += 1;
+            }
+            $dataRecord['currency_id'] = $this->currency;
+            $dataRecord['created_by'] = auth()->user()->id;
+            $dataRecord['status'] = 1; //0 = deleted, 1 = done, 2 = wait
+            $dataRecord['input_type'] = 2; //1= menuly input, 2 = import from excle
+
+            array_push($rows,$dataRecord);
+
+        }
+        $test = TrCash::insert($rows);
+        if($test){
+            updateBalance($this->currency, auth()->user()->id);
+        }
+        $this->dispatchBrowserEvent('import-alert-success');
     }
+
 
     public function render()
     {

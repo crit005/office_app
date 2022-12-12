@@ -25,7 +25,7 @@ class AddCashForm extends Component
 
     public function mount()
     {
-        //! store currencies to array arrCurrencies note by currencyId
+        // store currencies to array arrCurrencies note by currencyId
         $this->currencies = Currency::where('status', '=', 'ENABLED')->orderBy('position', 'asc')->get();
         foreach ($this->currencies as $index => $currency) {
             $this->currencyIds .= $currency->id;
@@ -34,14 +34,14 @@ class AddCashForm extends Component
             }
             $this->arrCurrencies[$currency->id] = $currency->toArray();
         }
-        //! intit rule for currency id
+        // intit rule for currency id
         $this->cashRules['currency_id'] .= "|in:" . $this->currencyIds;
         $this->item = Items::where('name', '=', 'Add Cash')->where('status', '=', 'SYSTEM')->first();
 
         // $this->form['tr_date'] = date('d-M-Y', strtotime(now()));
     }
 
-    //! calculate get currency balance for user
+    // calculate get currency balance for user
     public function getCurrencyBalance()
     {
         if ($this->selectedCurrency && array_key_exists('currency_id', $this->form)) {
@@ -50,13 +50,11 @@ class AddCashForm extends Component
                 $this->currencyBalance = $currencyBalance->current_balance;
                 return $this->currencyBalance . ' ' . $this->selectedCurrency;
             }
-
-
         }
         return '...';
     }
 
-    //! calculate currency next balance
+    // calculate currency next balance
     public function getCurrencyNexBalance()
     {
         if ($this->selectedCurrency) {
@@ -70,49 +68,49 @@ class AddCashForm extends Component
         return '...';
     }
 
-    //! Create Array rulls form validate
+    // Create Array rulls form validate
     public $cashRules = [
         'tr_date' => 'required|date|',
         'currency_id' => 'required',
         'amount' => 'required|numeric|gt:0'
     ];
 
-    //! change name attributes to readable when validate
+    // change name attributes to readable when validate
     public $cashValidationAttributes = [
         'tr_date' => 'date',
         'currency_id' => 'currency'
     ];
 
-    //! all time update $form even
+    // all time update $form even
     public function updatedForm($value)
     {
-        //! make array validation only exist key in $form attribute
+        // make array validation only exist key in $form attribute
         $rules = array_filter($this->cashRules, function ($key) {
             return in_array($key, array_keys($this->form));
         }, ARRAY_FILTER_USE_KEY);
 
-        //! start validation for all inputed field
+        // start validation for all inputed field
         Validator::make($this->form, $rules, [], $this->cashValidationAttributes)->validate();
 
-        //! if validation is passing, we check for currency witch was selected and a symbol store as selectedCurrency
+        // if validation is passing, we check for currency witch was selected and a symbol store as selectedCurrency
         if (array_key_exists('currency_id', $this->form)) {
             $this->selectedCurrency = $this->arrCurrencies[$this->form['currency_id']]['symbol'];
         }
     }
 
-    //! return is-valid class to inform the field is valid
+    // return is-valid class to inform the field is valid
     public function getValidClass(String $fieldName)
     {
         return array_key_exists($fieldName, $this->form) ? 'is-valid' : '';
     }
 
-    //! add a new cash to tr_cashs
+    // add a new cash to tr_cashs
     public function addCash()
     {
-        //! Check validation
+        // Check validation
         Validator::make($this->form, $this->cashRules, [], $this->cashValidationAttributes)->validate();
 
-        //! generate dataRecord
+        // generate dataRecord
         $dataRecord = $this->form;
         $dataRecord['tr_date'] = date('Y-m-d', strtotime($this->form['tr_date']));
         $dataRecord['item_id'] = $this->item->id;
@@ -134,40 +132,13 @@ class AddCashForm extends Component
 
         $this->newTranaction = TrCash::create($dataRecord);
 
+        if($this->newTranaction){
+            updateBalance($this->newTranaction->currency_id,auth()->user()->id);
+        }
+
         $this->reset(['form','currencyBalance','currencyNexBalance','selectedCurrency']);
 
         $this->form['tr_date'] = date('d-M-Y', strtotime(now()));
-
-        //! total last balance with all user
-        $userLastBalance = TrCash::where('status', '=', '1')
-            ->where('currency_id', '=', $this->newTranaction->currency_id)
-            ->where('created_by', '=', $this->newTranaction->created_by)
-            ->sum('amount'); //require function
-
-        Balance::upsert(
-            [
-                'user_id' => auth()->user()->id,
-                'currency_id' => $this->newTranaction->currency_id,
-                'current_balance' => $userLastBalance
-            ],
-            ['user_id', 'currency_id'],
-            ['current_balance']
-        );
-
-        //! total last balance for curren user
-        $lastBalance = TrCash::where('status', '=', '1')
-            ->where('currency_id', '=', $this->newTranaction->currency_id)
-            ->sum('amount');
-
-        Balance::upsert(
-            [
-                'user_id' => 0,
-                'currency_id' => $this->newTranaction->currency_id,
-                'current_balance' => $lastBalance
-            ],
-            ['user_id', 'currency_id'],
-            ['current_balance']
-        );
 
         $this->dispatchBrowserEvent('add-cash-alert-success');
     }

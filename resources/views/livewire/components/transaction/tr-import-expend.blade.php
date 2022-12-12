@@ -16,9 +16,9 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                    <form>
+                    <form wire:submit.prevent='saveDatas'>
                         <div wire:ignore.self class="modal-body m-0 border-radius-0 bg-white import-modal-body">
-                            {{-- @dump(count($errors)) --}}
+                            {{-- @dump($errors) --}}
                             {{-- @dump($dataRows) --}}
                             {{-- @dump($test) --}}
                             <div class="row">
@@ -26,12 +26,15 @@
                                     <div class="form-group form-group-sm">
                                         <div class="input-group input-group-sm">
                                             <div class="custom-file">
-                                                <input type="file" class="custom-file-input" id="excelInputFile"
+                                                <input type="file" class="custom-file-input @error('importData') is-invalid @enderror" id="excelInputFile"
                                                     accept=".xlsx,.xls,.csv">
                                                 <label class="custom-file-label" id="lblExcelInputFile"
                                                     for="excelInputFile">Choose file</label>
                                             </div>
                                         </div>
+                                        @error('importData')
+                                        <div class="text-danger text-sm">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-auto">
@@ -40,13 +43,16 @@
                                             <label class="input-group-text" for="inputGroupSelect01"><i
                                                     class="fas fa-money-bill"></i></label>
                                         </div>
-                                        <select wire:model="currencyId" class="custom-select selectpicker">
-                                            <option value="" selected>* Currency</option>
+                                        <select wire:model="currency" class="custom-select selectpicker @error('currency') is-invalid @enderror">
+                                            <option value="" selected>Currency</option>
                                             @foreach ($currencys as $currency)
                                             <option value={{$currency->id}}>{{$currency->symbol}} {{$currency->code}}
                                             </option>
                                             @endforeach
                                         </select>
+                                        @error('currency')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
 
@@ -62,7 +68,12 @@
                                         <tr class="tr-th-border-0 stick-top-0">
                                             <th scope="col" class="text-lg vertical-middle th-excel"
                                                 colspan="{{count($importData[1])}}">
-                                                {{date('M-Y',strtotime($importData[1][0]))}}</th>
+                                                {{date('M-Y',strtotime($importData[1][0]))=='Jan-1970'?$importData[1][0]:date('M-Y',strtotime($importData[1][0]))}}
+                                                @error('month')
+                                                    {{-- <span class="text-danger import-error">[x]</span>  --}}
+                                                    <span class="text-danger import-error" role="button" onclick="toastError('{{$message}}')" >[?]</span>
+                                                @enderror
+                                            </th>
                                         </tr>
                                         <tr class="tr-th-border-0 stick-top-0">
                                             <th scope="col"
@@ -109,11 +120,12 @@
                                         @if ($indext >3)
                                         <tr>
                                             @foreach ($data as $i => $val)
+                                                <?php $colCount = count($data)?>
                                             <td scope="col" class="text-center text-nowrap th-excel">
                                                 @if($i==0)
-                                                {{date('d-m-Y',strtotime($val))}}
+                                                {{$val ? (date('d-m-Y',strtotime($val))=='01-01-1970'?$val:date('d-m-Y',strtotime($val))):''}}
                                                 @else
-                                                {{$val}}
+                                                {{$val}}@if ($val && $selectedCurrency && ($i != $colCount-2 || $i != $colCount-3)) {{$selectedCurrency->symbol}} @endif
                                                 @endif
                                                 @error('dataRows.'.($k).'.'.$i)
                                                     {{-- <span class="text-danger import-error">[x]</span>  --}}
@@ -164,7 +176,7 @@
         </div>
     </div>
 
-    @push('js')
+@push('js')
 
     <script>
 
@@ -175,13 +187,21 @@
             });
         });
 
-        window.addEventListener('hide-import-payment-form', e => {
-            $('#importPaymentFormModal').modal('hide');
-        });
-
-
         $('.modal-dialog-import').draggable({
             handle: ".modal-header"
+        });
+
+        window.addEventListener('import-alert-success', e => {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Import data successfully.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+
+            }).then((e) => {
+                $('#importPaymentFormModal').modal('hide');
+                Livewire.emit('refreshCashList');
+            });
         });
 
         $(function(){
@@ -236,4 +256,4 @@
                 }
         }
     </script>
-    @endpush
+@endpush

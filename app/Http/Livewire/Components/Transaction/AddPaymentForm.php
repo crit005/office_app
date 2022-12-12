@@ -141,47 +141,15 @@ class AddPaymentForm extends Component
         // $dataRecord['created_at'] = auto;
         // $dataRecord['updated_at'] = auto;
 
-        //!=====================================
-
-
         $this->newTranaction = TrCash::create($dataRecord);
+
+        if($this->newTranaction){
+            updateBalance($this->newTranaction->currency_id,auth()->user()->id);
+        }
 
         $this->reset(['form','currencyBalance','currencyNexBalance','selectedCurrency']);
 
         $this->form['tr_date'] = date('d-M-Y', strtotime(now()));
-
-
-
-        //! total last balance with all user
-        $userLastBalance = TrCash::where('status', '=', '1')
-            ->where('currency_id', '=', $this->newTranaction->currency_id)
-            ->where('created_by', '=', $this->newTranaction->created_by)
-            ->sum('amount'); //require function
-
-        Balance::upsert(
-            [
-                'user_id' => auth()->user()->id,
-                'currency_id' => $this->newTranaction->currency_id,
-                'current_balance' => $userLastBalance
-            ],
-            ['user_id', 'currency_id'],
-            ['current_balance']
-        );
-
-        //! total last balance for curren user
-        $lastBalance = TrCash::where('status', '=', '1')
-            ->where('currency_id', '=', $this->newTranaction->currency_id)
-            ->sum('amount');
-
-        Balance::upsert(
-            [
-                'user_id' => 0,
-                'currency_id' => $this->newTranaction->currency_id,
-                'current_balance' => $lastBalance
-            ],
-            ['user_id', 'currency_id'],
-            ['current_balance']
-        );
 
         $this->dispatchBrowserEvent('add-payment-alert-success');
     }

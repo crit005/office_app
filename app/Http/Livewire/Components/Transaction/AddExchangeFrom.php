@@ -194,81 +194,14 @@ class AddExchangeFrom extends Component
 
         $toTranaction = TrCash::create($dataRecordTo);
 
-        //===============================================
-
         $fromTranaction->update(['tr_id' => $toTranaction->id, 'status' => 1]);
 
+        // Update balance
+        updateBalance($fromTranaction->currency_id,auth()->user()->id);
+        updateBalance($toTranaction->currency_id,auth()->user()->id);
 
-        //! total last balance with all user
-        $userLastBalance = TrCash::where('status', '=', '1')
-            ->where('currency_id', '=', $fromTranaction->currency_id)
-            ->where('created_by', '=', $fromTranaction->created_by)
-            ->sum('amount'); //require function
-
-        Balance::upsert(
-            [
-                'user_id' => auth()->user()->id,
-                'currency_id' => $fromTranaction->currency_id,
-                'current_balance' => $userLastBalance
-            ],
-            ['user_id', 'currency_id'],
-            ['current_balance']
-        );
-
-        //! total last balance for curren user
-        $lastBalance = TrCash::where('status', '=', '1')
-            ->where('currency_id', '=', $fromTranaction->currency_id)
-            ->sum('amount');
-
-        Balance::upsert(
-            [
-                'user_id' => 0,
-                'currency_id' => $fromTranaction->currency_id,
-                'current_balance' => $lastBalance
-            ],
-            ['user_id', 'currency_id'],
-            ['current_balance']
-        );
-
-        //==============================================
-
-        //! total last balance with all user
-        $userLastBalance = TrCash::where('status', '=', '1')
-            ->where('currency_id', '=', $toTranaction->currency_id)
-            ->where('created_by', '=', $toTranaction->created_by)
-            ->sum('amount'); //require function
-
-        Balance::upsert(
-            [
-                'user_id' => auth()->user()->id,
-                'currency_id' => $toTranaction->currency_id,
-                'current_balance' => $userLastBalance
-            ],
-            ['user_id', 'currency_id'],
-            ['current_balance']
-        );
-
-        //! total last balance for curren user
-        $lastBalance = TrCash::where('status', '=', '1')
-            ->where('currency_id', '=', $toTranaction->currency_id)
-            ->sum('amount');
-
-        Balance::upsert(
-            [
-                'user_id' => 0,
-                'currency_id' => $toTranaction->currency_id,
-                'current_balance' => $lastBalance
-            ],
-            ['user_id', 'currency_id'],
-            ['current_balance']
-        );
-
-        // $this->reset(['form']);
         $this->reset(['form','currencyBalance','currencyNexBalance','selectedCurrency']);
-
         $this->form['tr_date'] = date('d-M-Y', strtotime(now()));
-
-        //================================================================
 
         $this->dispatchBrowserEvent('add-exchange-alert-success');
     }

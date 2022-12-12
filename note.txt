@@ -116,3 +116,29 @@ Tip: Main sidbar collaps all time
 ===================================
 Add the sidebar-collapse class to the body tag to get this layout. You should combine this option with a fixed layout if you have a long sidebar. Doing that will prevent your page content from getting stretched vertically.
 <body class="sidebar-collapse"></body>
+
+Create Globle function with helper
+======================================
+-create php file in somewhere ex: app/Funcs/Helper.php
+-opent composer.json -> autoload block and add helper file
+"autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        },
+        "files": [
+            "app/Funcs/Helper.php"
+        ]
+    },
+- run command
+    composer dump-autoload
+- make sure function was create are not duplicate with other developer
+    if (!function_exists(function: 'functionName')) {function functionName(){}}
+
+//Last date of month
+$lastDateOfMonth = date('Y-m-t');
+$originalDate = "Apr-2010";
+$newDate = date("Y-m-t", strtotime($originalDate));
+echo($newDate);
+
