@@ -7,10 +7,12 @@ use Livewire\Component;
 class TrMonthlySumary extends Component
 {
     public $totals = [];
+    public $mode;
 
-    public function mount($totals=[])
+    public function mount($totals=[],$mode=0)
     {
         $this->totals = $totals;
+        $this->mode = $mode;
     }
     public function render()
     {

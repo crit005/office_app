@@ -27,7 +27,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header @if($type == 1) modal-blur-light-green @endif @if($type == 2) modal-blur-light-red @endif @if($type == 3) modal-blur-light-blue @endif "  style="z-index: 10001">
-                            <livewire:components.transaction.tr-sumary :arrSearchs="$searchs" :arrOptional="['createdBy'=>$createdBy]" wire:key="tr-head-sumary-{{$updateTime }}" />
+                            <livewire:components.transaction.tr-sumary :mode="$type??0" :arrSearchs="$searchs" :arrOptional="['createdBy'=>$createdBy]" wire:key="tr-head-sumary-{{$updateTime }}" />
 
                             <div class="float-lg-left mb-2 text-center">
                                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -115,7 +115,9 @@
                                 <button class="btn btn-primary btn-sm elevation-1" wire:click="clearFilter" onclick="clearSearchDate()">
                                     <i class="fas fa-brush"></i>
                                 </button>
-
+                                <button class="btn btn-primary btn-sm elevation-1 ml-2" >
+                                    <i class="fas fa-print"></i>
+                                </button>
                             </div>
 
                             {{-- <div class="card-tools">
@@ -157,17 +159,36 @@
                                             $trRowNumber = 0;
                                             ?>
                                             <tr class="tr-td-border-0 stick-top-0 bg-wite">
-                                                <td scope="col"
-                                                    class="text-left text-info text-bold minimal-table-column">
+                                                <td scope="col" class="text-left text-info text-bold minimal-table-column">
                                                     {{ date('M-Y', strtotime($transaction->month)) }}
+                                                    <div wire:click="switchMonthOrder"
+                                                     class="btn btn-sm text-smmr-2" style="margin-bottom: -8px; margin-top: -11px;">
+                                                        @if ($order['month']=='asc')
+                                                        <i class="fas fa-sort-alpha-down"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-alpha-up"></i>
+                                                        @endif
+                                                    </div>
+
                                                 </td>
                                                 <td scope="col" colspan="7" class="text-left">
-                                                    <livewire:components.transaction.tr-monthly-sumary :totals="$transaction->currency->getTotal($searchs,['month'=>$transaction->month,'createdBy'=>$createdBy])"
+                                                    <livewire:components.transaction.tr-monthly-sumary :mode="$type??0" :totals="$transaction->currency->getTotal($searchs,['month'=>$transaction->month,'createdBy'=>$createdBy])"
                                                         wire:key="tr-total-{{ $transaction->id.$updateTime }}" />
                                                 </td>
                                             </tr>
                                             <tr class="tr-th-border-0 stick-top-next">
-                                                <th scope="col" class="text-center text-info minimal-table-column m-0 p-0"><div class="border-bottom pb-2">Date</div></th>
+                                                <th scope="col" class="text-center text-info minimal-table-column m-0 p-0"><div class="border-bottom pb-2">
+                                                    Date
+                                                    <div wire:click="switchDateOrder"
+                                                     class="btn btn-sm text-smmr-2" style="margin-bottom: -8px; margin-top: -11px;">
+                                                        @if ($order['tr_date']=='asc')
+                                                        <i class="fas fa-sort-alpha-down"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-alpha-up"></i>
+                                                        @endif
+                                                    </div>
+
+                                                </div></th>
                                                 <th scope="col" class="text-right text-info minimal-table-column m-0 p-0"><div class="border-bottom pb-2">#</div></th>
                                                 <th scope="col" class="text-left text-info m-0 p-0" style="white-space: nowrap;"><div class="border-bottom pb-2">Pament Name</div></th>
                                                 <th scope="col" class="text-center text-info minimal-table-column m-0 p-0"><div class="border-bottom pb-2">Amount</div></th>

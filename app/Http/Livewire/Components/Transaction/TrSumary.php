@@ -11,14 +11,17 @@ class TrSumary extends Component
     public $fromDate, $toDate, $depatmentId, $itemId, $otherName, $currencyId, $isOther, $createdBy;
     public $currencys;
     public $totals;
+    public $mode;
 
-    public function mount($arrSearchs, $arrOptional = null)
+    public function mount($arrSearchs, $arrOptional = null,$mode=0)
     {
+        $this->mode = $mode;
         $this->searchs = $arrSearchs;
         if ($arrOptional) {
             foreach ($arrOptional as $key => $val)
                 $this->searchs[$key] = $val;
         }
+        // set value to all prop in class from search
         foreach ($this->searchs as $key => $val) {
             $this->$key = $val;
         }

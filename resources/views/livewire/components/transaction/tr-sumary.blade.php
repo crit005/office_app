@@ -8,6 +8,86 @@
         </div>
     </div>
 
+    @if($mode==1)
+    <div class="total-info-top d-flex flex-row">
+        <div class="mr-3">
+            <span class="info-label">Begin:</span> <span class="info-number">
+                @foreach ($totals as $total )
+                <span wire:key='sumary_begin_{{$total->id}}' class="{{$total->begin_amount < 0 ? 'text-danger':''}}">{{$total->begin_amount . $total->symbol}}</span>
+                    {{($total != end($totals)) ? '/':''}}
+                @endforeach
+            </span>
+        </div>
+    </div>
+    <div class="total-info-top d-flex flex-row">
+        <div class="mr-3">
+            <span class="info-label">CashIn:</span> <span class="info-number">
+                @foreach ($totals as $total )
+                <span wire:key='sumary_cashin_{{$total->id}}' class="{{$total->cash_in < 0 ? 'text-danger':''}}">{{$total->cash_in . $total->symbol}}</span>
+                    {{($total != end($totals)) ? '/':''}}
+                @endforeach
+            </span>
+        </div>
+    </div>
+
+    @elseif ($mode==2)
+    <div class="total-info-top d-flex flex-row">
+        <div class="mr-3">
+            <span class="info-label">Begin:</span> <span class="info-number">
+                @foreach ($totals as $total )
+                <span wire:key='sumary_begin_{{$total->id}}' class="{{$total->begin_amount < 0 ? 'text-danger':''}}">{{$total->begin_amount . $total->symbol}}</span>
+                    {{($total != end($totals)) ? '/':''}}
+                @endforeach
+            </span>
+        </div>
+    </div>
+    <div class="total-info-top d-flex flex-row">
+        <div>
+            <span class="info-label">Expand:</span>
+            <span class="info-number">
+                @foreach ($totals as $total )
+                <span wire:key='sumary_expend_{{$total->id}}' class="{{$total->expend < 0 ? 'text-danger':''}}">{{$total->expend . $total->symbol}}</span>
+                    {{($total != end($totals)) ? '/':''}}
+                @endforeach
+            </span>
+        </div>
+    </div>
+
+    @elseif ($mode==3)
+    <div class="total-info-top d-flex flex-row">
+        <div class="mr-3">
+            <span class="info-label">Begin:</span> <span class="info-number">
+                @foreach ($totals as $total )
+                <span wire:key='sumary_begin_{{$total->id}}' class="{{$total->begin_amount < 0 ? 'text-danger':''}}">{{$total->begin_amount . $total->symbol}}</span>
+                    {{($total != end($totals)) ? '/':''}}
+                @endforeach
+            </span>
+        </div>
+    </div>
+    <div class="total-info-top d-flex flex-row">
+        <div class="mr-3">
+            <span class="info-label">Change In:</span> <span class="info-number">
+                @foreach ($totals as $total )
+                <span wire:key='sumary_cashin_{{$total->id}}' class="{{$total->cash_in < 0 ? 'text-danger':''}}">{{$total->cash_in . $total->symbol}}</span>
+                    {{($total != end($totals)) ? '/':''}}
+                @endforeach
+            </span>
+        </div>
+    </div>
+
+    <div class="total-info-top d-flex flex-row">
+        <div>
+            <span class="info-label">Change Out:</span>
+            <span class="info-number">
+                @foreach ($totals as $total )
+                <span wire:key='sumary_expend_{{$total->id}}' class="{{$total->expend < 0 ? 'text-danger':''}}">{{$total->expend . $total->symbol}}</span>
+                    {{($total != end($totals)) ? '/':''}}
+                @endforeach
+            </span>
+        </div>
+    </div>
+
+    @else
     <div class="total-info-top d-flex flex-row">
         <div class="mr-3">
             <span class="info-label">Begin:</span> <span class="info-number">
@@ -53,4 +133,5 @@
             </span>
         </div>
     </div>
+    @endif
 </div>
