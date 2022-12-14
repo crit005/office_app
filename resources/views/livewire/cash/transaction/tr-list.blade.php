@@ -115,9 +115,21 @@
                                 <button class="btn btn-primary btn-sm elevation-1" wire:click="clearFilter" onclick="clearSearchDate()">
                                     <i class="fas fa-brush"></i>
                                 </button>
-                                <button class="btn btn-primary btn-sm elevation-1 ml-2" >
+                                <button class="btn btn-primary btn-sm elevation-1 ml-2" wire:click.prevent='print' >
                                     <i class="fas fa-print"></i>
                                 </button>
+
+                                <div class="btn-group btn-group-sm ml-2">
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right text-sm">
+                                        <button class="dropdown-item" type="button"><i class="fas fa-table mr-2"></i>Table</button>
+                                        <button class="dropdown-item" type="button"><i class="fas fa-chart-pie mr-2"></i>Department</button>
+                                        <button class="dropdown-item" type="button"><i class="fas fa-chart-area mr-2"></i>Payment</button>
+                                    </div>
+                                </div>
                             </div>
 
                             {{-- <div class="card-tools">
@@ -352,6 +364,7 @@
         <livewire:components.transaction.tr-view-form :id="$viewId" wire:key="tr_view_form-{{ $viewId }}"/>
     @endif
     <livewire:components.transaction.tr-import-expend />
+    <livewire:components.transaction.cash-report :search="$search??[]" :order="$order??[]" />
 </div>
 @push('js')
 <script src="{{ asset('backend/dist/js/transactions/tr_list.js') }}"></script>
