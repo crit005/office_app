@@ -2,6 +2,9 @@
 
 namespace App\Http\Livewire\Components\Transaction;
 
+use App\Models\Currency;
+use App\Models\Depatment;
+use App\Models\Items;
 use App\Models\TrCash;
 use Livewire\Component;
 
@@ -9,16 +12,57 @@ class CashReport extends Component
 {
     public $title='Cash Report';
     // Search varibals
+    public $search=[];
     public $fromDate, $toDate, $depatmentId, $itemId, $otherName, $currencyId, $isOther, $createdBy;
     public $order=['month'=>'desc','tr_date'=>'desc'];
     public $type;
+    public $currencys;
+    public $summary;
 
     public function mount($search,$order)
     {
+        $this->search = $search;
        foreach($search as $key => $val){
         $this->$key = $val;
        }
        $this->order = $order;
+       $this->currencys = new Currency();
+       $this->summary = $this->currencys->getTotal($this->search);
+    }
+
+    public function getType()
+    {
+        if($this->type == 1){
+            return 'Cash In';
+        }elseif($this->type == 2){
+            return 'Expend';
+        }elseif($this->type == 3){
+            return 'Exchange';
+        }else{
+            return 'All';
+        }
+    }
+
+    public function getCurrency()
+    {
+        if($this->currencyId){
+            $currency = $this->currencys->find($this->currencyId);
+            return $currency->code .'-'.$currency->symbol;
+        }else{
+            return "All";
+        }
+    }
+
+    public function getFilter()
+    {
+        $strFilter ='Filter:';
+        if($this->depatmentId){
+            $strFilter .= ' '. Depatment::find($this->depatmentId)->name;
+        }
+        if($this->itemId){
+            $strFilter .= ' '. Items::find($this->itemId)->name;
+        }
+
     }
 
     public function render()

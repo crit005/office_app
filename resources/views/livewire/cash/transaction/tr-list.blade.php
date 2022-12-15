@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6 main-title-block">
-                    <h1 class="m-0 text-white">Cash Transactions</h1>
+                    <h1 class="m-0 text-white">Cash Transactions {{$printRequest}}</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -27,7 +27,8 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header @if($type == 1) modal-blur-light-green @endif @if($type == 2) modal-blur-light-red @endif @if($type == 3) modal-blur-light-blue @endif "  style="z-index: 10001">
-                            <livewire:components.transaction.tr-sumary :mode="$type??0" :arrSearchs="$searchs" :arrOptional="['createdBy'=>$createdBy]" wire:key="tr-head-sumary-{{$updateTime }}" />
+                            {{-- <livewire:components.transaction.tr-sumary :mode="$type??0" :arrSearchs="$searchs" :arrOptional="['createdBy'=>$createdBy]" wire:key="tr-head-sumary-{{$updateTime}}" /> --}}
+                                <livewire:components.transaction.tr-sumary :arrSearchs="$searchs" :mode="$type??0" :arrOptional="['createdBy'=>$createdBy]" />
 
                             <div class="float-lg-left mb-2 text-center">
                                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -125,7 +126,7 @@
                                         <i class="fas fa-print"></i>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right text-sm">
-                                        <button class="dropdown-item" type="button"><i class="fas fa-table mr-2"></i>Table</button>
+                                        <button class="dropdown-item" type="button" wire:click.prevent="printDataTableMode('Test')"><i class="fas fa-table mr-2"></i>Table</button>
                                         <button class="dropdown-item" type="button"><i class="fas fa-chart-pie mr-2"></i>Department</button>
                                         <button class="dropdown-item" type="button"><i class="fas fa-chart-area mr-2"></i>Payment</button>
                                     </div>
@@ -364,8 +365,43 @@
         <livewire:components.transaction.tr-view-form :id="$viewId" wire:key="tr_view_form-{{ $viewId }}"/>
     @endif
     <livewire:components.transaction.tr-import-expend />
-    <livewire:components.transaction.cash-report :search="$search??[]" :order="$order??[]" />
+    @if($printRequest)
+    <livewire:components.transaction.cash-report :search="$searchs??[]" :order="$order??[]" wire:key="tr_report_form-{{ strtotime('now') }}" />
+    @endif
 </div>
 @push('js')
 <script src="{{ asset('backend/dist/js/transactions/tr_list.js') }}"></script>
+<script>
+    function cashResetPrintRequest(){
+        Livewire.emit('cashResetPrintRequest');
+    }
+    function PrintElem(elem)
+   {
+       let l = (window.screen.width - 1250)/2;
+       // window.screen.width;
+       var mywindow = window.open('', 'PRINT', 'height=1122,width=1250,left='+l);
+
+       mywindow.document.write('<html><head><title>' + document.title  + '</title>');
+       mywindow.document.write(`<link rel="stylesheet" href="{{ asset('backend/dist/css/adminlte.min.css') }}">`);
+       mywindow.document.write(`<link rel="stylesheet" href="{{ asset('css/style.css') }}">`);
+
+       mywindow.document.write('</head><body >');
+       mywindow.document.write(document.getElementById(elem).outerHTML);
+       // mywindow.document.write(document.getElementById(elem).innerHTML);
+       mywindow.document.write('</body></html>');
+       mywindow.document.close(); // necessary for IE >= 10
+       mywindow.focus(); // necessary for IE >= 10*/
+
+       mywindow.onload=function(){ // necessary if the div contain images
+           mywindow.focus(); // necessary for IE >= 10
+           mywindow.print();
+           mywindow.close();
+       };
+
+       //mywindow.print();
+       //mywindow.close();
+
+       return true;
+   }
+</script>
 @endpush

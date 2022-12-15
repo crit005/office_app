@@ -30,9 +30,13 @@ class TrList extends Component
     // search options
     public $type;
 
+    //Print option
+    public $printRequest = false;
+
     protected $listeners = [
         'refreshCashList' => 'refreshCashList',
-        'clearEditTransactionCashList' => 'clearEditTransactionCashList'
+        'clearEditTransactionCashList' => 'clearEditTransactionCashList',
+        'cashResetPrintRequest'=>'resetPrintRequest'
     ];
 
     public function switchMonthOrder()
@@ -109,6 +113,7 @@ class TrList extends Component
         $this->resetSearch($name);
 
         $this->initSearchs();
+        $this->emit('summatyRefresh',$this->searchs,$type??0,['createdBy'=>$this->createdBy]);
     }
 
     function resetSearch($name)
@@ -123,6 +128,7 @@ class TrList extends Component
     {
         $this->createdBy = $this->createdBy ? null : auth()->user()->id;
         $this->initSearchs();
+        $this->emit('summatyRefresh',$this->searchs,$type??0,['createdBy'=>$this->createdBy]);
     }
 
     function initSearchs()
@@ -176,6 +182,20 @@ class TrList extends Component
 
     public function print(){
         $this->dispatchBrowserEvent('show-report-view-data-table-cash-modal');
+    }
+
+    public function printDataTableMode($title=null)
+    {
+        if($title){
+            $this->title = $title;
+        }
+        $this->printRequest = true;
+        $this->dispatchBrowserEvent('show-report-view-data-table-cash-modal');
+    }
+
+    public function resetPrintRequest()
+    {
+        $this->reset(['printRequest']);
     }
 
 

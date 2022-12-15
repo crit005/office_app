@@ -590,9 +590,10 @@ td:has(.import-error){
 }
 
 /* print style */
-.page{
-    font-size: 14px;
+.page,.page th, .page td{
+font-size: 14px;
 }
+
 .print-page{
     /* width: 793px; */
     min-height: 1122px;
@@ -613,53 +614,21 @@ td:has(.import-error){
     width: 100%;
 }
 
-.page-header .data-filter{
-    text-align: left;
-    font-size: 13px;
-}
-.page-header .data-summary{
-    text-align: right;
-    font-size: 13px;
-}
-.page .text-info{
-    color:#17a2b8 !important;
-}
-.page .text-success{
-    color:#28a745 !important;
-}
-.page .text-danger{
-    color:#dc3545 !important;
-}
-.page .text-warning{
-    color:#ffc107 !important;
-}
-.page .text-white{
-    color:#ffffff !important;
-}
+@media print {
+    body {
+      margin: 0;
+      color: #000;
+      background: #fff !important;
+      font-size: 18px;
+    }
+    .page,.page th, .page td{
+        font-size: 18px;
+    }
+    .page-title{
+        font-size: 24px !important;
+    }
 
-.page .bg-info{
-    background-color:#17a2b8 !important;
-}
-.page .bg-success{
-    background-color:#28a745 !important;
-}
-.page .bg-danger{
-    background-color:#dc3545 !important;
-}
-.page .bg-warning{
-    background-color:#ffc107 !important;
-}
-
-.page .text-center{
-    text-align: center !important;
-}
-
-.page-body{
-
-}
-.page-footer{
-
-}
+  }
 /* end print style */
 
  /* Extra small devices (phones, 600px and down) */
