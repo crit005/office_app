@@ -11,6 +11,7 @@ use Livewire\Component;
 
 class TrList extends Component
 {
+    public $mode = 1;
     public $globleBalance = false;
     public $currentMonth;
     public $takeAmount;
@@ -32,6 +33,8 @@ class TrList extends Component
 
     //Print option
     public $printRequest = false;
+    public $reportTitle;
+
 
     protected $listeners = [
         'refreshCashList' => 'refreshCashList',
@@ -113,7 +116,7 @@ class TrList extends Component
         $this->resetSearch($name);
 
         $this->initSearchs();
-        $this->emit('summatyRefresh',$this->searchs,$type??0,['createdBy'=>$this->createdBy]);
+        // $this->emit('summatyRefresh',$this->searchs,$type??0,['createdBy'=>$this->createdBy]);
     }
 
     function resetSearch($name)
@@ -128,7 +131,7 @@ class TrList extends Component
     {
         $this->createdBy = $this->createdBy ? null : auth()->user()->id;
         $this->initSearchs();
-        $this->emit('summatyRefresh',$this->searchs,$type??0,['createdBy'=>$this->createdBy]);
+        // $this->emit('summatyRefresh',$this->searchs,$type??0,['createdBy'=>$this->createdBy]);
     }
 
     function initSearchs()
@@ -180,14 +183,10 @@ class TrList extends Component
         $this->dispatchBrowserEvent('show-view-form');
     }
 
-    public function print(){
-        $this->dispatchBrowserEvent('show-report-view-data-table-cash-modal');
-    }
-
     public function printDataTableMode($title=null)
     {
         if($title){
-            $this->title = $title;
+            $this->reportTitle = $title;
         }
         $this->printRequest = true;
         $this->dispatchBrowserEvent('show-report-view-data-table-cash-modal');
@@ -201,8 +200,8 @@ class TrList extends Component
 
     public function render()
     {
-
-        $transactions = TrCash::where('status', '!=', 0)
+        if($this->mode == 1){
+           $transactions = TrCash::where('status', '!=', 0)
             ->when($this->createdBy, function ($q) {
                 $q->where('created_by', '=', $this->createdBy);
             })
@@ -239,7 +238,6 @@ class TrList extends Component
                 });
             })
 
-
             ->orderBy('month', $this->order['month'])
             // ->orderBy('tr_date', 'desc')
             // ->orderBy('id', 'desc')
@@ -247,16 +245,65 @@ class TrList extends Component
             ->orderBy('id', $this->order['tr_date'])
             ->take($this->takeAmount)
             ->get();
-        // ->orderBy('name', 'asc')
-        // ->paginate(env('PAGINATE'));
+            // ->orderBy('name', 'asc')
+            // ->paginate(env('PAGINATE'));
 
-        if ($this->takeAmount > count($transactions)) {
-            // if(!$this->reachLastRecord){
-            //     $this->dispatchBrowserEvent('reach_the_last_record');
-            //     $this->reachLastRecord = true;
-            // }
-            $this->reachLastRecord = true;
+            if ($this->takeAmount > count($transactions)) {
+                $this->reachLastRecord = true;
+            }
+        }elseif($this->mode == 2){
+            $transactions = TrCash::where('status', '!=', 0)
+            ->when($this->createdBy, function ($q) {
+                $q->where('created_by', '=', $this->createdBy);
+            })
+            ->where('type', '!=', 4)
+
+            ->when($this->fromDate, function ($q) {
+                $q->where('tr_date', '>=', date('Y-m-d', strtotime($this->fromDate)));
+            })
+            ->when($this->toDate, function ($q) {
+                $q->where('tr_date', '<=', date('Y-m-d', strtotime($this->toDate)));
+            })
+            ->when($this->depatmentId, function ($q) {
+                $q->where('type', '=', 2)
+                    ->where('to_from_Id', '=', $this->depatmentId);
+            })
+            ->when($this->itemId, function ($q) {
+                $q->where('item_id', '=', $this->itemId);
+            })
+            ->when($this->type, function ($q) {
+                $q->where('type', '=', $this->type);
+            })
+            ->when($this->otherName, function ($q) {
+                $q->where('other_name', 'like', "%" . $this->otherName . "%");
+            })
+            # AND (`currency_id` = 99 OR (`type` = 3 and `to_from_id` = 99))
+            ->when($this->currencyId, function ($q) {
+                $q->where(function ($q) {
+                    $q->where('currency_id', '=', $this->currencyId)
+                        ->orWhere(function ($q) {
+                            $q->where('type', '=', 3)
+                                ->where('to_from_id', '=', $this->currencyId);
+                        });
+                });
+            })
+            ->orderBy('month', $this->order['month'])
+            // ->orderBy('tr_date', 'desc')
+            // ->orderBy('id', 'desc')
+            ->orderBy('tr_date', $this->order['tr_date'])
+            ->orderBy('id', $this->order['tr_date'])
+            ->take($this->takeAmount)
+            ->get();
+            // ->orderBy('name', 'asc')
+            // ->paginate(env('PAGINATE'));
+        }else{
+
         }
+
+
+
+        // Init top summary top total
+        $this->emit('summatyRefresh',$this->searchs,$type??0,['createdBy'=>$this->createdBy]);
 
         return view('livewire.cash.transaction.tr-list', ['trCashs' => $transactions]);
     }

@@ -19,9 +19,10 @@ class CashReport extends Component
     public $currencys;
     public $summary;
 
-    public function mount($search,$order)
+    public function mount($title='Cash Report',$search,$order)
     {
         $this->search = $search;
+        $this->title = $title;
        foreach($search as $key => $val){
         $this->$key = $val;
        }

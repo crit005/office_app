@@ -12,7 +12,10 @@
                         </h5>
                     </div>
                 </div>
-                <button onclick="PrintElem('data-table-print-mode')">Print</button>
+                {{-- <button onclick="PrintElem('data-table-print-mode')">Print</button> --}}
+                <button class="btn btn-primary btn-sm elevation-1 ml-2" onclick="PrintElem('data-table-print-mode')" >
+                    <i class="fas fa-print"></i>
+                </button>
 
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>

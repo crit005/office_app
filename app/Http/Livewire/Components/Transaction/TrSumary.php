@@ -31,7 +31,7 @@ class TrSumary extends Component
         }
         $this->fromDate = $this->fromDate ? date('d-M-Y', strtotime($this->fromDate)) : null;
         $this->toDate = $this->toDate ? date('d-M-Y', strtotime($this->toDate)) : null;
-        $this->currencys = new Currency();
+        // $this->currencys = new Currency();
         $this->totals = $this->currencys->getTotal($this->searchs);
     }
     public function mount($arrSearchs, $arrOptional = null,$mode=0)

@@ -116,19 +116,22 @@
                                 <button class="btn btn-primary btn-sm elevation-1" wire:click="clearFilter" onclick="clearSearchDate()">
                                     <i class="fas fa-brush"></i>
                                 </button>
-                                <button class="btn btn-primary btn-sm elevation-1 ml-2" wire:click.prevent='print' >
+                                {{-- <button class="btn btn-primary btn-sm elevation-1 ml-2" wire:click.prevent='print' > --}}
+                                {{-- <button class="btn btn-primary btn-sm elevation-1 ml-2" wire:click.prevent="printDataTableMode('Test')" > --}}
+                                <button class="btn btn-primary btn-sm elevation-1 ml-2" onclick="printTableRequest()" >
                                     <i class="fas fa-print"></i>
                                 </button>
 
                                 <div class="btn-group btn-group-sm ml-2">
-                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false">
-                                        <i class="fas fa-print"></i>
+                                    {{-- <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> --}}
+                                    {{-- <button type="button" class="btn text-white" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> --}}
+                                    <button type="button" class="btn text-white" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right text-sm">
-                                        <button class="dropdown-item" type="button" wire:click.prevent="printDataTableMode('Test')"><i class="fas fa-table mr-2"></i>Table</button>
-                                        <button class="dropdown-item" type="button"><i class="fas fa-chart-pie mr-2"></i>Department</button>
-                                        <button class="dropdown-item" type="button"><i class="fas fa-chart-area mr-2"></i>Payment</button>
+                                        <button class="dropdown-item" type="button"><i class="fas fa-table mr-2"></i>Cash Mode</button>
+                                        <button class="dropdown-item" type="button"><i class="fas fa-chart-pie mr-2"></i>Department Mode</button>
+                                        <button class="dropdown-item" type="button"><i class="fas fa-chart-area mr-2"></i>Item Mode</button>
                                     </div>
                                 </div>
                             </div>
@@ -148,194 +151,206 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body-v1 p-0">
+                            {{-- Data Table Mode --}}
+                            @if ($mode==1)
                             <table class="table table-v1 table-hover">
-                                {{-- <thead>
-                                    <tr class="tr-th-border-0 stick-top-0">
-                                        <th scope="col" class="text-center text-info minimal-table-column">Date</th>
-                                        <th scope="col" class="text-right text-info minimal-table-column">#</th>
-                                        <th scope="col" class="text-left text-info" style="white-space: nowrap;">Pament Name</th>
-                                        <th scope="col" class="text-center text-info minimal-table-column">Amount</th>
-                                        <th scope="col" class="text-center text-info minimal-table-column">Pay On</th>
-                                        <th scope="col" class="text-center text-info">Detail</th>
-                                        <th scope="col" class="text-center text-info minimal-table-column">Created By</th>
-                                        <th scope="col" class="text-center text-info minimal-table-column">Options</th>
-                                    </tr>
-                                </thead> --}}
+
                                 <tbody id="sortable">
                                     <?php
                                         $trRowNumber = 0;
                                     ?>
                                     @forelse ($trCashs as $indext => $transaction)
-                                        {{-- detail record  animate__animated animate__fadeInUp --}}
-                                        @if ($this->isNewMonth($transaction->month))
-                                            <?php
+                                    {{-- detail record animate__animated animate__fadeInUp --}}
+                                    @if ($this->isNewMonth($transaction->month))
+                                    <?php
                                             $trRowNumber = 0;
                                             ?>
-                                            <tr class="tr-td-border-0 stick-top-0 bg-wite">
-                                                <td scope="col" class="text-left text-info text-bold minimal-table-column">
-                                                    {{ date('M-Y', strtotime($transaction->month)) }}
-                                                    <div wire:click="switchMonthOrder"
-                                                     class="btn btn-sm text-smmr-2" style="margin-bottom: -8px; margin-top: -11px;">
-                                                        @if ($order['month']=='asc')
-                                                        <i class="fas fa-sort-alpha-down"></i>
-                                                        @else
-                                                        <i class="fas fa-sort-alpha-up"></i>
-                                                        @endif
-                                                    </div>
+                                    <tr class="tr-td-border-0 stick-top-0 bg-wite">
+                                        <td scope="col" class="text-left text-info text-bold minimal-table-column">
+                                            {{ date('M-Y', strtotime($transaction->month)) }}
+                                            <div wire:click="switchMonthOrder" class="btn btn-sm text-smmr-2"
+                                                style="margin-bottom: -8px; margin-top: -11px;">
+                                                @if ($order['month']=='asc')
+                                                <i class="fas fa-sort-alpha-down"></i>
+                                                @else
+                                                <i class="fas fa-sort-alpha-up"></i>
+                                                @endif
+                                            </div>
 
-                                                </td>
-                                                <td scope="col" colspan="7" class="text-left">
-                                                    <livewire:components.transaction.tr-monthly-sumary :mode="$type??0" :totals="$transaction->currency->getTotal($searchs,['month'=>$transaction->month,'createdBy'=>$createdBy])"
-                                                        wire:key="tr-total-{{ $transaction->id.$updateTime }}" />
-                                                </td>
-                                            </tr>
-                                            <tr class="tr-th-border-0 stick-top-next">
-                                                <th scope="col" class="text-center text-info minimal-table-column m-0 p-0"><div class="border-bottom pb-2">
-                                                    Date
-                                                    <div wire:click="switchDateOrder"
-                                                     class="btn btn-sm text-smmr-2" style="margin-bottom: -8px; margin-top: -11px;">
-                                                        @if ($order['tr_date']=='asc')
-                                                        <i class="fas fa-sort-alpha-down"></i>
-                                                        @else
-                                                        <i class="fas fa-sort-alpha-up"></i>
-                                                        @endif
-                                                    </div>
+                                        </td>
+                                        <td scope="col" colspan="7" class="text-left">
+                                            <livewire:components.transaction.tr-monthly-sumary :mode="$type??0"
+                                                :totals="$transaction->currency->getTotal($searchs,['month'=>$transaction->month,'createdBy'=>$createdBy])"
+                                                wire:key="tr-total-{{ $transaction->id.$updateTime }}" />
+                                        </td>
+                                    </tr>
+                                    <tr class="tr-th-border-0 stick-top-next">
+                                        <th scope="col" class="text-center text-info minimal-table-column m-0 p-0">
+                                            <div class="border-bottom pb-2">
+                                                Date
+                                                <div wire:click="switchDateOrder" class="btn btn-sm text-smmr-2"
+                                                    style="margin-bottom: -8px; margin-top: -11px;">
+                                                    @if ($order['tr_date']=='asc')
+                                                    <i class="fas fa-sort-alpha-down"></i>
+                                                    @else
+                                                    <i class="fas fa-sort-alpha-up"></i>
+                                                    @endif
+                                                </div>
 
-                                                </div></th>
-                                                <th scope="col" class="text-right text-info minimal-table-column m-0 p-0"><div class="border-bottom pb-2">#</div></th>
-                                                <th scope="col" class="text-left text-info m-0 p-0" style="white-space: nowrap;"><div class="border-bottom pb-2">Pament Name</div></th>
-                                                <th scope="col" class="text-center text-info minimal-table-column m-0 p-0"><div class="border-bottom pb-2">Amount</div></th>
-                                                <th scope="col" class="text-center text-info minimal-table-column m-0 p-0"><div class="border-bottom pb-2">Pay On</div></th>
-                                                <th scope="col" class="text-center text-info m-0 p-0"><div class="border-bottom pb-2">Detail</div></th>
-                                                <th scope="col" class="text-center text-info minimal-table-column m-0 p-0"><div class="border-bottom pb-2">Created By</div></th>
-                                                <th scope="col" class="text-center text-info minimal-table-column m-0 p-0"><div class="border-bottom pb-2">Options</div></th>
-                                            </tr>
-                                        @endif
-                                        <tr class="tr-td-border-0 bg-wite  text-sm-small-screen" wire:key="tr-{{ $transaction->id }}"
-                                            id="{{ $transaction->id }}">
-                                            <td scope="col" class="pl-5 text-sm text-left minimal-table-column">
-                                                {{ date(env('DATE_FORMAT','d-m-Y'), strtotime($transaction->tr_date)) }}
-                                            </td>
-                                            <td scope="col"
-                                                class="text-right minimal-table-column border-left position-relative">
-                                                <div
-                                                    class="
+                                            </div>
+                                        </th>
+                                        <th scope="col" class="text-right text-info minimal-table-column m-0 p-0">
+                                            <div class="border-bottom pb-2">#</div>
+                                        </th>
+                                        <th scope="col" class="text-left text-info m-0 p-0" style="white-space: nowrap;">
+                                            <div class="border-bottom pb-2">Pament Name</div>
+                                        </th>
+                                        <th scope="col" class="text-center text-info minimal-table-column m-0 p-0">
+                                            <div class="border-bottom pb-2">Amount</div>
+                                        </th>
+                                        <th scope="col" class="text-center text-info minimal-table-column m-0 p-0">
+                                            <div class="border-bottom pb-2">Pay On</div>
+                                        </th>
+                                        <th scope="col" class="text-center text-info m-0 p-0">
+                                            <div class="border-bottom pb-2">Detail</div>
+                                        </th>
+                                        <th scope="col" class="text-center text-info minimal-table-column m-0 p-0">
+                                            <div class="border-bottom pb-2">Created By</div>
+                                        </th>
+                                        <th scope="col" class="text-center text-info minimal-table-column m-0 p-0">
+                                            <div class="border-bottom pb-2">Options</div>
+                                        </th>
+                                    </tr>
+                                    @endif
+                                    <tr class="tr-td-border-0 bg-wite  text-sm-small-screen" wire:key="tr-{{ $transaction->id }}"
+                                        id="{{ $transaction->id }}">
+                                        <td scope="col" class="pl-5 text-sm text-left minimal-table-column">
+                                            {{ date(env('DATE_FORMAT','d-m-Y'), strtotime($transaction->tr_date)) }}
+                                        </td>
+                                        <td scope="col" class="text-right minimal-table-column border-left position-relative">
+                                            <div class="
                                                 @if ($transaction->type == 1) badge-time-line-incom
                                                 @elseif ($transaction->type == 2)
                                                 badge-time-line-expend
                                                 @elseif ($transaction->type == 3)
                                                 badge-time-line-exchange @endif
                                                 badge-time-line">
-                                                </div>
-                                                <?php $trRowNumber+=1; ?>
-                                                {{ $trRowNumber }}
+                                            </div>
+                                            <?php $trRowNumber+=1; ?>
+                                            {{ $trRowNumber }}
 
-                                            </td>
-                                            <td scope="col" class="text-left">
-                                                @if ($transaction->item_id != 13)
-                                                    {{ $transaction->item->name }}
-                                                @else
-                                                    {{ $transaction->other_name }}
-                                                @endif
-                                            </td>
-                                            <td scope="col"
-                                                class="text-center minimal-table-column
+                                        </td>
+                                        <td scope="col" class="text-left">
+                                            @if ($transaction->item_id != 13)
+                                            {{ $transaction->item->name }}
+                                            @else
+                                            {{ $transaction->other_name }}
+                                            @endif
+                                        </td>
+                                        <td scope="col" class="text-center minimal-table-column
                                                 @if ($transaction->type == 1) text-success
                                                 @elseif ($transaction->type == 2)
                                                 text-danger
                                                 @elseif ($transaction->type == 3)
                                                 text-info @endif ">
-                                                {{ $transaction->amount . $transaction->currency->symbol }}
-                                            </td>
-                                            <td scope="col" class="text-center text-sm minimal-table-column">
-                                                @if ($transaction->type == 1)
-                                                    {{-- <i class="fas fa-user-circle text-lg text-success mr-1"></i> --}}
-                                                    <i class="fas fa-user text-success mr-1"></i>
-                                                    {{ $transaction->toFromUser->name }}
-                                                @elseif ($transaction->type == 2)
-                                                    <span class="pl-2 pr-2 pt-1 pb-1" style="
+                                            {{ $transaction->amount . $transaction->currency->symbol }}
+                                        </td>
+                                        <td scope="col" class="text-center text-sm minimal-table-column">
+                                            @if ($transaction->type == 1)
+                                            {{-- <i class="fas fa-user-circle text-lg text-success mr-1"></i> --}}
+                                            <i class="fas fa-user text-success mr-1"></i>
+                                            {{ $transaction->toFromUser->name }}
+                                            @elseif ($transaction->type == 2)
+                                            <span class="pl-2 pr-2 pt-1 pb-1" style="
                                                     background:{{$transaction->depatment->bg_color}};
                                                     color:{{$transaction->depatment->text_color}};
                                                     border-radius: 2px;
                                                     ">{{ $transaction->depatment->name }}</span>
-                                                @elseif ($transaction->type == 3)
-                                                    <div class="text-success">{{ $transaction->other_name }}</div>
-                                                @endif
-
-                                            </td>
-                                            <td scope="col" class="text-center text-nowrap">
-                                                <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus"
-                                                    data-placement="auto"
-                                                    data-content="{{ $transaction->description }}">{{ $transaction->getDescription() }}</a>
-                                            </td>
-                                            <td scope="col" class="text-center minimal-table-column">
-                                                {{ $transaction->created_by == auth()->user()->id ? 'You': $transaction->createdByUser->name }}</td>
-                                            <td scope="col" class="text-center minimal-table-column">
-                                                <button class="btn btn-sm text-success" wire:click="showView({{$transaction->id}})">
-                                                    <i wire:loading.remove wire:target='showView({{$transaction->id}})' onclick="clearEditPaymentForm()" class="fas fa-eye"></i>
-                                                    <i wire:loading='showView({{$transaction->id}})' wire:target='showView({{$transaction->id}})' class="fas fa-spinner fa-spin"></i>
-                                                </button>
-                                                <button id="tr_btn_edit_{{$transaction->id}}" class="btn btn-sm text-primary" wire:click="showEdit({{$transaction->id}})" onclick="clearEditPaymentForm()"
-                                                @if ($editTransaction)
-                                                    {{$editTransaction->id == $transaction->id ? 'disabled':''}}
-                                                @endif
-                                                    >
-                                                    <i wire:loading.remove wire:target='showEdit({{$transaction->id}})' class="fas fa-edit"></i>
-                                                    <i wire:loading='showEdit({{$transaction->id}})' wire:target='showEdit({{$transaction->id}})' class="fas fa-spinner fa-spin"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        @if ($editTransaction)
-                                            @if ($editTransaction->id == $transaction->id)
-                                                <tr class="tr-td-border-0 white-hover tr-edit-payment-form">
-                                                    <td scope="col" class="pl-5 text-sm text-left minimal-table-column"></td>
-                                                    <td scope="col"
-                                                        class="text-right minimal-table-column border-left position-relative">
-                                                    <td scope="col" colspan="6" class="text-left p-0">
-                                                        @if ($transaction->type == 2)
-                                                        {{-- edit pament --}}
-                                                        <livewire:components.transaction.tr-edit-form :id="$transaction->id" wire:key="tr_edit_payment-{{ $transaction->id }}"/>
-                                                        @elseif($transaction->type == 1)
-                                                        {{-- edit add cash --}}
-                                                        <livewire:components.transaction.tr-edit-add-cash-form :id="$transaction->id" wire:key="tr_edit_add_cash-{{ $transaction->id }}"/>
-                                                        @elseif($transaction->type == 3)
-                                                        {{-- edit exchange --}}
-                                                        <livewire:components.transaction.tr-edit-exchange-form :id="$transaction->id" wire:key="tr_edit_exchange-{{ $transaction->id }}"/>
-                                                        @endif
-                                                    </td>
-                                                </tr>
+                                            @elseif ($transaction->type == 3)
+                                            <div class="text-success">{{ $transaction->other_name }}</div>
                                             @endif
-                                        @endif
+
+                                        </td>
+                                        <td scope="col" class="text-center text-nowrap">
+                                            <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-placement="auto"
+                                                data-content="{{ $transaction->description }}">{{ $transaction->getDescription() }}</a>
+                                        </td>
+                                        <td scope="col" class="text-center minimal-table-column">
+                                            {{ $transaction->created_by == auth()->user()->id ? 'You': $transaction->createdByUser->name }}</td>
+                                        <td scope="col" class="text-center minimal-table-column">
+                                            <button class="btn btn-sm text-success" wire:click="showView({{$transaction->id}})">
+                                                <i wire:loading.remove wire:target='showView({{$transaction->id}})' onclick="clearEditPaymentForm()"
+                                                    class="fas fa-eye"></i>
+                                                <i wire:loading='showView({{$transaction->id}})' wire:target='showView({{$transaction->id}})'
+                                                    class="fas fa-spinner fa-spin"></i>
+                                            </button>
+                                            <button id="tr_btn_edit_{{$transaction->id}}" class="btn btn-sm text-primary"
+                                                wire:click="showEdit({{$transaction->id}})" onclick="clearEditPaymentForm()" @if ($editTransaction)
+                                                {{$editTransaction->id == $transaction->id ? 'disabled':''}}
+                                                @endif
+                                                >
+                                                <i wire:loading.remove wire:target='showEdit({{$transaction->id}})' class="fas fa-edit"></i>
+                                                <i wire:loading='showEdit({{$transaction->id}})' wire:target='showEdit({{$transaction->id}})'
+                                                    class="fas fa-spinner fa-spin"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    @if ($editTransaction)
+                                    @if ($editTransaction->id == $transaction->id)
+                                    <tr class="tr-td-border-0 white-hover tr-edit-payment-form">
+                                        <td scope="col" class="pl-5 text-sm text-left minimal-table-column"></td>
+                                        <td scope="col" class="text-right minimal-table-column border-left position-relative">
+                                        <td scope="col" colspan="6" class="text-left p-0">
+                                            @if ($transaction->type == 2)
+                                            {{-- edit pament --}}
+                                            <livewire:components.transaction.tr-edit-form :id="$transaction->id"
+                                                wire:key="tr_edit_payment-{{ $transaction->id }}" />
+                                            @elseif($transaction->type == 1)
+                                            {{-- edit add cash --}}
+                                            <livewire:components.transaction.tr-edit-add-cash-form :id="$transaction->id"
+                                                wire:key="tr_edit_add_cash-{{ $transaction->id }}" />
+                                            @elseif($transaction->type == 3)
+                                            {{-- edit exchange --}}
+                                            <livewire:components.transaction.tr-edit-exchange-form :id="$transaction->id"
+                                                wire:key="tr_edit_exchange-{{ $transaction->id }}" />
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endif
+                                    @endif
                                     @empty
-                                        <tr class="bg-wite">
-                                            <td colspan="8" class="text-center"> No record found...</td>
-                                        </tr>
+                                    <tr class="bg-wite">
+                                        <td colspan="8" class="text-center"> No record found...</td>
+                                    </tr>
                                     @endforelse
                                     @if ($reachLastRecord)
-                                        <tr class="tr-td-border-0 border-bottom stick-top-next bg-wite">
-                                            <th scope="col" colspan="8" class="text-center text-info">
-                                                You have reach the bottom!
-                                                {{-- <button onClick = 'goToTop()'>TOP</button> --}}
-                                            </th>
-                                        </tr>
+                                    <tr class="tr-td-border-0 border-bottom stick-top-next bg-wite">
+                                        <th scope="col" colspan="8" class="text-center text-info">
+                                            You have reach the bottom!
+                                            {{-- <button onClick='goToTop()'>TOP</button> --}}
+                                        </th>
+                                    </tr>
                                     @else
-                                        <tr class="tr-td-border-0 border-bottom stick-top-next bg-wite">
-                                            <th scope="col" colspan="8" class="text-center text-info">
-                                                <button class="btn btn-sm btn-info" wire:click='inceaseTakeAmount'>
-                                                    Load More <i wire:loading="" wire:target="inceaseTakeAmount" class="fas fa-spinner fa-spin"></i>
-                                                </button>
-                                            </th>
-                                        </tr>
+                                    <tr class="tr-td-border-0 border-bottom stick-top-next bg-wite">
+                                        <th scope="col" colspan="8" class="text-center text-info">
+                                            <button class="btn btn-sm btn-info" wire:click='inceaseTakeAmount'>
+                                                Load More <i wire:loading="" wire:target="inceaseTakeAmount" class="fas fa-spinner fa-spin"></i>
+                                            </button>
+                                        </th>
+                                    </tr>
                                     @endif
 
 
                                 </tbody>
                             </table>
-                            {{-- @if (!$reachLastRecord)
-                                <div class="text-center text-info w-100 p-3" wire:loading="" wire:target="inceaseTakeAmount">
-                                <i class="fas fa-spinner fa-spin"></i>
-                                </div>
-                            @endif --}}
+                            @elseif ($mode == 2 )
+                                {{-- depatment mode --}}
+
+                            @else
+                                {{-- item mode --}}
+
+                            @endif
+                            {{--End Data Table Mode --}}
 
                         </div>
                         <!-- /.card-body -->
@@ -353,7 +368,6 @@
             </div>
             <!-- /.Row for table -->
 
-
         </div>
         <!-- /.container-fluid -->
     </div>
@@ -366,42 +380,63 @@
     @endif
     <livewire:components.transaction.tr-import-expend />
     @if($printRequest)
-    <livewire:components.transaction.cash-report :search="$searchs??[]" :order="$order??[]" wire:key="tr_report_form-{{ strtotime('now') }}" />
+    <livewire:components.transaction.cash-report :title="$reportTitle??null" :search="$searchs??[]" :order="$order??[]" wire:key="tr_report_form-{{ strtotime('now') }}" />
     @endif
 </div>
 @push('js')
 <script src="{{ asset('backend/dist/js/transactions/tr_list.js') }}"></script>
+
+{{-- Cash-report script --}}
 <script>
     function cashResetPrintRequest(){
         Livewire.emit('cashResetPrintRequest');
     }
+
     function PrintElem(elem)
-   {
-       let l = (window.screen.width - 1250)/2;
-       // window.screen.width;
-       var mywindow = window.open('', 'PRINT', 'height=1122,width=1250,left='+l);
+    {
+        let l = (window.screen.width - 1250)/2;
+        // window.screen.width;
+        var mywindow = window.open('', 'PRINT', 'height=1122,width=1250,left='+l);
 
-       mywindow.document.write('<html><head><title>' + document.title  + '</title>');
-       mywindow.document.write(`<link rel="stylesheet" href="{{ asset('backend/dist/css/adminlte.min.css') }}">`);
-       mywindow.document.write(`<link rel="stylesheet" href="{{ asset('css/style.css') }}">`);
+        mywindow.document.write('<html><head><title>' + document.title  + '</title>');
+        mywindow.document.write(`<link rel="stylesheet" href="{{ asset('backend/dist/css/adminlte.min.css') }}">`);
+        mywindow.document.write(`<link rel="stylesheet" href="{{ asset('css/style.css') }}">`);
 
-       mywindow.document.write('</head><body >');
-       mywindow.document.write(document.getElementById(elem).outerHTML);
-       // mywindow.document.write(document.getElementById(elem).innerHTML);
-       mywindow.document.write('</body></html>');
-       mywindow.document.close(); // necessary for IE >= 10
-       mywindow.focus(); // necessary for IE >= 10*/
+        mywindow.document.write('</head><body >');
+        mywindow.document.write(document.getElementById(elem).outerHTML);
+        // mywindow.document.write(document.getElementById(elem).innerHTML);
+        mywindow.document.write('</body></html>');
+        mywindow.document.close(); // necessary for IE >= 10
+        mywindow.focus(); // necessary for IE >= 10*/
 
-       mywindow.onload=function(){ // necessary if the div contain images
-           mywindow.focus(); // necessary for IE >= 10
-           mywindow.print();
-           mywindow.close();
-       };
+        mywindow.onload=function(){ // necessary if the div contain images
+            mywindow.focus(); // necessary for IE >= 10
+            mywindow.print();
+            mywindow.close();
+        };
+        //mywindow.print();
+        //mywindow.close();
+        return true;
+    }
 
-       //mywindow.print();
-       //mywindow.close();
-
-       return true;
+    async function printTableRequest(){
+        const { value: title } = await Swal.fire({
+            title: 'Enter Your Report Title',
+            input: 'text',
+            inputLabel: 'Title:',
+            // inputValue: inputValue,
+            showCancelButton: true,
+            inputValidator: (value) => {
+                if (!value) {
+                return 'You need to write something!'
+                }
+            }
+        })
+        if (title) {
+            // Swal.fire(`Your report title is ${title}`);
+            @this.printDataTableMode(title);
+        }
    }
 </script>
+{{-- Cash-report script --}}
 @endpush
