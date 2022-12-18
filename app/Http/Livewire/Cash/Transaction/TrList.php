@@ -203,19 +203,25 @@ class TrList extends Component
 
     public function setChartDatas($trs)
     {
+        $this->chartDatas =[];
         foreach($trs[0] as $key=>$value){
             if($key!='name' && $key!='bg_color' && $key!='text_color'){
-                $this->chartDatas[$key] = [];
+                $this->chartDatas[$key] = '';
             }
         }
         foreach($trs as $tr){
-            foreach($tr as $key=>$value){
+            foreach($tr as $key=>$val){
                 if($key!='name' && $key!='bg_color' && $key!='text_color'){
-                    array_push($this->chartDatas[$key],-$value);
+                    // array_push($this->chartDatas[$key],-$val);
+                    $this->chartDatas[$key] .= -$val.',';
                 }
             }
         }
-        return $this->chartDatas;
+    }
+
+    public function changeMode($mode)
+    {
+        $this->mode = $mode;
     }
 
 

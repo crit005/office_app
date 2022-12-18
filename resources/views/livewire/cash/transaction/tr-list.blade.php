@@ -129,8 +129,8 @@
                                         <i class="fas fa-ellipsis-v"></i>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right text-sm">
-                                        <button class="dropdown-item" type="button"><i class="fas fa-table mr-2"></i>Cash Mode</button>
-                                        <button class="dropdown-item" type="button"><i class="fas fa-chart-pie mr-2"></i>Department Mode</button>
+                                        <button class="dropdown-item" type="button" wire:click.prevent="changeMode(1)"><i class="fas fa-table mr-2"></i>Cash Mode</button>
+                                        <button class="dropdown-item" type="button" wire:click.prevent="changeMode(2)"><i class="fas fa-chart-pie mr-2"></i>Department Mode</button>
                                         <button class="dropdown-item" type="button"><i class="fas fa-chart-area mr-2"></i>Item Mode</button>
                                     </div>
                                 </div>
@@ -350,7 +350,6 @@
                                 <div class="row">
                                     <?php
                                         $chartLabels=''; $chartColors='';
-                                        // $chartDatas=[];
                                     ?>
                                     <div class="col">
                                         <table class="table table-v1 table-hover">
@@ -435,7 +434,7 @@
                                                         @foreach ($chartDatas as $key => $value)
                                                         {
                                                             label: '{{$key}}',
-                                                            data: "{{implode(',',$value)}}".split(","),
+                                                            data: "{{substr($value, 0, -1)}}".split(","),
                                                             borderWidth: 1,
                                                             backgroundColor:"{{$chartColors}}".split(","),
                                                         },
