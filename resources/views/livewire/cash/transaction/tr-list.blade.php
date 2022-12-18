@@ -151,6 +151,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body-v1 p-0">
+                            {{-- @dump($this->getChartDatas($trCashs)) --}}
                             {{-- Data Table Mode --}}
                             @if ($mode==1)
                             <table class="table table-v1 table-hover">
@@ -345,7 +346,124 @@
                             </table>
                             @elseif ($mode == 2 )
                                 {{-- depatment mode --}}
+                                @if($trCashs)
+                                <div class="row">
+                                    <?php
+                                        $chartLabels=''; $chartColors='';
+                                        // $chartDatas=[];
+                                    ?>
+                                    <div class="col">
+                                        <table class="table table-v1 table-hover">
+                                            <thead>
+                                                <tr class="tr-th-border-0 stick-top-next">
+                                                    <th scope="col" class="text-center text-info minimal-table-column px-0">
+                                                        <div class="border-bottom">#</div>
+                                                    </th>
+                                                    <th scope="col" class="text-left text-info px-0" style="white-space: nowrap;">
+                                                        <div class="border-bottom">Department Name</div>
+                                                    </th>
+                                                    @foreach ( $trCashs[0] as $key => $value )
+                                                        @if ($key != 'name' && $key != 'text_color' && $key != 'bg_color')
+                                                        <th scope="col" class="text-center text-info px-0">
+                                                            <div class="border-bottom">
+                                                                {{$key}}
+                                                            </div>
+                                                        </th>
+                                                        @endif
+                                                    @endforeach
+                                                </tr>
+                                            </thead>
 
+                                            <tbody id="sortable2">
+                                                @forelse ($trCashs as $indext => $transaction)
+                                                    <?php
+                                                    $chartLabels .= $transaction->name .',';
+                                                    $chartColors .= $transaction->bg_color.',';
+                                                    ?>
+                                                    <tr class="tr-td-border-0 bg-wite  text-sm-small-screen" wire:key="dp-{{$indext}}"
+                                                        id="dp-{{ $indext }}">
+                                                        <td scope="col" class="text-sm text-left py-0">
+                                                            <div class="p-1">
+                                                                {{$indext +1}}
+                                                            </div>
+                                                        </td>
+
+                                                        <td scope="col" class="text-center text-sm py-0">
+                                                            <div class="text-left p-1 pl-2" style=" background:{{$transaction->bg_color}}; color:{{$transaction->text_color}};border-radius: 3px;">
+                                                                {{ $transaction->name }}
+                                                            </div>
+                                                        </td>
+
+                                                        @foreach ( $transaction as $key => $value )
+                                                            @if ($key != 'name' && $key != 'text_color' && $key != 'bg_color')
+                                                            <td scope="col" class="text-right py-0 text-danger">
+                                                                <div class="p-1">
+                                                                    {{$value?-$value:0}}{{explode('_',$key)[1]}}
+                                                                </div>
+                                                            </td>
+                                                            @endif
+                                                        @endforeach
+
+                                                    </tr>
+                                                @endforeach
+                                                <?php
+                                                    $chartLabels = substr($chartLabels, 0, -1);
+                                                    $chartColors = substr($chartColors, 0, -1);
+                                                    // $chartDatas = substr($chartDatas, 0, -1);
+                                                ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col">
+                                        {{-- Chart --}}
+                                        <div>
+                                            <canvas id="myChart"></canvas>
+                                        </div>
+
+                                        {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
+                                        <script src="{{ asset('backend/plugins/chart.js/Chart.min.js') }}"></script>
+
+                                        <script>
+                                            const ctx = document.getElementById('myChart');
+
+                                            new Chart(ctx, {
+                                                type: 'bar',
+                                                data: {
+                                                    // labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                                    labels: "{{$chartLabels}}".split(","),
+                                                    datasets: [
+                                                        @foreach ($chartDatas as $key => $value)
+                                                        {
+                                                            label: '{{$key}}',
+                                                            data: "{{implode(',',$value)}}".split(","),
+                                                            borderWidth: 1,
+                                                            backgroundColor:"{{$chartColors}}".split(","),
+                                                        },
+                                                        @endforeach
+
+                                                    ]
+
+                                                    // datasets: [
+                                                    //     {
+                                                    //         label: '# of Votes',
+                                                    //         data: [12, 19, 3, 5, 2, 3,15,25,12,3,11],
+                                                    //         borderWidth: 1,
+                                                    //         backgroundColor:"{{$chartColors}}".split(","),
+                                                    //     },
+                                                    // ]
+                                                },
+                                                options: {
+                                                scales: {
+                                                    y: {
+                                                    beginAtZero: true
+                                                    }
+                                                }
+                                                }
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
+                                @endif
                             @else
                                 {{-- item mode --}}
 
@@ -385,7 +503,6 @@
 </div>
 @push('js')
 <script src="{{ asset('backend/dist/js/transactions/tr_list.js') }}"></script>
-
 {{-- Cash-report script --}}
 <script>
     function cashResetPrintRequest(){

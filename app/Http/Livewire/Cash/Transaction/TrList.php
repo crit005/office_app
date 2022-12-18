@@ -6,12 +6,13 @@ use App\Models\Currency;
 use App\Models\Depatment;
 use App\Models\Items;
 use App\Models\TrCash;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 
 class TrList extends Component
 {
-    public $mode = 1;
+    public $mode = 2;
     public $globleBalance = false;
     public $currentMonth;
     public $takeAmount;
@@ -34,6 +35,9 @@ class TrList extends Component
     //Print option
     public $printRequest = false;
     public $reportTitle;
+
+    //chart
+    public $chartDatas =[];
 
 
     protected $listeners = [
@@ -197,6 +201,23 @@ class TrList extends Component
         $this->reset(['printRequest']);
     }
 
+    public function setChartDatas($trs)
+    {
+        foreach($trs[0] as $key=>$value){
+            if($key!='name' && $key!='bg_color' && $key!='text_color'){
+                $this->chartDatas[$key] = [];
+            }
+        }
+        foreach($trs as $tr){
+            foreach($tr as $key=>$value){
+                if($key!='name' && $key!='bg_color' && $key!='text_color'){
+                    array_push($this->chartDatas[$key],-$value);
+                }
+            }
+        }
+        return $this->chartDatas;
+    }
+
 
     public function render()
     {
@@ -252,50 +273,37 @@ class TrList extends Component
                 $this->reachLastRecord = true;
             }
         }elseif($this->mode == 2){
-            $transactions = TrCash::where('status', '!=', 0)
-            ->when($this->createdBy, function ($q) {
-                $q->where('created_by', '=', $this->createdBy);
-            })
-            ->where('type', '!=', 4)
+            $currencys = Currency::where('status','=','ENABLED')->orderBy('position','asc')->get();
+            $sumfield ='';
+            foreach($currencys as $currency){
+                $sumfield .=", sum(if(tr.currency_id =". $currency->id .",tr.amount,0)) AS ".$currency->code."_".$currency->symbol;
+            }
 
-            ->when($this->fromDate, function ($q) {
-                $q->where('tr_date', '>=', date('Y-m-d', strtotime($this->fromDate)));
-            })
-            ->when($this->toDate, function ($q) {
-                $q->where('tr_date', '<=', date('Y-m-d', strtotime($this->toDate)));
-            })
-            ->when($this->depatmentId, function ($q) {
-                $q->where('type', '=', 2)
-                    ->where('to_from_Id', '=', $this->depatmentId);
-            })
-            ->when($this->itemId, function ($q) {
-                $q->where('item_id', '=', $this->itemId);
-            })
-            ->when($this->type, function ($q) {
-                $q->where('type', '=', $this->type);
-            })
-            ->when($this->otherName, function ($q) {
-                $q->where('other_name', 'like', "%" . $this->otherName . "%");
-            })
-            # AND (`currency_id` = 99 OR (`type` = 3 and `to_from_id` = 99))
-            ->when($this->currencyId, function ($q) {
-                $q->where(function ($q) {
-                    $q->where('currency_id', '=', $this->currencyId)
-                        ->orWhere(function ($q) {
-                            $q->where('type', '=', 3)
-                                ->where('to_from_id', '=', $this->currencyId);
-                        });
-                });
-            })
-            ->orderBy('month', $this->order['month'])
-            // ->orderBy('tr_date', 'desc')
-            // ->orderBy('id', 'desc')
-            ->orderBy('tr_date', $this->order['tr_date'])
-            ->orderBy('id', $this->order['tr_date'])
-            ->take($this->takeAmount)
-            ->get();
-            // ->orderBy('name', 'asc')
-            // ->paginate(env('PAGINATE'));
+            $arrCondition = [
+                $this->fromDate, date('Y-m-d',strtotime($this->fromDate)),
+                $this->toDate, date('Y-m-d',strtotime($this->toDate)),
+                $this->depatmentId, $this->depatmentId,
+                $this->currencyId, $this->currencyId,
+                $this->createdBy, $this->createdBy
+            ];
+
+            $sql = "
+            SELECT dp.name as name, dp.text_color AS text_color, dp.bg_color AS bg_color ".$sumfield."
+            FROM tr_cashes AS tr inner JOIN depatments AS dp
+                ON tr.to_from_id = dp.id
+            WHERE tr.type = 2 and tr.`status`= 1
+                AND if(?, tr.tr_date >=?,TRUE)
+                AND if(?, tr.tr_date <= ?,TRUE)
+                AND if(?, tr.to_from_id = ?,TRUE)
+                AND if(?, tr.currency_id = ?,TRUE)
+                AND if(?, tr.created_by = ?,TRUE)
+            GROUP BY tr.to_from_id;
+            ";
+
+            $transactions = DB::select($sql, $arrCondition);
+
+            $this->setChartDatas($transactions);
+
         }else{
 
         }

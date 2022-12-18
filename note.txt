@@ -146,5 +146,11 @@ depatment cash report
 SELECT dp.name, sum(if(tr.currency_id = 99,tr.amount,0)) AS th,  sum(if(tr.currency_id = 106,tr.amount,0)) AS usd
 FROM tr_cashes AS tr inner JOIN depatments AS dp
 	ON tr.to_from_id = dp.id
-WHERE tr.type = 2 and tr.`status`= 1 GROUP BY tr.to_from_id;
+WHERE tr.type = 2 and tr.`status`= 1
+	AND if(@fromDate, tr.tr_date >= @fromDate,TRUE)
+	AND if(@toDate, tr.tr_date <= @toDate,TRUE)
+	AND if(@department, tr.to_from_id = @department,TRUE)
+	AND if(@currencyId, tr.currency_id >= @currencyId,TRUE)
+	AND if(@createdBy, tr.created_by >= @createdBy,TRUE)
+GROUP BY tr.to_from_id;
 
