@@ -170,3 +170,10 @@ function hexToRgbA(hex){
 }
 
 hexToRgbA('#fbafff')
+
+========================================
+// generate month label
+    $labels=[];
+   for ($i = 0; $i < 12; $i++) {
+    $labels[] = now()->subMonths($i)->format('M');
+    }

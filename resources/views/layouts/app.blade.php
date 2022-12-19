@@ -28,6 +28,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
 
+    <script src="{{ asset('backend/plugins/chart.js/Chart.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
     @livewireStyles
 </head>
 
@@ -99,6 +102,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/ckeditor.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
+    @livewireScripts
     @stack('js')
     <script>
         const Toast = Swal.mixin({
@@ -226,7 +230,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
             });
         }
     </script>
-    @livewireScripts
 </body>
 
 </html>

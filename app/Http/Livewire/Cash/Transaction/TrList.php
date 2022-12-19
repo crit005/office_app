@@ -9,6 +9,7 @@ use App\Models\TrCash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
+use Livewire\Livewire;
 
 class TrList extends Component
 {
@@ -38,6 +39,7 @@ class TrList extends Component
 
     //chart
     public $chartDatas =[];
+    public $transactions;
 
 
     protected $listeners = [
@@ -224,6 +226,90 @@ class TrList extends Component
         $this->mode = $mode;
     }
 
+    public function getDepatmentTransaction()
+    {
+        $currencys = Currency::where('status','=','ENABLED')->orderBy('position','asc')->get();
+            $sumfield ='';
+            foreach($currencys as $currency){
+                $sumfield .=", sum(if(tr.currency_id =". $currency->id .",tr.amount,0)) AS ".$currency->code."_".$currency->symbol;
+            }
+
+            $arrCondition = [
+                $this->fromDate, date('Y-m-d',strtotime($this->fromDate)),
+                $this->toDate, date('Y-m-d',strtotime($this->toDate)),
+                $this->depatmentId, $this->depatmentId,
+                $this->currencyId, $this->currencyId,
+                $this->createdBy, $this->createdBy
+            ];
+
+            $sql = "
+            SELECT dp.name as name, dp.text_color AS text_color, dp.bg_color AS bg_color ".$sumfield."
+            FROM tr_cashes AS tr inner JOIN depatments AS dp
+                ON tr.to_from_id = dp.id
+            WHERE tr.type = 2 and tr.`status`= 1
+                AND if(?, tr.tr_date >=?,TRUE)
+                AND if(?, tr.tr_date <= ?,TRUE)
+                AND if(?, tr.to_from_id = ?,TRUE)
+                AND if(?, tr.currency_id = ?,TRUE)
+                AND if(?, tr.created_by = ?,TRUE)
+            GROUP BY tr.to_from_id;
+            ";
+            $transactions = DB::select($sql, $arrCondition);
+            $this->transactions = $transactions;
+            return $transactions;
+    }
+
+    // chart block
+    private function getLabels()
+    {
+        $labels = [];
+        foreach($this->transactions as $transaction){
+            $labels[] = $transaction->name?? $transaction["name"];
+        }
+        return $labels;
+    }
+
+    private function getDepartmentDataset()
+    {
+
+        if(count($this->transactions)>0){
+            $totals = [];
+            foreach($this->transactions[0] as $key=>$val){
+                if($key != 'name' && $key != 'bg_color' && $key != 'text_color'){
+                    $totals[$key] = 0;
+                }
+            }
+            foreach($this->transactions as $transaction){
+                foreach($transaction as $key=>$val){
+                    if($key != 'name' && $key != 'bg_color' && $key != 'text_color'){
+                        $totals[$key] += $val;
+                        // $totals[$key]?$totals[$key] += $val: $totals[$key]=0;
+                    }
+                }
+            }
+            // dd($totals);
+            $data = [];
+            foreach($this->transactions as $transaction){
+                foreach($transaction as $key=>$val){
+                    if($key != 'name' && $key != 'bg_color' && $key != 'text_color'){
+                        $data[$key][] = round($val/($totals[$key]/100));
+                    }
+                }
+            }
+            $dataset = [];
+            foreach($data as $key=>$val){
+                $dataset[]=[
+                    'name' => $key,
+                    'data' => $val,
+                ];
+            }
+
+            return $dataset;
+        }
+
+    }
+    // end chart block
+
 
     public function render()
     {
@@ -279,42 +365,10 @@ class TrList extends Component
                 $this->reachLastRecord = true;
             }
         }elseif($this->mode == 2){
-            $currencys = Currency::where('status','=','ENABLED')->orderBy('position','asc')->get();
-            $sumfield ='';
-            foreach($currencys as $currency){
-                $sumfield .=", sum(if(tr.currency_id =". $currency->id .",tr.amount,0)) AS ".$currency->code."_".$currency->symbol;
-            }
-
-            $arrCondition = [
-                $this->fromDate, date('Y-m-d',strtotime($this->fromDate)),
-                $this->toDate, date('Y-m-d',strtotime($this->toDate)),
-                $this->depatmentId, $this->depatmentId,
-                $this->currencyId, $this->currencyId,
-                $this->createdBy, $this->createdBy
-            ];
-
-            $sql = "
-            SELECT dp.name as name, dp.text_color AS text_color, dp.bg_color AS bg_color ".$sumfield."
-            FROM tr_cashes AS tr inner JOIN depatments AS dp
-                ON tr.to_from_id = dp.id
-            WHERE tr.type = 2 and tr.`status`= 1
-                AND if(?, tr.tr_date >=?,TRUE)
-                AND if(?, tr.tr_date <= ?,TRUE)
-                AND if(?, tr.to_from_id = ?,TRUE)
-                AND if(?, tr.currency_id = ?,TRUE)
-                AND if(?, tr.created_by = ?,TRUE)
-            GROUP BY tr.to_from_id;
-            ";
-
-            $transactions = DB::select($sql, $arrCondition);
-
-            $this->setChartDatas($transactions);
-
+            $transactions = $this->getDepatmentTransaction();
         }else{
 
         }
-
-
 
         // Init top summary top total
         $this->emit('summatyRefresh',$this->searchs,$type??0,['createdBy'=>$this->createdBy]);

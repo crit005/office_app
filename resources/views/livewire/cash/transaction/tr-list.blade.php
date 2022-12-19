@@ -358,7 +358,7 @@
                                                     <th scope="col" class="text-center text-info minimal-table-column px-0">
                                                         <div class="border-bottom">#</div>
                                                     </th>
-                                                    <th scope="col" class="text-left text-info px-0" style="white-space: nowrap;">
+                                                    <th scope="col" class="text-left text-info px-0 minimal-table-column" style="white-space: nowrap;">
                                                         <div class="border-bottom">Department Name</div>
                                                     </th>
                                                     @foreach ( $trCashs[0] as $key => $value )
@@ -414,51 +414,59 @@
                                         </table>
                                     </div>
                                     <div class="col">
-                                        {{-- Chart --}}
-                                        <div>
-                                            <canvas id="myChart"></canvas>
-                                        </div>
-
-                                        {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
-                                        <script src="{{ asset('backend/plugins/chart.js/Chart.min.js') }}"></script>
-
+                                        {{-- chart --}}
+                                        {{-- <livewire:components.transaction.depatment-chart :transactions="$this->getDepatmentTransaction()" wire:key='test_{{strtotime("now")}}'/> --}}
+                                        <?php $chartId = 'chart'.strtotime('now')?>
+                                        <div id="{{$chartId}}"></div>
                                         <script>
-                                            const ctx = document.getElementById('myChart');
-
-                                            new Chart(ctx, {
-                                                type: 'bar',
-                                                data: {
-                                                    // labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-                                                    labels: "{{$chartLabels}}".split(","),
-                                                    datasets: [
-                                                        @foreach ($chartDatas as $key => $value)
-                                                        {
-                                                            label: '{{$key}}',
-                                                            data: "{{substr($value, 0, -1)}}".split(","),
-                                                            borderWidth: 1,
-                                                            backgroundColor:"{{$chartColors}}".split(","),
-                                                        },
-                                                        @endforeach
-
-                                                    ]
-
-                                                    // datasets: [
-                                                    //     {
-                                                    //         label: '# of Votes',
-                                                    //         data: [12, 19, 3, 5, 2, 3,15,25,12,3,11],
-                                                    //         borderWidth: 1,
-                                                    //         backgroundColor:"{{$chartColors}}".split(","),
-                                                    //     },
-                                                    // ]
+                                            var options = {
+                                            chart: {
+                                            type: 'bar',
+                                            // type: 'area',
+                                            },
+                                            series: @json($this->getDepartmentDataset()) ,
+                                            xaxis: {
+                                            // categories: [1991,1992,1993,1994,1995,1996,1997, 1998,1999]
+                                            categories: @json($this->getLabels())
+                                            },
+                                            dataLabels: {
+                                            enabled: true,
+                                            formatter: function (val) {
+                                                return val + "%";
                                                 },
-                                                options: {
-                                                scales: {
-                                                    y: {
-                                                    beginAtZero: true
-                                                    }
+                                                offsetY: -20,
+                                                style: {
+                                                    // fontSize: '12px',
+                                                    colors: ["#304758"]
                                                 }
+                                            },
+                                            plotOptions: {
+                                                bar: {
+                                                    borderRadius: 3,
+                                                    dataLabels: {
+                                                    position: 'top', // top, center, bottom
+                                                    },
                                                 }
-                                            });
+                                            },
+                                            stroke: {
+                                            show: true,
+                                            width: 2,
+                                            colors: ['transparent']
+                                            },
+                                            title: {
+                                                text: 'Monthly Inflation in Argentina, 2002',
+                                                floating: true,
+
+                                                align: 'center',
+                                                style: {
+                                                    color: '#444'
+                                                }
+                                            },
+                                            }
+
+                                            var chart = new ApexCharts(document.querySelector("#{{$chartId}}"), options);
+
+                                            chart.render();
                                         </script>
                                     </div>
                                 </div>
@@ -555,4 +563,11 @@
    }
 </script>
 {{-- Cash-report script --}}
+
+<script>
+    Livewire.on('updateChart', data => {
+            chart.data = data;
+            chart.update();
+        });
+</script>
 @endpush
