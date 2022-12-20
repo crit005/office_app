@@ -347,14 +347,14 @@
                             @elseif ($mode == 2 )
                                 {{-- depatment mode --}}
                                 @if($trCashs)
-                                <div class="row">
+                                <div class="row pt-3">
                                     <?php
                                         $chartLabels=''; $chartColors='';
                                     ?>
                                     <div class="col">
                                         <table class="table table-v1 table-hover">
                                             <thead>
-                                                <tr class="tr-th-border-0 stick-top-next">
+                                                <tr class="tr-th-border-0">
                                                     <th scope="col" class="text-center text-info minimal-table-column px-0">
                                                         <div class="border-bottom">#</div>
                                                     </th>
@@ -398,6 +398,14 @@
                                                             <td scope="col" class="text-right py-0 text-danger">
                                                                 <div class="p-1">
                                                                     {{$value?-$value:0}}{{explode('_',$key)[1]}}
+                                                                    <div class="progress progress-xxs">
+                                                                        <div class="progress-bar bg-info progress-bar-danger progress-bar-striped"
+                                                                         role="progressbar" aria-valuenow="{{$value/($totalDepartments[$key]/100)}}"
+                                                                         aria-valuemin="0" aria-valuemax="100"
+                                                                         style="width: {{$value/($totalDepartments[$key]/100)}}%;">
+
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </td>
                                                             @endif
@@ -446,7 +454,7 @@
                                                     dataLabels: {
                                                     position: 'top', // top, center, bottom
                                                     },
-                                                }
+                                                },
                                             },
                                             stroke: {
                                             show: true,
@@ -454,7 +462,7 @@
                                             colors: ['transparent']
                                             },
                                             title: {
-                                                text: 'Monthly Inflation in Argentina, 2002',
+                                                text: 'Department Expend',
                                                 floating: true,
 
                                                 align: 'center',
@@ -504,8 +512,10 @@
         <livewire:components.transaction.tr-view-form :id="$viewId" wire:key="tr_view_form-{{ $viewId }}"/>
     @endif
     <livewire:components.transaction.tr-import-expend />
-    @if($printRequest)
+    @if($printRequest && $mode == 1)
     <livewire:components.transaction.cash-report :title="$reportTitle??null" :search="$searchs??[]" :order="$order??[]" wire:key="tr_report_form-{{ strtotime('now') }}" />
+    @elseif ($printRequest && $mode == 2)
+    <livewire:components.transaction.department-report :title="$reportTitle??null" :search="$searchs??[]" wire:key="depatment_report_form-{{ strtotime('now') }}" />
     @endif
 </div>
 @push('js')

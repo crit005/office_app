@@ -40,6 +40,7 @@ class TrList extends Component
     //chart
     public $chartDatas =[];
     public $transactions;
+    public $totalDepartments = [];
 
 
     protected $listeners = [
@@ -228,7 +229,11 @@ class TrList extends Component
 
     public function getDepatmentTransaction()
     {
-        $currencys = Currency::where('status','=','ENABLED')->orderBy('position','asc')->get();
+        $currencys = Currency::where('status','=','ENABLED')
+            ->when($this->currencyId,function($q){
+                $q->where('id','=',$this->currencyId);
+            })
+            ->orderBy('position','asc')->get();
             $sumfield ='';
             foreach($currencys as $currency){
                 $sumfield .=", sum(if(tr.currency_id =". $currency->id .",tr.amount,0)) AS ".$currency->code."_".$currency->symbol;
@@ -256,7 +261,31 @@ class TrList extends Component
             ";
             $transactions = DB::select($sql, $arrCondition);
             $this->transactions = $transactions;
+
+            if($this->transactions){
+                $this->setTotalDepartment();
+            }
+
             return $transactions;
+    }
+
+    public function setTotalDepartment()
+    {
+        $this->totalDepartments = [];
+        if(count($this->transactions)>0){
+            foreach($this->transactions[0] as $key=>$val){
+            if($key != 'name' && $key != 'bg_color' && $key != 'text_color'){
+                $this->totalDepartments[$key] = 0;
+            }
+            }
+            foreach($this->transactions as $transaction){
+                foreach($transaction as $key=>$val){
+                    if($key != 'name' && $key != 'bg_color' && $key != 'text_color'){
+                        $this->totalDepartments[$key] += $val;
+                    }
+                }
+            }
+        }
     }
 
     // chart block
@@ -273,26 +302,11 @@ class TrList extends Component
     {
 
         if(count($this->transactions)>0){
-            $totals = [];
-            foreach($this->transactions[0] as $key=>$val){
-                if($key != 'name' && $key != 'bg_color' && $key != 'text_color'){
-                    $totals[$key] = 0;
-                }
-            }
-            foreach($this->transactions as $transaction){
-                foreach($transaction as $key=>$val){
-                    if($key != 'name' && $key != 'bg_color' && $key != 'text_color'){
-                        $totals[$key] += $val;
-                        // $totals[$key]?$totals[$key] += $val: $totals[$key]=0;
-                    }
-                }
-            }
-            // dd($totals);
             $data = [];
             foreach($this->transactions as $transaction){
                 foreach($transaction as $key=>$val){
                     if($key != 'name' && $key != 'bg_color' && $key != 'text_color'){
-                        $data[$key][] = round($val/($totals[$key]/100));
+                        $data[$key][] = round($val/($this->totalDepartments[$key]/100),1);
                     }
                 }
             }
