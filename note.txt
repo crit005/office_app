@@ -110,8 +110,8 @@ Finally copy the ibdata1 file from C:\xampp\mysql\FIX_BACKUP\data into C:\xampp\
 
 Your MySQL server should now start in the XAMPP control panel.
 
-===================================
 
+===================================
 Tip: Main sidbar collaps all time
 ===================================
 Add the sidebar-collapse class to the body tag to get this layout. You should combine this option with a fixed layout if you have a long sidebar. Doing that will prevent your page content from getting stretched vertically.

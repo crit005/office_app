@@ -122,8 +122,6 @@ document.addEventListener("DOMContentLoaded", () => {
     $('[data-toggle="tooltip"]').tooltip();
     $('[data-toggle="popover"]').popover();
     // console.log(component.name);
-    chart.update();
-
   })
 
   // Livewire.hook('element.removed', (el, component) => {

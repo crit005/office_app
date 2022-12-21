@@ -614,6 +614,14 @@ font-size: 14px;
     width: 100%;
 }
 
+.border-bottom-1{
+    border-bottom: 1px rgb(184, 184, 184) solid !important;
+}
+
+.bg-gray-light-h{
+    background-color:rgb(235 235 235) !important;
+}
+
 @media print {
     body {
       margin: 0;
@@ -627,7 +635,6 @@ font-size: 14px;
     .page-title{
         font-size: 24px !important;
     }
-
   }
 /* end print style */
 

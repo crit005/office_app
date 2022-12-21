@@ -8,7 +8,7 @@
                 <div class="w-100 d-flex flex-row justify-content-between">
                     <div>
                         <h5 class="modal-title text-white" id="exampleModalLongTitle">
-                            Department Mode
+                            Item Mode
                         </h5>
                     </div>
                 </div>
@@ -62,21 +62,20 @@
                 {{-- page body --}}
                 <div class="page-body">
                     <div class="row pt-3">
-
                         <div class="col">
                             <table class="table table-v1 table-hover">
                                 <thead>
                                     <tr class="tr-th-border-0">
-                                        <th scope="col" class="text-center text-white minimal-table-column px-0 bg-info">
-                                            <div>#</div>
+                                        <th scope="col" class="text-center text-info minimal-table-column px-0">
+                                            <div class="border-bottom">#</div>
                                         </th>
-                                        <th scope="col" class="text-left text-white text-nowrap px-0 minimal-table-column bg-info">
-                                            <div>Department Name</div>
+                                        <th scope="col" class="text-left text-info px-0 minimal-table-column" style="white-space: nowrap;">
+                                            <div class="border-bottom">Item Name</div>
                                         </th>
                                         @foreach ( $trCashs[0] as $key => $value )
-                                            @if ($key != 'name' && $key != 'text_color' && $key != 'bg_color')
-                                            <th scope="col" class="text-center text-whithe px-0  bg-info">
-                                                <div>
+                                            @if ($key != 'name')
+                                            <th scope="col" class="text-center text-info px-0">
+                                                <div class="border-bottom">
                                                     {{$key}}
                                                 </div>
                                             </th>
@@ -89,29 +88,30 @@
                                     @forelse ($trCashs as $indext => $transaction)
 
                                         <tr class="tr-td-border-0 bg-wite  text-sm-small-screen border-bottom-1" wire:key="dp-{{$indext}}"
-                                            id="dpr-{{ $indext }}">
-                                            <td scope="col" class="text-sm text-left py-0 pt-1">
+                                            id="dp-{{ $indext }}">
+                                            <td scope="col" class="text-sm text-left py-0">
                                                 <div class="p-1">
                                                     {{$indext +1}}
                                                 </div>
                                             </td>
 
-                                            <td scope="col" class="text-center text-sm py-0 pt-1">
-                                                <div class="text-left p-1 pl-2" style=" background:{{$transaction->bg_color}}; color:{{$transaction->text_color}};border-radius: 3px;">
+                                            <td scope="col" class="text-center text-sm py-0">
+                                                <div class="text-left p-1 pl-2 text-nowrap">
                                                     {{ $transaction->name }}
                                                 </div>
                                             </td>
 
                                             @foreach ( $transaction as $key => $value )
-                                                @if ($key != 'name' && $key != 'text_color' && $key != 'bg_color')
-                                                <td scope="col" class="text-right py-0 text-danger pt-1">
+                                                @if ($key != 'name')
+                                                <td scope="col" class="text-right py-0 text-danger">
                                                     <div class="p-1">
                                                         {{$value?-$value:0}}{{explode('_',$key)[1]}}
                                                         <div class="progress progress-xxs">
-                                                            <div class="progress-bar bg-info progress-bar-danger progress-bar-striped"
+                                                            <div class="progress-bar  bg-warning progress-bar-danger progress-bar-striped"
                                                              role="progressbar" aria-valuenow="{{$value/($totalDepartments[$key]/100)}}"
                                                              aria-valuemin="0" aria-valuemax="100"
                                                              style="width: {{$value/($totalDepartments[$key]/100)}}%;">
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -121,24 +121,10 @@
 
                                         </tr>
                                     @endforeach
-                                    <tr class="border-bottom-1">
-                                        <th colspan="2" class="text-center text-sm py-0 bg-gray-light-h" style="background-color:rgb(235 235 235) !important;">
-                                            <div class="text-right text-info p-1 pl-2">
-                                                Total:
-                                            </div>
-                                        </th>
-                                        @foreach ( $trCashs[0] as $key => $value )
-                                            @if ($key != 'name' && $key != 'text_color' && $key != 'bg_color')
-                                            <th class="text-right py-0  bg-gray-light-h" style="background-color:rgb(235 235 235) !important;">
-                                                <div class="p-1 text-bold text-danger">
-                                                    {{-$totalDepartments[$key]}}{{explode('_',$key)[1]}}
-                                                </div>
-                                            </th>
-                                            @endif
-                                        @endforeach
-                                    </tr>
+
                                 </tbody>
                             </table>
+
                         </div>
                         {{-- chart --}}
                     </div>

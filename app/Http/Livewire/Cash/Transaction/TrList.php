@@ -13,7 +13,7 @@ use Livewire\Livewire;
 
 class TrList extends Component
 {
-    public $mode = 2;
+    public $mode = 1;
     public $globleBalance = false;
     public $currentMonth;
     public $takeAmount;
@@ -269,6 +269,48 @@ class TrList extends Component
             return $transactions;
     }
 
+    public function getItemTransaction()
+    {
+        $currencys = Currency::where('status','=','ENABLED')
+            ->when($this->currencyId,function($q){
+                $q->where('id','=',$this->currencyId);
+            })
+            ->orderBy('position','asc')->get();
+            $sumfield ='';
+            foreach($currencys as $currency){
+                $sumfield .=", sum(if(tr.currency_id =". $currency->id .",tr.amount,0)) AS ".$currency->code."_".$currency->symbol;
+            }
+
+            $arrCondition = [
+                $this->fromDate, date('Y-m-d',strtotime($this->fromDate)),
+                $this->toDate, date('Y-m-d',strtotime($this->toDate)),
+                $this->itemId, $this->itemId,
+                $this->currencyId, $this->currencyId,
+                $this->createdBy, $this->createdBy
+            ];
+
+            $sql = "
+            SELECT it.name as name".$sumfield."
+            FROM tr_cashes AS tr inner JOIN items AS it
+                ON tr.item_id = it.id
+            WHERE tr.type = 2 and tr.`status`= 1
+                AND if(?, tr.tr_date >=?,TRUE)
+                AND if(?, tr.tr_date <= ?,TRUE)
+                AND if(?, tr.item_id = ?,TRUE)
+                AND if(?, tr.currency_id = ?,TRUE)
+                AND if(?, tr.created_by = ?,TRUE)
+            GROUP BY tr.item_id;
+            ";
+            $transactions = DB::select($sql, $arrCondition);
+            $this->transactions = $transactions;
+
+            if($this->transactions){
+                $this->setTotalDepartment();
+            }
+
+            return $transactions;
+    }
+
     public function setTotalDepartment()
     {
         $this->totalDepartments = [];
@@ -381,7 +423,7 @@ class TrList extends Component
         }elseif($this->mode == 2){
             $transactions = $this->getDepatmentTransaction();
         }else{
-
+            $transactions = $this->getItemTransaction();
         }
 
         // Init top summary top total
