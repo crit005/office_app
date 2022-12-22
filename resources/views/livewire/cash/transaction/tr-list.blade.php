@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6 main-title-block">
-                    <h1 class="m-0 text-white">Cash Transactions {{$printRequest}}</h1>
+                    <h1 class="m-0 text-white">{{$mode==1?'Cash Lists':($mode==2?'Deparment Expend':'Payment')}}</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -129,9 +129,9 @@
                                         <i class="fas fa-ellipsis-v"></i>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right text-sm">
-                                        <button class="dropdown-item" type="button" wire:click.prevent="changeMode(1)"><i class="fas fa-table mr-2"></i>Cash Mode</button>
-                                        <button class="dropdown-item" type="button" wire:click.prevent="changeMode(2)"><i class="fas fa-chart-pie mr-2"></i>Department Mode</button>
-                                        <button class="dropdown-item" type="button" wire:click.prevent="changeMode(3)"><i class="fas fa-chart-area mr-2"></i>Item Mode</button>
+                                        <button class="dropdown-item" type="button" wire:click.prevent="changeMode(1)"><i class="fas fa-donate mr-2"></i>Cash Mode</button>
+                                        <button class="dropdown-item" type="button" wire:click.prevent="changeMode(2)"><i class="fas fa-grip-horizontal mr-2"></i>Department Mode</button>
+                                        <button class="dropdown-item" type="button" wire:click.prevent="changeMode(3)"><i class="fas fa-shopping-cart mr-2"></i>Payment Mode</button>
                                     </div>
                                 </div>
                             </div>
@@ -393,9 +393,9 @@
                                                                     {{$value?-$value:0}}{{explode('_',$key)[1]}}
                                                                     <div class="progress progress-xxs">
                                                                         <div class="progress-bar bg-info progress-bar-danger progress-bar-striped"
-                                                                         role="progressbar" aria-valuenow="{{$value/($totalDepartments[$key]/100)}}"
+                                                                         role="progressbar" aria-valuenow="{{$value?$value/($totalDepartments[$key]/100):0}}"
                                                                          aria-valuemin="0" aria-valuemax="100"
-                                                                         style="width: {{$value/($totalDepartments[$key]/100)}}%;">
+                                                                         style="width: {{$value?$value/($totalDepartments[$key]/100):0}}%;">
 
                                                                         </div>
                                                                     </div>
@@ -428,10 +428,13 @@
                                     <div class="col">
                                         {{-- chart --}}
                                         {{-- <livewire:components.transaction.depatment-chart :transactions="$this->getDepatmentTransaction()" wire:key='test_{{strtotime("now")}}'/> --}}
-                                        <?php $chartId = 'chart'.strtotime('now');?>
-                                        <div id="{{$chartId}}"></div>
+                                        <?php
+                                            $chartId = 'chart'.strtotime('now');
+                                            // $chartId = 'chart';
+                                        ?>
+                                        <div id="{{$chartId}}" name='chart1'></div>
                                         <script>
-                                            var options = {
+                                        var options = {
                                             chart: {
                                             type: 'bar',
                                             // type: 'area',
@@ -466,7 +469,7 @@
                                             colors: ['transparent']
                                             },
                                             title: {
-                                                text: 'Department Expend',
+                                                text: 'Expend in Percentage',
                                                 floating: true,
 
                                                 align: 'center',
@@ -474,9 +477,9 @@
                                                     color: '#444'
                                                 }
                                             },
-                                            }
-
-                                            const chartDepartment = new ApexCharts(document.querySelector("#{{$chartId}}"), options);
+                                        }
+                                            // chartDepartment?chartDepartment.destroy():null;
+                                            var chartDepartment = new ApexCharts(document.querySelector("#{{$chartId}}"), options);
 
                                             chartDepartment.render();
                                         </script>
@@ -491,16 +494,16 @@
                                         <table class="table table-v1 table-hover">
                                             <thead>
                                                 <tr class="tr-th-border-0">
-                                                    <th scope="col" class="text-center text-info minimal-table-column px-0">
-                                                        <div class="border-bottom">#</div>
+                                                    <th scope="col" class="text-center text-white minimal-table-column px-0 bg-info">
+                                                        <div>#</div>
                                                     </th>
-                                                    <th scope="col" class="text-left text-info px-0 minimal-table-column" style="white-space: nowrap;">
-                                                        <div class="border-bottom">Item Name</div>
+                                                    <th scope="col" class="text-left text-white text-nowrap px-0 minimal-table-column bg-info">
+                                                        <div>Payment Name</div>
                                                     </th>
                                                     @foreach ( $trCashs[0] as $key => $value )
-                                                        @if ($key != 'name')
-                                                        <th scope="col" class="text-center text-info px-0">
-                                                            <div class="border-bottom">
+                                                        @if ($key != 'name' && $key != 'text_color' && $key != 'bg_color')
+                                                        <th scope="col" class="text-center text-whithe px-0  bg-info">
+                                                            <div>
                                                                 {{$key}}
                                                             </div>
                                                         </th>
@@ -533,9 +536,9 @@
                                                                     {{$value?-$value:0}}{{explode('_',$key)[1]}}
                                                                     <div class="progress progress-xxs">
                                                                         <div class="progress-bar bg-warning progress-bar-danger progress-bar-striped"
-                                                                         role="progressbar" aria-valuenow="{{$value/($totalDepartments[$key]/100)}}"
+                                                                         role="progressbar" aria-valuenow="{{$value?$value/($totalDepartments[$key]/100):0}}"
                                                                          aria-valuemin="0" aria-valuemax="100"
-                                                                         style="width: {{$value/($totalDepartments[$key]/100)}}%;">
+                                                                         style="width: {{$value?$value/($totalDepartments[$key]/100):0}}%;">
 
                                                                         </div>
                                                                     </div>
@@ -546,7 +549,22 @@
 
                                                     </tr>
                                                 @endforeach
-
+                                                <tr class="border-bottom-1">
+                                                    <th colspan="2" class="text-center text-sm py-0 bg-gray-light-h" style="background-color:rgb(235 235 235) !important;">
+                                                        <div class="text-right text-info p-1 pl-2">
+                                                            Total:
+                                                        </div>
+                                                    </th>
+                                                    @foreach ( $trCashs[0] as $key => $value )
+                                                        @if ($key != 'name' && $key != 'text_color' && $key != 'bg_color')
+                                                        <th class="text-right py-0  bg-gray-light-h" style="background-color:rgb(235 235 235) !important;">
+                                                            <div class="p-1 text-bold text-danger">
+                                                                {{-$totalDepartments[$key]}}{{explode('_',$key)[1]}}
+                                                            </div>
+                                                        </th>
+                                                        @endif
+                                                    @endforeach
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -557,47 +575,47 @@
                                         <div id="{{$chartItemId}}"></div>
                                         <script>
                                             var options = {
-                                            chart: {
-                                            type: 'bar',
-                                            // type: 'area',
-                                            },
-                                            series: @json($this->getDepartmentDataset()) ,
-                                            xaxis: {
-                                            // categories: [1991,1992,1993,1994,1995,1996,1997, 1998,1999]
-                                            categories: @json($this->getLabels())
-                                            },
-                                            dataLabels: {
-                                            enabled: true,
-                                            formatter: function (val) {
-                                                return val + "%";
-                                                },
-                                                offsetY: -20,
-                                                style: {
-                                                    // fontSize: '12px',
-                                                    colors: ["#304758"]
-                                                }
-                                            },
-                                            plotOptions: {
-                                                bar: {
-                                                    borderRadius: 3,
-                                                    dataLabels: {
-                                                    position: 'top', // top, center, bottom
+                                                title: {
+                                                    text: 'Expend in Percentage',
+                                                    floating: true,
+                                                    align: 'center',
+                                                    style: {
+                                                        color: '#444'
                                                     }
-                                                }
-                                            },
-                                            stroke: {
-                                            show: true,
-                                            width: 2,
-                                            colors: ['transparent']
-                                            },
-                                            title: {
-                                                text: 'Item Expend',
-                                                floating: true,
-                                                align: 'center',
-                                                style: {
-                                                    color: '#444'
-                                                }
-                                            },
+                                                },
+                                                chart: {
+                                                type: 'bar',
+                                                // type: 'area',
+                                                },
+                                                series: @json($this->getDepartmentDataset()) ,
+                                                xaxis: {
+                                                // categories: [1991,1992,1993,1994,1995,1996,1997, 1998,1999]
+                                                categories: @json($this->getLabels())
+                                                },
+                                                dataLabels: {
+                                                enabled: true,
+                                                formatter: function (val) {
+                                                    return val + "%";
+                                                    },
+                                                    offsetY: -20,
+                                                    style: {
+                                                        // fontSize: '12px',
+                                                        colors: ["#304758"]
+                                                    }
+                                                },
+                                                plotOptions: {
+                                                    bar: {
+                                                        borderRadius: 3,
+                                                        dataLabels: {
+                                                        position: 'top', // top, center, bottom
+                                                        }
+                                                    }
+                                                },
+                                                stroke: {
+                                                show: true,
+                                                width: 2,
+                                                colors: ['transparent']
+                                                },
                                             }
 
                                             const chartItemtment = new ApexCharts(document.querySelector("#{{$chartItemId}}"), options);
@@ -702,10 +720,4 @@
 </script>
 {{-- Cash-report script --}}
 
-<script>
-    Livewire.on('updateChart', data => {
-            chart.data = data;
-            chart.update();
-        });
-</script>
 @endpush

@@ -126,88 +126,16 @@
 
                 {{-- Paynebt menu --}}
                 @if (auth()->user()->group->name != 'MAKETING')
-                <li class="nav-item {{ Request::segment(1) == 'cash' ? 'menu-open' : 'menu-close' }}">
-                    {{-- <li class="nav-item menu-open"> --}}
-                    <a href="#" class="nav-link {{ Request::segment(1) == 'cash' ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-shopping-cart"></i>
-                        <p class="red">
-                            Cash
-                            <i class="right fas fa-angle-down"></i>
+                {{-- Cash list --}}
+                <li class="nav-item">
+                    <a href="{{ route('cash.transaction.tr_list') }}"
+                        class="nav-link {{ request()->is('cash/transaction/tr_list') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-donate"></i>
+                        <p>
+                            Cash Lists
                         </p>
                     </a>
-
-                    <ul class="nav nav-treeview">
-
-                        {{-- Expand Menu --}}
-                        <li class="nav-item">
-                            <a href="{{ route('cash.newexpand') }}"
-                                class="nav-link {{ request()->is('cash/newexpand') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-cart-plus  ml-2"></i>
-                                <p>
-                                    Expand
-                                </p>
-                            </a>
-                        </li>
-
-                        {{-- Add Cash Menu --}}
-                        <li class="nav-item">
-                            <a href="{{ route('cash.addcash') }}"
-                                class="nav-link {{ request()->is('cash/addcash') ? 'active' : '' }}">
-                                {{-- <sup><i class="fas fa-plus-circle ml-2" style="font-size: .5rem"></i></sup>
-                                <i class="fas fa-dollar-sign mr-2"></i> --}}
-                                <i class="nav-icon fas fa-donate ml-2"></i>
-                                <p>
-                                    Add Cash
-                                </p>
-                            </a>
-                        </li>
-
-                        {{-- Exchange Menu --}}
-                        <li class="nav-item">
-                            <a href="{{ route('cash.exchange') }}"
-                                class="nav-link {{ request()->is('exchange') ? 'active' : '' }}">
-                                {{-- <i class="nav-icon fas fa-exchange-alt  ml-2"></i> --}}
-                                <i class="nav-icon fas fa-sync ml-2"></i>
-                                <p>
-                                    Exchange
-                                </p>
-                            </a>
-                        </li>
-
-                        {{-- Transfer Menu --}}
-                        {{-- <li class="nav-item">
-                            <a href="{{ route('dashboard') }}"
-                                class="nav-link {{ request()->is('expand') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-random  ml-2"></i>
-                                <p>
-                                    Transfer
-                                </p>
-                            </a>
-                        </li> --}}
-
-                        {{-- CashTransaction --}}
-                        {{-- <li class="nav-item">
-                            <a href="{{ route('cash.cashtransactions') }}"
-                                class="nav-link {{ request()->is('cash/cashtransactions') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-inbox  ml-2"></i>
-                                <p>
-                                    Cash Transactions
-                                </p>
-                            </a>
-                        </li> --}}
-                        <li class="nav-item">
-                            <a href="{{ route('cash.transaction.tr_list') }}"
-                                class="nav-link {{ request()->is('cash/transaction/tr_list') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-inbox  ml-2"></i>
-                                <p>
-                                    Cash Transactions
-                                </p>
-                            </a>
-                        </li>
-
-                    </ul>
                 </li>
-
                 {{-- Passport Menu --}}
                 <li class="nav-item">
                     <a href="#"

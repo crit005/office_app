@@ -42,6 +42,10 @@ class TrList extends Component
     public $transactions;
     public $totalDepartments = [];
 
+    protected $queryString = [
+        'mode'=>['except' => '', 'as' => 'm'],
+
+    ];
 
     protected $listeners = [
         'refreshCashList' => 'refreshCashList',
@@ -348,7 +352,7 @@ class TrList extends Component
             foreach($this->transactions as $transaction){
                 foreach($transaction as $key=>$val){
                     if($key != 'name' && $key != 'bg_color' && $key != 'text_color'){
-                        $data[$key][] = round($val/($this->totalDepartments[$key]/100),1);
+                        $data[$key][] = $val?round($val/($this->totalDepartments[$key]/100),1):0;
                     }
                 }
             }

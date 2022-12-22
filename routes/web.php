@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\Route;
 //     return 'hello';
 // });
 
+
 Route::middleware(['auth'])->group(function () {
     // Route::get('dashboard', [Dashboard::class, 'index'])->name('dashboard');
     Route::get('/', Dashboard::class)->name('dashboard');

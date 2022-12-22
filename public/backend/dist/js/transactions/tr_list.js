@@ -102,6 +102,9 @@ window.addEventListener('trResetRankDateTimePicker', e => {
   $('#tr_to_date').datetimepicker('minDate', false);
 });
 
+// document.addEventListener("livewire:load", function(event) {
+//   console.log('load');
+// });
 
 // javascript event hooks
 document.addEventListener("DOMContentLoaded", () => {
@@ -116,16 +119,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Livewire.hook('element.updating', (fromEl, toEl, component) => {
   //     // console.log('element.updating')
+
   // })
 
   Livewire.hook('element.updated', (el, component) => {
     $('[data-toggle="tooltip"]').tooltip();
     $('[data-toggle="popover"]').popover();
-    // console.log(component.name);
+
+
   })
 
   // Livewire.hook('element.removed', (el, component) => {
-  //     console.log('element.removed');
+  //     // console.log(component.name);
   // })
 
   // Livewire.hook('message.sent', (message, component) => {

@@ -28,7 +28,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
 
-    <script src="{{ asset('backend/plugins/chart.js/Chart.min.js') }}"></script>
+    {{-- <script src="{{ asset('backend/plugins/chart.js/Chart.min.js') }}"></script> --}}
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
     @livewireStyles
@@ -229,6 +229,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 "hideMethod": "fadeOut"
             });
         }
+    </script>
+
+    <script>
+        Livewire.onPageExpired((response, message) => {});
+        window.livewire.onError(statusCode => {
+                if (statusCode === 419) {
+                // alert('Your own message')
+                return false
+            }
+        });
     </script>
 </body>
 
