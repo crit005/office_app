@@ -57,6 +57,7 @@
                 </li>
 
                 {{-- Customer menu --}}
+                @if(in_array(auth()->user()->group_id,[1,2,6]))
                 <li class="nav-item {{ Request::segment(1) == 'customer' ? 'menu-open' : 'menu-close' }}">
                     {{-- <li class="nav-item menu-open"> --}}
                     <a href="#" class="nav-link {{ Request::segment(1) == 'customer' ? 'active' : '' }}">
@@ -123,6 +124,7 @@
 
                     </ul>
                 </li>
+                @endif
 
                 {{-- Paynebt menu --}}
                 @if (auth()->user()->group->name != 'MAKETING')
@@ -138,8 +140,8 @@
                 </li>
                 {{-- Passport Menu --}}
                 <li class="nav-item">
-                    <a href="#"
-                        class="nav-link {{ request()->is('cashdrawer') ? 'active' : '' }}">
+                    <a href="{{ route('passport.list') }}"
+                        class="nav-link {{ request()->is('passport/list') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-passport"></i>
                         <p>
                             Passport
@@ -219,6 +221,7 @@
                         </li>
                         @endif
                         {{-- User Menu --}}
+                        @if(in_array(auth()->user()->group_id,[1,2]))
                         <li class="nav-item">
                             <a href="{{ route('setting.users') }}"
                                 class="nav-link {{ request()->is('setting/users') ? 'active' : '' }}">
@@ -228,7 +231,7 @@
                                 </p>
                             </a>
                         </li>
-
+                        @endif
                         {{-- Profile Menu --}}
                         <li class="nav-item">
                             <a href="{{ route('setting.users') }}"

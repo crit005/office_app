@@ -1,6 +1,7 @@
 install laravel excel
 composer require maatwebsite/excel --with-all-dependencies -w
 
+Laravel image not shown on server and working fine on my local machine
 ត្រូវ run php artisan storage:link ក្រោយពេលធ្វើការជាមួយ filesystem or image cannot view
 
 env not read isue

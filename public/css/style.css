@@ -622,6 +622,20 @@ font-size: 14px;
     background-color:rgb(235 235 235) !important;
 }
 
+/* div row style */
+.div-row-label{
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+.div-row-vla{
+    font-size: 14px;
+    color: #777777;
+}
+/* end div row style */
+
+
+
 @media print {
     body {
       margin: 0;

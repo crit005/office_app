@@ -20,11 +20,18 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
+
+            @if(in_array(auth()->user()->group_id,[1,2,6]))
             <div class="d-flex flex-row justify-content-between flex-wrap">
                 @foreach ($connections as $connection)
                     @livewire('components.system-panel',['connection'=>$connection], key($connection->id))
                 @endforeach
             </div>
+            @else
+            <div class="jumbotron text-center blur-light text-uppercase text-white center-screen">
+                <h1>Wlcom to Office</h1>
+            </div>
+            @endif
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->

@@ -35,9 +35,11 @@
                                     {{-- <button value='' wire:click="resetUser" class="btn btn-sm elevation-1 bg-gradient-blue @if(!$createdBy) active @endif">
                                         <i class="fas fa-users"></i>
                                     </button> --}}
+                                    @if(in_array(auth()->user()->group_id,[1,2]))
                                     <label wire:click.prevent="resetUser" class="btn btn-sm elevation-1 bg-gradient-blue @if(!$createdBy) active @endif">
                                         <input type="radio" name="tr_user" id="user_b1" value='' autocomplete="off"> <i class="fas fa-users"></i>
-                                        </label>
+                                    </label>
+                                    @endif
                                     <label class="btn btn-sm elevation-1 bg-gradient-blue @if($type != 1 && $type != 2 && $type != 3) active @endif">
                                         <input type="radio" name="tr_mode" id="type_b1" wire:model='type' value='' autocomplete="off" checked> All
                                         </label>
@@ -70,7 +72,9 @@
                                 <div class="input-group input-group-sm mr-2 sort-input-date elevation-1">
                                     <div class="input-group-prepend">
                                         <label class="input-group-text" for="inputGroupSelect01">
-                                            <i class="fas fa-grip-horizontal"></i></label>
+                                            {{-- <i class="fas fa-grip-horizontal"></i> --}}
+                                            <i class="fas fa-sitemap"></i>
+                                        </label>
                                     </div>
                                     <select wire:model="depatmentId" class="custom-select form-select">
                                         <option value="">* Depatment</option>
@@ -130,7 +134,7 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right text-sm">
                                         <button class="dropdown-item" type="button" wire:click.prevent="changeMode(1)"><i class="fas fa-donate mr-2"></i>Cash Mode</button>
-                                        <button class="dropdown-item" type="button" wire:click.prevent="changeMode(2)"><i class="fas fa-grip-horizontal mr-2"></i>Department Mode</button>
+                                        <button class="dropdown-item" type="button" wire:click.prevent="changeMode(2)"><i class="fas fa-sitemap mr-2"></i>Department Mode</button>
                                         <button class="dropdown-item" type="button" wire:click.prevent="changeMode(3)"><i class="fas fa-shopping-cart mr-2"></i>Payment Mode</button>
                                     </div>
                                 </div>

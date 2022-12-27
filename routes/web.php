@@ -17,6 +17,7 @@ use App\Http\Livewire\Customer\ListCustomer;
 use App\Http\Livewire\Customer\ListInactiveMember;
 use App\Http\Livewire\Customer\ListNewMember;
 use App\Http\Livewire\Dashboard;
+use App\Http\Livewire\Passports\ListPassport;
 use App\Http\Livewire\Setting\ListCurrency;
 use App\Http\Livewire\Setting\ListDepatment;
 use App\Http\Livewire\Setting\ListItems;
@@ -70,6 +71,9 @@ Route::middleware(['auth'])->group(function () {
     // Cash transaction
 
     Route::get('cash/transaction/tr_list',TrList::class)->name('cash.transaction.tr_list');
+
+    // Passport list
+    Route::get('passport/list',ListPassport::class)->name('passport.list');
 
 
 });

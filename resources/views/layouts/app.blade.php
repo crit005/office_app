@@ -235,7 +235,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         Livewire.onPageExpired((response, message) => {});
         window.livewire.onError(statusCode => {
                 if (statusCode === 419) {
-                // alert('Your own message')
+                // alert('Your own message');
+                console.log('page expired');
                 return false
             }
         });
