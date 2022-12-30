@@ -455,18 +455,32 @@
         // document.getElementById(id).removeEventListener("transitionend",e,true);
 
        }else{
-        $('#'+id).find("[data-detail]").addClass('d-none');
-        $('#'+id).find("[data-detailbtn]").removeClass('d-sm-block');
-        // document.getElementById(id).addEventListener('transitionend', e(id),true);
+       document.getElementById(id).addEventListener('transitionend', e(id),true);
+        // $('#'+id).find("[data-detail]").addClass('d-none');
+        // $('#'+id).find("[data-detailbtn]").removeClass('d-sm-block');
         $('#'+id).removeClass('row-panel-show');
         $('#'+id).find("[data-toggle]").data('toggle','show');
        }
         // $('#'+id).children().data('detail').css({'color':'red'});
     }
     function e(id){
-        console.log('Animation ended');
+        console.log('Animation ended'+ id);
         $('#'+id).find("[data-detail]").addClass('d-none');
         $('#'+id).find("[data-detailbtn]").removeClass('d-sm-block');
+        // document.getElementById(id).removeEventListener('transitionend', e,true);
+
+    }
+
+    function getScreenType(){
+        if(screen.width<768){
+            return "xs";
+        }elseif(screen.width>=768 && screen.width < 992){
+            return "sm";
+        }elseif(screen.width>=992 && screen.width < 1200){
+            return "md";
+        }else{
+            return "lg";
+        }
     }
 </script>
 @endpush

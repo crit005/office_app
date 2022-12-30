@@ -661,12 +661,12 @@ font-size: 14px;
     align-content: space-around;
 
     max-height: 100px;
-    transition: max-height 0.25s ease-out;
+    transition: max-height 2s;
     overflow: hidden;
 }
 .row-panel-show{
     max-height: 500px;
-    transition: max-height 0.25s ease-in;
+    /* transition: max-height 2s ease-in; */
 
 }
 .col-panel{
