@@ -31,6 +31,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     {{-- <script src="{{ asset('backend/plugins/chart.js/Chart.min.js') }}"></script> --}}
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
+    <script src="{{asset('js/lazyload.js')}}"></script>
+
     @livewireStyles
 </head>
 
@@ -241,6 +243,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 return "lg";
             }
         }
+
+        $(function() {
+            $("img.lazy").lazyload({effect : "fadeIn"});
+        });
     </script>
 
     <script>

@@ -676,10 +676,12 @@ td:has(.import-error) {
     width: 24px;
     height: 24px;
     padding: 0;
+}
+.btn-passport-row-togle i{
     transform:rotate(0);
     transition: transform 0.3s;
 }
-.btn-passport-row-togle-up{
+.btn-passport-row-togle-up i{
     transform:rotate(180deg);
     transition: transform 0.3s;
 }

@@ -72,7 +72,7 @@
                                         <div class="d-flex">
                                             <div class="px-2">
                                                 <div class="passport-img-circle elevation-1">
-                                                    <img src="{{asset("images/4x6.jpg")}}" style="width:100%;" alt="">
+                                                    <img class="lazy" data-original="{{asset("images/4x6.jpg")}}" style="width:100%;" alt="">
                                                 </div>
                                             </div>
                                             <div class="pl-2 flex-grow-1">
@@ -121,13 +121,13 @@
                                             <div class="col-sm-3 col-6 d-none" data-detail='detail'>
                                                 <div class="div-row-label">Passport Photo</div>
                                                 <div class="">
-                                                    <img src="{{asset("images/passport_sample.jpg")}}" style="max-height: 90px;" alt="">
+                                                    <img class="lazy" data-original="{{asset("images/passport_sample.jpg")}}" style="max-height: 90px;" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-sm-3 col-6 d-none" data-detail='detail'>
                                                 <div class="div-row-label">Visa Photo</div>
                                                 <div class="">
-                                                    <img src="{{asset("images/Cambodia_Visa_2017.jpg")}}" style="max-height: 90px;" alt="">
+                                                    <img class="lazy" data-original="{{asset("images/Cambodia_Visa_2017.jpg")}}" style="max-height: 90px;" alt="">
                                                 </div>
                                             </div>
                                             <div class="col-sm-6 d-none" data-detail='detail'>
@@ -466,6 +466,8 @@
         $('#'+id).find(".passport-img-circle").toggleClass('image-id');
         $('#'+id).find(".btn-passport-row-togle").toggleClass('btn-passport-row-togle-up');
         $('#'+id).toggleClass('row-panel-show');
+        $('#'+id).find(".lazy").lazyload({effect : "fadeIn"});
+        $('#'+id).find(".lazy").removeClass('lazy');
     }
 
     function getShowPanelRow(){
