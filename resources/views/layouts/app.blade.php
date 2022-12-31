@@ -229,6 +229,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 "hideMethod": "fadeOut"
             });
         }
+
+        function getScreenType(){
+            if(screen.width<768){
+                return "xs";
+            }else if(screen.width>=768 && screen.width < 992){
+                return "sm";
+            }else if(screen.width>=992 && screen.width < 1200){
+                return "md";
+            }else{
+                return "lg";
+            }
+        }
     </script>
 
     <script>
