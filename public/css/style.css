@@ -71,8 +71,8 @@ body {
 
 .modal-blur-light .modal-body {
     background: rgba(255, 255, 255, 1);
-    margin: 0 14px;
-    border-radius: 5px;
+    /* margin: 0 14px;
+    border-radius: 5px; */
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
 }
@@ -718,6 +718,7 @@ td:has(.import-error) {
 }
 
 /* end div row style */
+
 
 
 

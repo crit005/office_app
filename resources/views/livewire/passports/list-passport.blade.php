@@ -72,7 +72,8 @@
                                         <div class="d-flex">
                                             <div class="px-2">
                                                 <div class="passport-img-circle elevation-1">
-                                                    <img class="lazy" data-original="{{asset("images/4x6.jpg")}}" style="width:100%;" alt="">
+                                                    <img class="lazy" data-original="{{asset("images/4x6.jpg")}}" style="width:100%;" alt=""
+                                                        onclick= "viewPassportImage('{{asset('images/4x6.jpg')}}','Photo ID')" >
                                                 </div>
                                             </div>
                                             <div class="pl-2 flex-grow-1">
@@ -121,13 +122,15 @@
                                             <div class="col-sm-3 col-6 d-none" data-detail='detail'>
                                                 <div class="div-row-label">Passport Photo</div>
                                                 <div class="">
-                                                    <img class="lazy" data-original="{{asset("images/passport_sample.jpg")}}" style="max-height: 90px;" alt="">
+                                                    <img class="lazy" data-original="{{asset("images/passport_sample.jpg")}}" style="max-height: 90px;" alt=""
+                                                        onclick= "viewPassportImage('{{asset('images/passport_sample.jpg')}}','Photo Passport')" >
                                                 </div>
                                             </div>
                                             <div class="col-sm-3 col-6 d-none" data-detail='detail'>
                                                 <div class="div-row-label">Visa Photo</div>
                                                 <div class="">
-                                                    <img class="lazy" data-original="{{asset("images/Cambodia_Visa_2017.jpg")}}" style="max-height: 90px;" alt="">
+                                                    <img class="lazy" data-original="{{asset("images/Cambodia_Visa_2017.jpg")}}" style="max-height: 90px;" alt=""
+                                                    onclick= "viewPassportImage('{{asset('images/Cambodia_Visa_2017.jpg')}}','Photo Visa')" >
                                                 </div>
                                             </div>
                                             <div class="col-sm-6 d-none" data-detail='detail'>
@@ -447,9 +450,157 @@
     </div>
     <!-- /.content -->
 
+    {{-- modal photo viw --}}
+
+    <div id="modal-image-view" class="modal fade blur-bg-dialog image-viewer" tabindex="-1" role="dialog" aria-labelledby="imageView" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered2">
+            <div class="modal-content modal-blur-light" >
+                <div class="modal-header">
+                    <h5 class="modal-title text-white" id="image-view-title">Image view</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center bg-white">
+                    <img class="elevation-1" id="img-view" src="{{asset("images/Cambodia_Visa_2017.jpg")}}" style="max-height:80vh; max-width: 100%; border-radius: 13px;" alt="">
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- End modal photo viw --}}
+
+    {{-- add passport form --}}
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPassportFormModal">
+        Launch demo modal
+      </button>
+
+    <div wire:ignore.self class="modal fade blur-bg-dialog " id="addPassportFormModal" tabindex="-1" role="dialog"
+        aria-labelledby="addPassportFormModalTitle" aria-hidden="true">
+        <div wire:ignore.self class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content modal-blur-light-green">
+                <div class="modal-header">
+                    <div class="w-100 d-flex flex-row justify-content-between">
+                        <div>
+                            <h5 class="modal-title text-white" id="exampleModalLongTitle">
+                                Add Passport Info
+                            </h5>
+                            <div class="text-white text-sm">Created_by:
+                                {{ auth()->user()->name }}
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {{-- <form wire:submit.prevent='{{ $showEditModal ? ' updateDepatment' : 'createDepatment' }}'> --}}
+                <form wire:submit.prevent='addPassport'>
+                    <div class="modal-body m-0 border-radius-0 bg-white">
+                        <div class="row">
+                            <div class="col-md-6">
+
+                                <div class="form-group form-group-sm row text-sm mb-1">
+                                    <label for="passport-name" class="col-sm-5 col-form-label">Name:</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control form-control-sm" id="passport-name" placeholder="Name">
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-group-sm row text-sm mb-1">
+                                    <label for="passport-nick-name" class="col-sm-5 col-form-label">Nick Name:</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control form-control-sm" id="passport-nick-name" placeholder="Nick Name">
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-group-sm row text-sm mb-1">
+                                    <label for="passport-gender" class="col-sm-5 col-form-label">Gender:</label>
+                                    <div class="col-sm-7">
+                                        <div class="icheck-success d-inline male-radio">
+                                            <input type="radio" id="radioPrimary1" name="r1" checked="">
+                                            <label for="radioPrimary1" class=" text-sm"><i class="fas fa-male mr-2"></i> M
+                                            </label>
+                                        </div>
+                                        <div class="icheck-warning d-inline">
+                                            <input type="radio" id="radioPrimary2" name="r1">
+                                            <label for="radioPrimary2" class=" text-sm">
+                                                <i class="fas fa-female mr-2"></i> F
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-group-sm row text-sm mb-1">
+                                    <label for="passport-dob" class="col-sm-5 col-form-label">Date Of Birth:</label>
+                                    <div class="col-sm-7">
+                                        <x-datepicker wire:model="form.dob" id="passport-dob" :moreclass="'form-control-sm'" :error="'dob'"
+                                            :format="'DD-MMM-Y'" />
+                                        @error('dob')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-group-sm row text-sm mb-1">
+                                    <label for="passport-mobile" class="col-sm-5 col-form-label">Mobile:</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control form-control-sm" id="passport-mobile" placeholder="Mobile">
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-group-sm row text-sm mb-1">
+                                    <label for="passport-start-date" class="col-sm-5 col-form-label">Start Date:</label>
+                                    <div class="col-sm-7">
+                                    <x-datepicker wire:model="form.start_date" id="passport-start-date" :moreclass="'form-control-sm'" :error="'start_date'"
+                                        :format="'DD-MMM-Y'" />
+                                    @error('start_date')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-group-sm row text-sm mb-1">
+                                    <label for="passport-no" class="col-sm-5 col-form-label">Passport No:</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control form-control-sm" id="passport-no" placeholder="Passport No">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+
+                            </div>
+
+                        </div>
+                        <!-- /Ended row -->
+                    </div>
+
+                    {{-- modale footer --}}
+                    <div class="modal-footer">
+
+                    </div>
+                    {{-- End modale footer --}}
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- add passport form --}}
+
+
 </div>
 @push('js')
 <script>
+
+    function viewPassportImage(src, title){
+        $('#img-view').attr('src',src);
+        $('#image-view-title').html(title);
+        $('#modal-image-view').modal('show')
+    }
 
     function toggleDetail(id){
         if($('.row-panel-show') && $('.row-panel-show').attr('id')!=id){

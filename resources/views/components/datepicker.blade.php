@@ -1,6 +1,6 @@
-@props(['id','error','format','viewMode','minDate','maxDate','default'])
+@props(['id','error','format','viewMode','minDate','maxDate','default','moreclass'])
 {{-- @dump($minDate) --}}
-<input {{$attributes}} type="text" class="form-control datetimepicker-input @error($error)
+<input {{$attributes}} type="text" class="form-control datetimepicker-input {{$moreclass??''}} @error($error)
         is-invalid
         @else {{$this->getValidClass($error)}}
     @enderror" id="{{$id}}" data-toggle="datetimepicker" data-target="#{{$id}}"
