@@ -502,81 +502,156 @@
                     <div class="modal-body m-0 border-radius-0 bg-white">
                         <div class="row">
                             <div class="col-md-6">
-
-                                <div class="form-group form-group-sm row text-sm mb-1">
-                                    <label for="passport-name" class="col-sm-5 col-form-label">Name:</label>
-                                    <div class="col-sm-7">
-                                        <input type="text" class="form-control form-control-sm" id="passport-name" placeholder="Name">
-                                    </div>
+                                <div class="form-group mb-1">
+                                    <label for="passport-name">Name:</label>
+                                    <input type="text" class="form-control " id="passport-name" placeholder="Name">
                                 </div>
 
-                                <div class="form-group form-group-sm row text-sm mb-1">
-                                    <label for="passport-nick-name" class="col-sm-5 col-form-label">Nick Name:</label>
-                                    <div class="col-sm-7">
-                                        <input type="text" class="form-control form-control-sm" id="passport-nick-name" placeholder="Nick Name">
-                                    </div>
+                                <div class="form-group mb-1">
+                                    <label for="passport-nick-name">Nick Name:</label>
+                                    <input type="text" class="form-control" id="passport-nick-name" placeholder="Nick Name">
                                 </div>
 
-                                <div class="form-group form-group-sm row text-sm mb-1">
-                                    <label for="passport-gender" class="col-sm-5 col-form-label">Gender:</label>
-                                    <div class="col-sm-7">
+                                <div class="form-group mb-1">
+                                    <label for="passport-gender">Gender:</label>
+                                    <div class="my--2" style="height: calc(2.25rem + 2px);">
                                         <div class="icheck-success d-inline male-radio">
                                             <input type="radio" id="radioPrimary1" name="r1" checked="">
-                                            <label for="radioPrimary1" class=" text-sm"><i class="fas fa-male mr-2"></i> M
+                                            <label for="radioPrimary1" class=""><i class="fas fa-male"></i> Male
                                             </label>
                                         </div>
                                         <div class="icheck-warning d-inline">
                                             <input type="radio" id="radioPrimary2" name="r1">
-                                            <label for="radioPrimary2" class=" text-sm">
-                                                <i class="fas fa-female mr-2"></i> F
+                                            <label for="radioPrimary2" class="">
+                                                <i class="fas fa-female"></i> Female
                                             </label>
                                         </div>
                                     </div>
+
                                 </div>
 
-                                <div class="form-group form-group-sm row text-sm mb-1">
-                                    <label for="passport-dob" class="col-sm-5 col-form-label">Date Of Birth:</label>
-                                    <div class="col-sm-7">
-                                        <x-datepicker wire:model="form.dob" id="passport-dob" :moreclass="'form-control-sm'" :error="'dob'"
-                                            :format="'DD-MMM-Y'" />
-                                        @error('dob')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="form-group form-group-sm row text-sm mb-1">
-                                    <label for="passport-mobile" class="col-sm-5 col-form-label">Mobile:</label>
-                                    <div class="col-sm-7">
-                                        <input type="text" class="form-control form-control-sm" id="passport-mobile" placeholder="Mobile">
-                                    </div>
-                                </div>
-
-                                <div class="form-group form-group-sm row text-sm mb-1">
-                                    <label for="passport-start-date" class="col-sm-5 col-form-label">Start Date:</label>
-                                    <div class="col-sm-7">
-                                    <x-datepicker wire:model="form.start_date" id="passport-start-date" :moreclass="'form-control-sm'" :error="'start_date'"
+                                <div class="form-group mb-1">
+                                    <label for="passport-dob">Date Of Birth:</label>
+                                    <x-datepicker wire:model="form.dob" id="passport-dob" :error="'dob'"
                                         :format="'DD-MMM-Y'" />
-                                    @error('start_date')
+                                    @error('dob')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                    </div>
                                 </div>
 
-                                <div class="form-group form-group-sm row text-sm mb-1">
-                                    <label for="passport-no" class="col-sm-5 col-form-label">Passport No:</label>
-                                    <div class="col-sm-7">
-                                        <input type="text" class="form-control form-control-sm" id="passport-no" placeholder="Passport No">
-                                    </div>
+                                <div class="form-group mb-1">
+                                    <label for="passport-mobile">Mobile:</label>
+                                    <input  data-inputmask="'mask': '999 999 999[9]'" data-mask inputmode="text"
+                                     type="text" class="form-control" id="passport-mobile" placeholder="Mobile">
                                 </div>
 
                             </div>
                             <div class="col-md-6">
+                                <div class="form-group mb-1">
+                                    <label for="passport-start-date">Start Date:</label>
+                                    <x-datepicker wire:model="form.start_date" id="passport-start-date" :error="'start_date'"
+                                        :format="'DD-MMM-Y'" />
+                                    @error('start_date')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group mb-1">
+                                    <label for="passport-no">Passport No:</label>
+                                    <input type="text" class="form-control" id="passport-no" placeholder="Passport No">
+                                </div>
+
+                                <div class="form-group mb-1">
+                                    <label for="passport-p-expired-date">P Expired at:</label>
+                                    <x-datepicker wire:model="form.p_expired_date" id="passport-p-expired-date" :error="'p_expired_date'"
+                                        :format="'DD-MMM-Y'" />
+                                    @error('p_expired_date')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group mb-1">
+                                    <label for="passport-v-expired-date">V Expired at:</label>
+                                    <x-datepicker wire:model="form.start_date" id="passport-v-expired-date" :error="'v_expired_date'"
+                                        :format="'DD-MMM-Y'" />
+                                    @error('v_expired_date')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group mb-1">
+                                    <label for="passport-gender">Working Permit:</label>
+                                    <div class="icheck-success">
+                                        <input type="checkbox" id="p-working-permit" name="r1" checked="">
+                                        <label for="p-working-permit" class=" text-sm">
+                                        </label>
+                                    </div>
+                                </div>
 
                             </div>
-
                         </div>
                         <!-- /Ended row -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card card-success card-outline card-outline-tabs">
+                                    <div class="card-header p-0 border-bottom-0">
+                                      <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                                        <li class="nav-item">
+                                          <a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Photo</a>
+                                        </li>
+                                        <li class="nav-item">
+                                          <a class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Postort</a>
+                                        </li>
+                                        <li class="nav-item">
+                                          <a class="nav-link" id="custom-tabs-four-messages-tab" data-toggle="pill" href="#custom-tabs-four-messages" role="tab" aria-controls="custom-tabs-four-messages" aria-selected="false">Visa</a>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                    <div class="card-body text-sm p-2 m-0">
+                                      <div class="tab-content" id="custom-tabs-four-tabContent">
+                                        <div class="tab-pane fade active show text-center" style="height: 150px" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+                                            <img src="{{asset("images/4x6.jpg")}}" style="max-height: 150px; max-width: 207px" alt="" >
+                                        </div>
+                                        <div class="tab-pane fade text-center" style="height: 150px" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                                            <img src="{{asset("images/passport_sample.jpg")}}" style="max-height: 150px; max-width: 207px" alt="">
+                                        </div>
+                                        <div class="tab-pane fade text-center" style="height: 150px" id="custom-tabs-four-messages" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
+                                            <img src="{{asset("images/Cambodia_Visa_2017.jpg")}}" style="max-height: 150px; max-width: 207px" alt="">
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!-- /.card -->
+                                  </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-1">
+                                    <label for="description">Description:</label>
+                                    <textarea wire:model.debounce='form.description' name="description"
+                                        id="description" class="form-control" rows="3"
+                                        placeholder="Enter ..."></textarea>
+                                </div>
+
+                                <div class="form-group mb-1">
+                                    <label for="passport-gender">Status:</label>
+                                    <div class="custom-control custom-switch custom-switch-on-success">
+                                        <input type="checkbox" class="custom-control-input" id="customSwitch1" checked>
+                                        <label class="custom-control-label" for="customSwitch1"></label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-1">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-sm btn-primary w-100"><i class="fas fa-save"></i><span class="ml-2">Delete</span></button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-sm btn-danger w-100" data-dismiss="modal" aria-label="Close"><i class="fas fa-ban"></i><span class="ml-2">Cancel</span></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
 
                     {{-- modale footer --}}
@@ -624,5 +699,8 @@
     function getShowPanelRow(){
         $('.row-panel-show').find("btn-passport-row-togle").click();
     }
+    $(document).ready(function() {
+        $(":input").inputmask();
+    });
 </script>
 @endpush
