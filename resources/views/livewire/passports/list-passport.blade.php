@@ -609,17 +609,45 @@
                                     </div>
                                     <div class="card-body text-sm p-2 m-0">
                                       <div class="tab-content" id="custom-tabs-four-tabContent">
+
                                         <div class="tab-pane fade active show text-center" style="height: 150px" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
                                             <img src="{{asset("images/4x6.jpg")}}" style="max-height: 150px; max-width: 207px" alt="" >
+                                            <input type="file" id="passport-photo-id" class="d-none">
+                                            <a role="button" class="btn btn-sm btn-primary m-1 text-white rounded-circle elevation-2 btn-brow-passport-img"
+                                            onclick="browPassportPhoto('passport-photo-id')">
+                                                <i class="far fa-file-image"></i>
+                                            </a>
                                         </div>
+
                                         <div class="tab-pane fade text-center" style="height: 150px" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
                                             <img src="{{asset("images/passport_sample.jpg")}}" style="max-height: 150px; max-width: 207px" alt="">
+                                            <input type="file" id="passport-photo-passport" class="d-none">
+                                            <a role="button" class="btn btn-sm btn-primary m-1 text-white rounded-circle elevation-2 btn-brow-passport-img"
+                                            onclick="browPassportPhoto('passport-photo-passport')">
+                                                <i class="far fa-file-image"></i>
+                                            </a>
                                         </div>
+
                                         <div class="tab-pane fade text-center" style="height: 150px" id="custom-tabs-four-messages" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
                                             <img src="{{asset("images/Cambodia_Visa_2017.jpg")}}" style="max-height: 150px; max-width: 207px" alt="">
+                                            <input type="file" id="passport-photo-visa" class="d-none">
+                                            <a role="button" class="btn btn-sm btn-primary m-1 text-white rounded-circle elevation-2 btn-brow-passport-img"
+                                            onclick="browPassportPhoto('passport-photo-visa')">
+                                                <i class="far fa-file-image"></i>
+                                            </a>
                                         </div>
+
                                       </div>
                                     </div>
+                                    <style>
+                                        .btn-brow-passport-img{
+                                            position: absolute;
+                                            bottom: 0;
+                                            right: 0;
+                                            width: 30px;
+                                            height: 30px;
+                                        }
+                                    </style>
                                     <!-- /.card -->
                                   </div>
                             </div>
@@ -651,6 +679,7 @@
                                 </div>
 
                             </div>
+
                         </div>
                     </div>
 
@@ -698,6 +727,9 @@
 
     function getShowPanelRow(){
         $('.row-panel-show').find("btn-passport-row-togle").click();
+    }
+    function browPassportPhoto(fileId){
+        $('#'+fileId).click();
     }
     $(document).ready(function() {
         $(":input").inputmask();
